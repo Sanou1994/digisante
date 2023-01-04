@@ -1,0 +1,296 @@
+﻿@model Tuple<List<Utilisateur>, List<Patient>, List<Departement>, NomPatientAssuranceList>
+@{
+    ViewBag.Title = "Ajouter Paiement";
+
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+@using digi_sante.Models;
+@{
+    var fileName = "";
+    if (IsPost)
+    {
+        var fileSavePath = "";
+        var uploadedFile = Request.Files[0];
+        fileName = Path.GetFileName(uploadedFile.FileName);
+        fileSavePath = Server.MapPath("~/lettrePriseEnCharge/" + fileName);
+        uploadedFile.SaveAs(fileSavePath);
+    }
+}
+
+<style>
+    label #text {
+        display: inline-block;
+        background-color: indigo;
+        color: white;
+        padding: 0.5rem;
+        font-family: sans-serif;
+        border-radius: 0.3rem;
+        cursor: pointer;
+        margin-top: 1rem;
+    }
+</style>
+
+<div class="col-12" style="margin-bottom:50px">
+
+    @if (@ViewBag.previousPage == "Paiement")
+    {
+        <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("ListePaiement","Admin")">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i>&nbsp;Retour</a>
+    }
+    else
+    {
+        <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("Index","Admin")">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i>&nbsp;Retour</a>
+    }
+
+</div>
+
+
+@using (Html.BeginForm("AjouterPaiement", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+
+    <div class="container-fluid py-4 pb-2">
+        <div class="row">
+            <div class="col-12">
+                <div class="card p-4" style="margin:10px">
+                    <div class="card-header" style="border: solid; font-size: 30px; background-color: #03DAFC; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <div class=" shadow-primary border-radius-lg">
+                            <h3 class="text-capitalize  text-center" style="color:white">Nouveau Paiement</h3>
+                        </div>
+                    </div>
+                    <center> <p style="background-color: white; color: red">@ViewBag.sms</p></center>
+                    <center> <p style="background-color:white;color:green">@ViewBag.Message</p></center>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="text" style="width:100%">Nom Patient</label>
+                                    @if (Model.Item4.nomCompletPatient != null)
+                                    {
+
+                                        <input type="text" value="@Model.Item4.nomCompletPatient" class="form-control" name="Surname" style="background-color:whitesmoke"  readonly>
+
+                                        <input type="text" value="@ViewBag.InfoPa" style="display:none" name="Id_patient" />
+                                    }
+                                    else
+                                    {
+                                        <select class="form-control" onchange=" hideError()" style="width: 100%; height: 40px; background-color: whitesmoke" name="Id_patient" id="Id_patient" required>
+                                            @foreach (var patient in Model.Item2)
+                                            {
+                                                <option value="@patient.patientID">@patient.prenom @patient.nom</option>
+                                            }
+                                        </select>
+
+                                    }
+                                </div>
+                                <p class="text-danger" id="Id_patientError" style="font-size: 80%;font-weight: bold">Veuillez choisir un patient svp </p>
+
+                            </div>
+
+
+
+
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="=text" style="width:100%">Département</label>
+                                    <select class="form-control" onchange="chooseDepartement()" style="width: 100%; height: 40px; background-color: whitesmoke " name="Id_departement" id="Id_departement" required>
+                                        <option ></option>
+
+                                        @foreach (var departement in Model.Item3)
+                                        {
+                                            <option value="@departement.departementID">@departement.nom</option>
+                                        }
+                                    </select>
+                                </div>
+                                <p class="text-danger" id="Id_departementError" style="font-size: 80%;font-weight: bold">Veuillez choisir un département svp </p>
+
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="=text" style="width:100%">Docteur</label>
+                                    <select class="form-control" style="width:300px;height:40px;background-color:whitesmoke" name="Id_docteur" id="Id_docteur">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="text" style="width:100%">Montant Consultation</label>
+                                    <input type="text" class="form-control" onchange=" hideError()" onkeypress="return isNumberKey2(this.id);" style="background-color:whitesmoke" id="Mcon" name="Mcon" required>
+                                </div>
+                                <p class="text-danger" id="MconError" style="font-size: 80%;font-weight: bold">Veuillez saisir le montant de la consultation svp </p>
+
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="=text" style="width:100%">Assurance</label>
+                                    <select class="form-control" style="width:300px;height:40px;background-color:whitesmoke" name="Assurance" id="Assurance">
+                                        <option value="" selected disabled hidden>Choisir un assurance</option>
+                                        @foreach (var assurance in Model.Item4.listAssurance)
+                                        {
+                                            <option value="@assurance.assuranceID">@assurance.nom</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="=text" style="width:100%">Montant à payer</label>
+                                    <input type="text" class="form-control" id="ME" style="background-color:whitesmoke" name="ME" readonly>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="text" style="width:100%">Taux de prise en charge  Assurance(%)</label>
+                                    <input type="number" placeholder="0.00" step="0.01" min="0" max="100" onchange="checkTaux()" class="form-control" onkeypress="return isNumberKey2(this.id);" style="background-color:whitesmoke" id="taux_prise_en_charge" name="taux_prise_en_charge">
+                                </div>
+                                <p class="text-danger" id="taux_prise_en_chargeError" style="font-size: 80%;font-weight: bold">Veuillez saisir un taux inférieur ou égal à 100 svp </p>
+
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="=text" style="width:100%">Montant Assurance</label>
+                                    <input type="text" id="MA" class="form-control" style="background-color:whitesmoke" name="MA" readonly>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label for="upload" name="url_lettre_prise_en_charge" class="=text" style="width:100%">Télécharger la prise en charge</label>
+                                    <input type="file" name="file" id="file" accept="application/pdf" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="text" style="width:100%">Observation</label>
+                                    <textarea id="Ob" name="Ob" rows="2" cols="70" style="color: #1b3b65; font-family: Verdana; width: 100%; "></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-lg-6">
+                                <button class="btn btn-primary" onclick="showError()" id="envoyer" style="float:right; background-color:black"> Enregistrer</button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="~/assets/js/core/popper.min.js"></script>
+<script src="~/assets/js/core/bootstrap.min.js"></script>
+<script src="~/assets/js/plugins/perfect-scrollbar.min.js"></script>
+<script src="~/assets/js/plugins/smooth-scrollbar.min.js"></script>
+<script>
+    $('#Id_patientError').hide();
+    $('#Id_departementError').hide();
+    $('#MconError').hide();
+    $('#taux_prise_en_chargeError').hide();
+
+    $("#Id_docteur").select2({
+        placeholder: "Choisir docteur"
+    });
+    $("#Id_patient").select2({
+        placeholder: "Choisir patient"    });
+    $("#Id_departement").select2({
+        placeholder: "Choisir département"    });
+    function isNumberKey2(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+    function showError() {
+        if ($('#Id_patient').val() == null) { $('#Id_patientError').show(); }
+        if ($('#Id_departement').val() == null) { $('#Id_departementError').show(); }
+        if ($('#Mcon').val().length == 0) { $('#MconError').show(); }
+
+    }
+    function hideError() {
+
+        if ($('#Id_patient').val() != null) { $('#Id_patientError').hide(); }
+        if ($('#Id_departement').val() != null) { $('#Id_departementError').hide(); }
+        if ($('#Mcon').val().length != 0) { $('#MconError').hide(); }
+
+    }
+
+    function checkTaux() {
+        if ($('#taux_prise_en_charge').val() > 100) {
+            $('#taux_prise_en_chargeError').show();
+            $('#envoyer').hide();
+
+        }
+        else {
+            $('#taux_prise_en_chargeError').hide();
+            $('#envoyer').show();
+
+        }
+    }
+
+</script>
+
+
+<script>
+    // saisi automatique montant assurance
+    document.getElementById('taux_prise_en_charge').addEventListener('input', updateValueMontantAssuranceTaux);
+    document.getElementById('Mcon').addEventListener('input', updateValueMontantAssuranceMontantConsultation);
+    document.getElementById('MA').addEventListener('input', updateValueMontantAssuranceTaux);
+    document.getElementById('ME').addEventListener('input', updateValueMontantAssuranceTaux);
+
+
+    var listOptionADocteur = $('option.docteur');
+    for (let i = 0; i < listOptionADocteur.length; i++) {
+        listOptionADocteur[i].hidden = true
+    }
+
+
+    function chooseDepartement() {
+        if ($('#Id_patient').val() != null) { $('#Id_patientError').hide(); }
+        if ($('#Id_departement').val() != null) { $('#Id_departementError').hide(); }
+        if ($('#Mcon').val().length != 0) {$('#MconError').hide(); }
+        var id_departementChoose = document.getElementById('Id_departement').value;
+        var listDocteurs = @Html.Raw(Json.Encode(Model.Item1));
+        var listsDocteurPourLeDepartementChoisi = listDocteurs.filter(a => a.departementID == id_departementChoose)
+        $("#Id_docteur").empty()
+        $("#Id_docteur").append('<option value="0"> </option>');
+
+        listsDocteurPourLeDepartementChoisi.forEach(p => $("#Id_docteur").append('<option value="' + p.utilisateurID + '">' + p.prenom + p.nom + '</option>'))
+
+    }
+
+
+
+    function updateValueMontantAssuranceTaux(e) {
+        var montantConsultation = document.getElementById('Mcon').value;
+        document.getElementById('MA').value = Math.round((e.target.value * montantConsultation) / 100);
+        document.getElementById('ME').value = Math.round(montantConsultation - (e.target.value * montantConsultation) / 100);
+
+    }
+
+    function updateValueMontantAssuranceMontantConsultation(e) {
+        var taux_prise_en_charge = document.getElementById('taux_prise_en_charge').value;
+        document.getElementById('MA').value = Math.round((e.target.value * taux_prise_en_charge) / 100);
+        document.getElementById('ME').value = Math.round(e.target.value - (e.target.value * taux_prise_en_charge) / 100);
+
+
+    }
+
+</script>

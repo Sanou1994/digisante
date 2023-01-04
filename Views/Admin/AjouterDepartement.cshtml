@@ -1,0 +1,63 @@
+﻿@model digi_sante.Models.Departement
+
+@{
+    ViewBag.Title = "AjouterDepartement";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+
+<div class="col-12" style="margin-bottom:20px">
+    <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("ListeDepartement","Admin")">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-arrow-90deg-left"></i>&nbsp;Retour</a>
+</div>
+
+@using (Html.BeginForm("AjouterDepartement", "Admin", FormMethod.Post))
+{
+    <div class="container-fluid py-4 pb-2">
+        <div class="row">
+            <div class="col-12">
+                <div class="card p-4" style="margin:10px">
+                    <div class="card-header" style="border: solid; font-size: 30px; background-color: #03DAFC; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <div class=" shadow-primary border-radius-lg">
+                            <h3 class="text-capitalize  text-center" style="color:white">Nouveau Département </h3>
+                        </div>
+                    </div>
+                    <center> <p style="background-color: white; color: red">@ViewBag.sms</p></center>
+                    <center> <p style="background-color:white;color:green">@ViewBag.Message</p></center>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                    <input type="text" class="form-control" placeholder="nom département" value="@ViewBag.NameDepartement" style="background-color:whitesmoke" id="NameDepartement" name="NameDepartement" required>
+                                <p class="text-danger" id="NameError" style="font-size: 80%;font-weight: bold">Veuillez saisir le nom svp </p>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <button class="btn btn-primary" onclick="showError()" style="float:right; background-color:black"> Enregistrer</button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+<script type="text/javascript">
+    // $('#spinner').hide();
+    $('#NameError').hide();
+    function showError() {
+        if ($('#NameDepartement').val().length == 0) {
+            $('#NameError').show();
+        }
+       
+    }
+    function hideError() {
+
+        if ($('#NameDepartement').val() != null) { $('#NameError').hide(); }
+       
+
+    }
+
+    
+</script>

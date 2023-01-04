@@ -1,0 +1,91 @@
+﻿@model PrintResultat
+@{ 
+    ViewBag.Title = "-";
+    
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+    }
+
+@using digi_sante.Models;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+<body>
+    <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("voirResultat","Admin", new { No=@Model.No})">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i>&nbsp;Retour</a>
+
+    <center><input type="submit" onclick="printCertificate()" value="Imprimer" class="btn-blue" Text="Enregistrer" style="border:none;font-style:normal;background-color:black;color:white;margin-top:30px;height:60px; width:200px" Visible="true" /></center>
+
+    <br />
+    <div class="container-fluid py-4" style="background-color:white;width:90%;margin-left:5%;margin-right:5%">
+        <div class="row">
+            <div id="certificate" class="flex">
+                <div>
+                    <img src="~/images/note.png" style="width:12%" />
+
+                    <h2 style="float: right; color: green; font-family: Arial, Helvetica, sans-serif">@Model.NomStructure</h2>
+                </div>
+                <h3 class="text-capitalize  text-center" style="color:red">
+                    @ViewBag.sms
+                </h3>
+                <div class="card-body px-0 pb-3">
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-4 col-md-4 col-xl-4">
+                            <p style="width:100%"> <a style="color: black; font-size: 14px; font-weight: bold">Adresse: </a>@Model.structure_adresse </p>
+                            <p style="width:100%; margin-top:-20px"><a style="color: black; font-size: 14px; font-weight: bold">T&eacute;phone:</a>@Model.telephone_adresse </p>
+                            <p style="width:100%; margin-top:-20px"><a style="color: black; font-size: 14px; font-weight: bold">Email: </a>@Model.email_adresse </p>
+                        </div>
+                        <div class="col-lg-4 col-sm-4 col-md-4 col-xl-4">
+                            <p style="width:100%"> <a style="color: black; font-size: 14px; font-weight: bold"> Nom de L'analyste:</a> @Model.NomCompletDocteur</p>
+                            <p style="width: 100%; margin-top: -20px"> <a style="color: black; font-size: 14px; font-weight: bold"> Titre:</a>@Model.TitreDocteur</p>
+                        </div>
+                        <div class="col-lg-4 col-sm-4 col-md-4 col-xl-4">
+                            <p style="width:100%; margin-top:-20px"><a style="color: black; font-size: 14px; font-weight: bold"></a></p>
+                            <p style="width:100%; margin-top:-20px"><a style="color: black; font-size: 14px; font-weight: bold">Nom du patient</a>@Model.NomComplet</p>
+                            <p style="width:100%; margin-top:-20px"><a style="color: black; font-size: 14px; font-weight: bold">Date de Naissance:</a>@Model.DatePatient</p>
+                        </div>
+                    </div>                    
+                 
+                    <hr style="width:100%;text-align:left;margin-left:0;background-color:black">
+                    
+                    <div style="float: right; margin-top: 20px">
+                        <p style="width:100%"> <a style="color: black; font-size: 12px; font-weight: bold"> Nom du docteur traitant :</a>@Model.NomCompletDocteur</p>
+                    </div>
+
+                    <div> <center><h1 style="color: black; font-size: 30px; font-family: Arial, Helvetica, sans-serif; font-weight: bold ">@Model.NomAnalyse  </h1></center></div>
+                    <div class="panel-body" style="width: 100%">
+                        <div class="input-group input-group-outline mb-3">
+                            <p style="width: 100%; height: 35px; background-color: #34495E; margin-bottom: -2px; margin-left: -2px">
+                                <a style="color: white; font-size: 16px; font-weight: bold; width: 50%;">&nbsp;&nbsp;RESULTAT </a>
+                                <a style="color: white; font-size: 16px; font-weight: bold; float: right; width: 50%; ">COMMENTAIRE</a>
+                            </p>
+                            <textarea id="NoteResultat" name="NoteResultat" rows="10" cols="70" style="color: #1b3b65; font-family: Verdana; width: 50%; " disabled>@Model.DescriptionResultat</textarea>
+
+                            <textarea id="NoteCommentaire" name="NoteCommentaire" rows="10" cols="70" style="color: #1b3b65; font-family: Verdana; width: 50%;" disabled>@Model.DescriptionCommentaire</textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+                <div>
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</body>
+</html>
+<script>function printCertificate() {
+        const printContents = document.getElementById('certificate').innerHTML;
+        const originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+    }</script>

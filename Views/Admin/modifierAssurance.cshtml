@@ -1,0 +1,154 @@
+﻿@model digi_sante.Models.Assurance
+
+@{
+    ViewBag.Title = "modifier Assurance";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<div class="col-12" style="margin-bottom:50px">
+    <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("ListeAssurance","Admin")">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-arrow-90deg-left"></i>&nbsp;Retour</a>
+</div>
+@using (Html.BeginForm("ModifierAssurance", "Admin", FormMethod.Post))
+{
+    <div class="container-fluid py-4 pb-2">
+        <div class="row">
+            <div class="col-12">
+                <div class="card p-4" style="margin:10px">
+                    <div class="card-header" style="border: solid; font-size: 30px; background-color: #6d7fcc; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <div class=" shadow-primary border-radius-lg">
+                            <h3 class="text-capitalize  text-center">Modifier Assurance </h3>
+                        </div>
+                    </div>
+                    <center> <p style="background-color: white; color: red">@ViewBag.sms</p></center>
+                    <center> <p style="background-color:white;color:green">@ViewBag.Message</p></center>
+                    <div class="card-body">
+                        <div class="input-group input-group-outline mb-3">
+                            <label class="text" style="width:100%;">Nom de l'assurance</label>
+                            <input type="text" class="form-control" onchange="hideError()" id="Assurance" value="@ViewBag.Assurance" name="Assurance" required>
+                        </div>
+                        <p class="text-danger" id="AssuranceError" style="font-size: 80%;font-weight: bold">Veuillez saisir le nom de l'assurance svp </p>
+
+                        <div class="input-group input-group-outline mb-3">
+                            <label class="text" style="width:100%;">Adresse</label>
+                            <input type="text" value="@ViewBag.Adresse" class="form-control" name="Adresse">
+                            <input type="text" value="@ViewBag.No" class="form-control" name="No" hidden>
+
+                        </div>
+                        <div>
+                            <label class="text" style="width:100%">T&eacute;l&eacute;phone  <span id="NumeroFormat" style="color:red">Numero Format invalid</span></label>
+                            <p id="PhonePara" style="border-style: solid; border-width: 1px; border-radius: 5px; border-color: #DFE3E7 "><input name="PhoneT" id="PhoneT" onchange="showPhone()" onkeypress="return isNumberKey2(this.id);" type="tel" class="form-control " required></p>
+                        </div>
+                        <p class="text-danger" id="PhoneParaError" style="font-size: 80%;font-weight: bold">Veuillez saisir le numéro svp </p>
+
+                        <input name="Phone" id="Phone" type="text" class="form-control" hidden>
+                        <div class="input-group input-group-outline mb-3">
+                            <label class="=text" style="width:100%">Personne à contacter</label>
+                            <input type="text" value="@ViewBag.Contact" class="form-control" name="Contact">
+                        </div>
+                        <button class="btn btn-primary" type="submit" onclick="showError()" style="float:right; background-color:black"> Enregistrer</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script src="~/assets/js/core/popper.min.js"></script>
+<script src="~/assets/js/core/bootstrap.min.js"></script>
+<script src="~/assets/js/plugins/perfect-scrollbar.min.js"></script>
+<script src="~/assets/js/plugins/smooth-scrollbar.min.js"></script>
+
+
+<script>
+    $('#AssuranceError').hide();
+    $('#PhoneParaError').hide();
+
+    document.getElementById("NumeroFormat").style.display = 'none';
+    const phoneInputField = document.querySelector("#PhoneT");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+        autoPlaceholder: "off",
+        formatOnDisplay: false,
+        initialCountry: "sn",
+        nationalMode: true,
+        onlyCountries: ['dz', 'ao', 'bj', 'bw', 'bf', 'bi', 'cm', 'cv', 'cf', 'td', 'km', 'cg', 'cd', 'ci', 'dj', 'eg',
+            'gk', 'er', 'et', 'ga', 'gm', 'gh', 'gn', 'gw', 'ke', 'ls', 'lr', 'ly', 'mj', 'ml', 'mw', 'mr', 'mu', 'yt',
+            'ma', 'mz', 'na', 'ne', 'ng', 're', 'rw', 'st', 'sn', 'sc', 'sl', 'so', 'za', 'ss', 'sd', 'sz', 'tz',
+            'tg', 'tn', 'ug', 'eh', 'zm', ' zw'],
+       separateDialCode: true,
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+
+   if (@Html.Raw(Json.Encode(@ViewBag.Phone)) != null)
+   {
+      phoneInput.setNumber("+"+@Html.Raw(Json.Encode(@ViewBag.Phone)))
+      document.getElementById("Phone").value =@Html.Raw(Json.Encode(@ViewBag.Phone))
+
+   }
+
+    $('#PhoneT').on("countrychange", function (event) {
+
+        // Get the selected country data to know which country is selected.
+        var selectedCountryData = phoneInput.getSelectedCountryData();
+
+        // Get an example number for the selected country to use as placeholder.
+        newPlaceholder = intlTelInputUtils.getExampleNumber(selectedCountryData.iso2, true, intlTelInputUtils.numberFormat.INTERNATIONAL),
+
+            // Reset the phone number input.
+            phoneInput.setNumber("");
+
+        // Convert placeholder as exploitable mask by replacing all 1-9 numbers with 0s
+        mask = newPlaceholder.replace(/[1-9]/g, "0");
+
+        // Apply the new mask for the input
+        $(this).mask(mask);
+    });
+
+    function isNumberKey2(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+
+
+
+    function showPhone()
+    {
+        if ($('#Assurance').val() != null) { $('#AssuranceError').hide(); }
+        if ($('#PhoneT').val() != null) { $('#PhoneParaError').hide(); }
+
+        if (phoneInput.isValidNumber())
+        {
+            document.getElementById("NumeroFormat").style.display = 'none';
+            document.getElementById("PhonePara").style.borderColor = "#DFE3E7";
+            document.getElementById("Phone").value = phoneInput.getSelectedCountryData().dialCode + "" + document.getElementById("PhoneT").value;
+
+        }
+        else
+        {
+
+            document.getElementById("NumeroFormat").style.display = 'none';
+            document.getElementById("PhonePara").style.borderColor = "#DFE3E7";
+            document.getElementById("Phone").value = phoneInput.getSelectedCountryData().dialCode + "" + document.getElementById("PhoneT").value;
+        }
+
+    }
+    function showError() {
+        if ($('#Assurance').val().length == 0) {
+            $('#AssuranceError').show();
+        }
+        if ($('#PhoneT').val().length == 0) { $('#PhoneParaError').show(); }
+
+
+    }
+    function hideError() {
+
+        if ($('#Assurance').val() != null) { $('#AssuranceError').hide(); }
+        if ($('#PhoneT').val() != null) { $('#PhoneParaError').hide(); }
+
+
+    }
+
+</script>

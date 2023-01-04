@@ -1,0 +1,242 @@
+﻿@model AnalyseFirst
+@using digi_sante.Models
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+<!-- Nucleo Icons -->
+<link href="~/assets/css/nucleo-icons.css" rel="stylesheet" />
+<link href="~/assets/css/nucleo-svg.css" rel="stylesheet" />
+<!-- Font Awesome Icons -->
+<script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<!-- CSS Files -->
+<link id="pagestyle" href="~/assets/css/material-dashboard.css?v=3.0.0" rel="stylesheet" />
+
+<div class="container-fluid py-4" style="background-color:white;width:60%;float:right">
+    <div class="row">
+        <p><span class="p-2 m-3" style="background-color: #6d7fcc; font-weight: bold; color: white; font-size: 16px; border-radius: 50px 20px; "> Nom Complet du patient(e): @Model.nomCompletPatient </span></p>
+        <br />
+        <div class="col-12">
+            <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class=" shadow-primary border-radius-lg pt-4 pb-3" style="border: solid; background: #6d7fcc; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <h6 class="text-white text-capitalize ps-3">Analyse</h6>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+
+                        <table id="table" class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder " style="border-left-color:rgb(60,179,113);display:none"></th>
+
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder " style="border-left-color:rgb(60,179,113)"> #Nom Analyse</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder " style="">№ Consultation</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder " style="">№ Demande</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var a in Model.detail_analyses)
+                                {
+                                <tr>
+                                    <td>@Model.liste_analyses.Find(c => c.liste_analyseID == a.listeAnalyseID).nom</td>
+                                    <td>
+                                        @Model.Join
+                                    </td>
+                                    <td>@a.analyseID</td>
+                                </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <table id="tblCustomers" style="width:100%;display:none">
+                    <thead style="background-color:rgb(60,179,113);color:white" class="table align-items-center mb-0" role="rowgroup">
+                        <tr>
+                            <th style="color:white;border-left-color:rgb(60,179,113)"> #Description Ordonnance</th>
+                            <th style="color:white;display:none">№ Consulation</th>
+                            <th style="color:white;display:none">№ Ordonnance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="mb-0 text-sm">
+
+                                        <input type="text" id="Ordonnance" class="mb-0 text-sm" style="width:100%;color:black;" />
+                                    </h6>
+
+                                </div>
+
+
+
+                            </td>
+                            <td style="display:none">
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="mb-0 text-sm">
+                                        <input type="text" id="TEXTBOX_ID2" class="mb-0 text-sm" style="width:100%;color:black;" value="@Model.consultationID" readonly />
+                                    </h6>
+
+                                </div>
+                            </td>
+                            <td style="display:none">
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="mb-0 text-sm">
+                                        <input type="text" id="TEXTBOX_ID3" class="mb-0 text-sm" style="width:100%;color:black;" value="@Model.NumberAnalyse " readonly />
+                                    </h6>
+
+                                </div>
+                            </td>
+                            <td style="display:none">
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="mb-0 text-sm">
+                                        <input type="text" id="TEXTBOX_ID3" class="mb-0 text-sm" style="width:100%;color:black;" value="@Model.suis" readonly />
+                                    </h6>
+
+                                </div>
+                            </td>
+
+
+                            <td>
+                                <center>
+                                    <button id="btnAdd" type="button" class="btn btn-primary" style="border:none;background-color:black;width:100%">
+                                        Ajouter
+                                    </button>
+                                </center>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br />
+                <center>
+                    <a href="@Url.Action("PrintAnalyse","Admin", new {pres=Model.NumberAnalyse})" target="_blank"><img src="~/images/Print1.jpg" style="width:100px" /> </a>
+                </center>
+
+              
+                    <center><input type="submit" value="Terminer" onclick="window.location.reload()" class="btn-blue" Text="Terminer" style="border:none;font-style:normal;background-color:black;color:white;margin-top:30px;height:60px; width:60%" Visible="true" /></center>
+                
+
+                <br />
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script type="text/javascript">
+    $("body").on("click", "#btnAdd", function () {
+
+
+
+
+        var chatinput1 = document.getElementById("Ordonnance").value;
+        var chatinput2 = document.getElementById("TEXTBOX_ID2").value;
+        var chatinput3 = document.getElementById("TEXTBOX_ID3").value;
+        if (chatinput1 == "" || chatinput1.length == 0 || chatinput1 == null || chatinput2 == "" || chatinput2.length == 0 || chatinput2 == null || chatinput3 == "" || chatinput3.length == 0 || chatinput3 == null) {
+
+            alert('Veuillez remplir les champs vides');
+        }
+        else {
+
+
+
+            var textBox1 = $("#Ordonnance");
+            var textBox2 = $("#TEXTBOX_ID2");
+            var textBox3 = $("#TEXTBOX_ID3");
+
+
+
+            var tBody = $("#table > TBODY")[0];
+
+            //Add Row.
+            var row = tBody.insertRow(-1);
+
+
+            //Add TextBox1 cell.
+            cell = $(row.insertCell(-1));
+            cell.html(textBox1.val());
+            //Add TextBox2 cell.
+            cell = $(row.insertCell(-1));
+            cell.html(textBox2.val());
+            //Add TextBox2 cell.
+            cell = $(row.insertCell(-1));
+            cell.html(textBox3.val());
+
+
+            //Add Button cell.
+            cell = $(row.insertCell(-1));
+            var btnRemove = $("<input />");
+            btnRemove.attr("type", "button");
+            btnRemove.attr("onclick", "Remove(this);");
+            btnRemove.attr("style", "background-color:green;color:white;font-size:12px;border:none;width:100%;height:28px;text-align:center");
+            btnRemove.val("Retirer");
+            cell.append(btnRemove);
+
+              var things = [
+
+                  { description: document.getElementById('Ordonnance').value, id_consultation:@ViewBag.Cons, id_ordonnance: @ViewBag.NumberOrdo, id_patient:@ViewBag.Markus, id_user:@ViewBag.suis,},];
+            $.post('@Url.Action("PassThings")', { things: things, data:@ViewBag.NumberOrdo, structure: @ViewBag.str },
+                    function () {
+                        $('#result').html('"PassThings()" successfully called.');
+                    }).fail(function (xhr, status, error) {
+                        //Ajax request failed.
+                        var errorMessage = xhr.status + ': ' + xhr.statusText
+
+                    });
+
+
+        }
+
+    });
+
+     function Remove(button) {
+        //Determine the reference of the Row using the Button.
+        var row = $(button).closest("TR");
+        var name = $("TD", row).eq(0).html();
+
+        var table = $("#table")[0];
+
+        //Delete the Table row using it's Index.
+
+        table.deleteRow(row[0].rowIndex);
+
+          //Determine the reference of the Row using the Button.
+        var row = $(button).closest("TR");
+        var name = $("TD", row).eq(0).html();
+
+        var table = $("#table")[0];
+
+        //Delete the Table row using it's Index.
+
+        table.deleteRow(row[0].rowIndex);
+        var table = document.getElementById("table");
+        sumVal = 0;
+         var customerId = row.find("td").eq(0).text();
+            var customerId1 = row.find("td").eq(1).text();
+            var customerId2 = row.find("td").eq(2).text();
+
+
+                                               $.ajax({
+                                                type: "post", // here is your problem
+                                                url: "@Url.Action("DeleteData", "Admin")",
+                                                   data: { IdData: customerId, IdData1: customerId1, IdData2: customerId2},
+                                                ajaxasync: true,
+                                                success: function () {
+
+
+
+                                                },
+
+                                            });
+
+
+
+    }
+</script>

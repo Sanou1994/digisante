@@ -1,0 +1,373 @@
+﻿@model Tuple<PagedList.IPagedList<digi_sante.Models.PaiementPatient>, List<digi_sante.Models.Consultation>>
+
+@{
+    ViewBag.Title = "Liste Paiement";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+
+}
+@using PagedList.Mvc;
+
+<style>
+    table {
+        background: #f5f5f5;
+        border-collapse: separate;
+        box-shadow: inset 0 1px 0 #fff;
+        font-size: 12px;
+        line-height: 24px;
+        text-align: left;
+        width: 800px;
+    }
+
+    th {
+        background: linear-gradient(black,black);
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        box-shadow: inset 0 1px 0 black;
+        color: #fff;
+        font-weight: bold;
+        padding: 10px 15px;
+        position: relative;
+        text-shadow: 0 1px 0 #000;
+    }
+
+        th:after {
+            background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.08));
+            content: '';
+            display: block;
+            height: 25%;
+            left: 0;
+            margin: 1px 0 0 0;
+            position: absolute;
+            top: 25%;
+            width: 100%;
+        }
+
+        th:first-child {
+            border-left: 1px solid #777;
+            box-shadow: inset 1px 1px 0 black;
+        }
+
+        th:last-child {
+            box-shadow: inset -1px 1px 0 black;
+        }
+
+    td {
+        border-right: 1px solid #fff;
+        border-left: 1px solid #e8e8e8;
+        border-top: 1px solid #fff;
+        border-bottom: 1px solid #e8e8e8;
+        transition: all 300ms;
+    }
+
+        td:first-child {
+            box-shadow: inset 1px 0 0 #fff;
+        }
+
+        td:last-child {
+            border-right: 1px solid #e8e8e8;
+            box-shadow: inset -1px 0 0 #fff;
+        }
+
+    tr {
+    }
+
+        tr:nth-child(odd) td {
+            background: #f1f1f1;
+        }
+
+        tr:last-of-type td {
+            box-shadow: inset 0 -1px 0 #fff;
+        }
+
+            tr:last-of-type td:first-child {
+                box-shadow: inset 1px -1px 0 #fff;
+            }
+
+            tr:last-of-type td:last-child {
+                box-shadow: inset -1px -1px 0 #fff;
+            }
+
+    tbody:hover td {
+        color: transparent;
+        text-shadow: 0 0 3px #aaa;
+    }
+
+    tbody:hover tr:hover td {
+        color: #444;
+        text-shadow: 0 1px 0 #fff;
+    }
+
+
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+<div class="container-fluid py-4" style="margin-top:-40px">
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card my-4">
+
+                <div class="card-header">
+                    <div class=" shadow-primary border-radius-lg pt-4 pb-3" style="border: solid; font-size: 30px; background-color: #03DAFC; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        @if (ViewBag.sms != null)
+                        {
+                            <h3 class="text-capitalize  text-center" style="color:white">
+                                @ViewBag.sms
+                            </h3>
+
+                        }
+                        else
+                        {
+                            <h3 class="text-capitalize  text-center" style="color:white">
+                                @ViewBag.message
+
+                            </h3>
+
+                        }
+                    </div>
+                </div>
+                <center> <p style="background-color:white;color:red">@TempData["lockListePaiement"]</p></center>
+
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+
+                        <center>
+                            <div class="row" style="width:100%; margin-bottom:10px">
+                                <div class="col-lg-8 col-sm-8 col-md-8 col-xl-8">
+                                    @using (Html.BeginForm("ListePaiement", "Admin", FormMethod.Get))
+                                    {
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <a><input type="text" name="searching" class="form-control" style="background-color:whitesmoke;width:96%" placeholder=" Chercher " /></a>
+                                            </div>
+                                            <div class="col-6">
+                                                <button class="btn btn-primary" style="float: left; background-color: #03DAFC; "> <span class="fa fa-search"></span>Rechercher</button>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="col-lg-2 col-sm-2 col-md-2 col-xl-2">
+                                    <a href="@Url.Action("ListePaiement","Admin")" class="btn btn-primary" style="float: right; background-color: #03DAFC; width: 100%">  Initialiser</a>
+                                </div>
+                                <div class="col-lg-2 col-sm-2 col-md-2 col-xl-2">
+                                    <a href="@Url.Action("AjouterPaiement","Admin" , new {No=-1})" class="btn btn-primary" style="float: right; background-color: #03DAFC; width: 100%">Ajouter </a>
+                                </div>
+                            </div>
+                        </center>
+
+                        @if (Model.Item1.Count < 1)
+                        {
+                            <center>
+                                <h2>Aucun paiement disponible</h2>
+                            </center>
+                        }
+                        else
+                        {
+                            <table class="table align-items-center mb-0" id="tableID">
+                                <thead>
+                                    <tr>
+                                        <th style="display:none"></th>
+                                        <th>Nom & Pr&eacute;nom </th>
+                                        <th>Département</th>
+                                        <th>Date paiement</th>
+                                        <th>Montant Consultation</th>
+                                        <th>Taux(Prise en Charge)</th>
+                                        <th>Espece</th>
+                                        <th>Montant Assurance</th>
+                                        <th>Assurance</th>
+                                        <th>Lettre Prise En Charge</th>
+                                        <th>Reçu</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var a in Model.Item1)
+                                    {
+                                        <tr>
+                                            <td style="color:black">
+                                                @a.Patient
+                                            </td>
+                                            <td style="color:black">
+                                                @a.departement
+                                            </td>
+                                            <td style="color:black">
+                                                @a.date_paiement.ToString().Substring(0, 10)
+                                            </td>
+                                            <td style="color:black">
+                                                @a.montant_consultation FCFA
+                                            </td>
+                                            <td style="color:black">
+                                                @a.taux_prise_en_charge %
+                                            </td>
+                                            <td style="color:black">
+                                                @a.montant_espece  FCFA
+                                            </td>
+                                            <td style="color:black">
+                                                @a.montant_assurance FCFA
+                                            </td>
+                                            <td style="color:black">
+                                                @a.assurance
+
+                                            </td>
+                                            <td style="color:black">
+                                                @if (a.url_lettre_prise_en_charge != null)
+                                                {
+                                                    <a href="@Url.Action("voirPriseEncharge","Admin",new {paiementID=a.paiementID})" target="_blank">
+                                                        <span class="fa fa-file-pdf" style="font-size:48px;color:red"> </span>
+                                                    </a>
+
+                                                }
+                                                else
+                                                {
+                                                    <span>-</span>
+                                                }
+
+
+                                            </td>
+                                           
+                                            <td>
+                                                <a href="@Url.Action("PrintPaiement", "Admin",new { No=a.paiementID})" class="btn btn-primary" style="float: right; background-color: #6d7fcc; width: 100px;">Reçu</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                            <center>
+                                <div class="pagination" style="width:200px;margin-right:2.5%;margin-left:2.5%">
+                                    @Html.PagedListPager(Model.Item1, page => Url.Action("ListePaiement", new { page, searching = @ViewBag.searching }) + "#Product", new PagedListRenderOptions { MaximumPageNumbersToDisplay = 2, ContainerDivClasses = new List<string> { "MenuTab", "MenuTab" }, LiElementClasses = new List<string> { "pagination-bar", "pagination-bar" }, DelimiterBetweenPageNumbers = "-" })
+                                </div>
+                            </center>
+                        }
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+    <div id="id01" class="modal container-fluid ">
+        <div class="container">
+            <center>
+                <div class="card" style="width:70%;background-color:white;margin-top:10px ;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                    <div class="card-header shadow-primary border-radius-lg" style="border: solid; background: #a5c422; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <h6 class="text-white text-capitalize ps-3">Observation Consultation</h6>
+                    </div>
+                    <div class="card-body px-0 p-4">
+                        <br />
+                        <br />
+                        <div class="row p-4">
+                            <div class="col-lg-12">
+                                <div class="input-group input-group-outline mb-3">
+                                    <textarea class="p-2" id="Ob" name="Ob" rows="10" cols="70" style="color: #1b3b65; font-family: Verdana; width: 100%; " disabled>@ViewBag.Observation</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <a class="btn btn-primary" onclick="document.getElementById('id01').style.display='none'" style="float:right; background-color:black"> Retour</a>
+                        </div>
+                    </div>
+                </div>
+            </center>
+
+        </div>
+    </div>
+
+    <script type="text/javascript">
+    function voirObservation(id) {
+  var data = @Html.Raw(Json.Encode(@Model.Item2.ToList()));
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].id_consultation == id) {
+                document.getElementById('id01').style.display = 'block'
+                if (data[i].observation == "") {
+                    document.getElementById('Ob').innerText = "Aucune observation";
+
+                } else {
+                    document.getElementById('Ob').innerText = data[i].observation;
+
+                }
+            }
+
+        }
+    }
+    </script>
+    <script>
+
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+
+        today = yyyy + '-' + mm + '-' + dd;
+        document.getElementById("FinDebut").setAttribute("max", today);
+        document.getElementById("DateDebut").setAttribute("max", today);
+
+        // Recuper la date de naissance dans le champ
+        // Recuper la date de naissance dans le champ
+
+        var FinDebut = document.getElementById("FinDebut").getAttribute('value');
+        document.getElementById("FinDebut").value = new Date(Number(FinDebut.split('/')[2]), Number(FinDebut.split('/')[1]) - 1, Number(FinDebut.split('/')[0])).toJSON().slice(0, 10)
+
+
+        var date = document.getElementById("DateDebut").getAttribute('value');
+        document.getElementById("DateDebut").value = new Date(Number(date.split('/')[2]), Number(date.split('/')[1]) - 1, Number(date.split('/')[0])).toJSON().slice(0, 10)
+
+
+        function hideSpaceWord() {
+            document.getElementById('searching').value = document.getElementById('searching').value.split(' ').join('')
+            console.log(document.getElementById('searching').value)
+        }
+    </script>

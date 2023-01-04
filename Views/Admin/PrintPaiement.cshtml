@@ -1,0 +1,151 @@
+﻿@model Tuple<RecuPaiement, Patient, Paiement,List < Departement >>
+ @{   ViewBag.Title = "PrintPaiement";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+
+}
+@using digi_sante.Models;
+
+<!DOCTYPE html>
+<html lang="en" style="background-color:white">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+<body>
+    @if (@ViewBag.previousPage == "RapportJournalierCaisse")
+    {
+        <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("RapportJournalierCaisse","Admin")">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i>&nbsp;Retour</a>
+    }
+    else
+    {
+        <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("Paiement","Admin")">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i>&nbsp;Retour</a>
+
+    }
+
+    <center><input type="submit" onclick="printCertificate()" value="Imprimer" class="btn-blue" Text="Enregistrer" style="border:none;font-style:normal;background-color:black;color:white;margin-top:30px;height:60px; width:200px" Visible="true" /></center>
+
+    <br />
+    <div class="container-fluid py-4" style="background-color:white;width:70%;">
+        <div class="row">
+
+            <div id="certificate" class="flex">
+                <div class="card-body px-0 pb-3">
+                    <div style="float:left;margin-top:0px">
+                        <img src="~/images/hosto.png" style="width:25%" />
+                    </div>
+                    <div style="float: right; margin-top:-0px">
+                        <p style="width:100%"> <a style="color:green; font-size: 45px; font-weight: bold">Reçu  </p>
+
+                    </div>
+                </div>
+
+                <br /><br />
+                <hr style="width:100%;text-align:left;margin-left:0;background-color:green; color:green; border-width:12px; height:3px">
+                <div class="card-body px-0 pb-4">
+                    <div style="float:left;margin-top:20px">
+                        <p style="width: 100%; "> <a style="color: black; font-size: 16px; font-weight: bold; ">Hopital : &nbsp;</a>@Model.Item1.structure.nom </p>
+                        <p style="width: 100%; margin-top: -22px "> <a style="color: black; font-size: 16px; font-weight: bold; ">Département : &nbsp;</a>@Model.Item4.Where(a => a.departementID == Model.Item3.departementID).Select(b => b.nom).FirstOrDefault() </p>
+                        <p style="width: 100%; margin-top: -22px"> <a style="color: black; font-size: 14px; font-weight: bold; ">Adresse : &nbsp;</a>@Model.Item1.structure.adresse</p>
+                        <p style="width: 100%; margin-top: -18px"><a style="color: black; font-size: 14px; font-weight: bold; margin-top: -18px">T&eacute;léphone:&nbsp;</a>@Model.Item1.structure.telephone</p>
+                        <p style="width: 100%; margin-top: -18px"><a style="color: black; font-size: 14px; font-weight: bold">Email:&nbsp;</a>@Model.Item1.structure.email</p>
+                    </div>
+                </div>
+                <br /><br />
+                <hr style="width:100%;text-align:left;margin-left:0;background-color:black">
+
+                <div class="card-body px-0 pb-4" style=" margin-top: 20px; width: 100%; align-content:center;">
+                    <div style="float: left; margin: 10px; padding: 20px; padding-right: 40px; background-color: #F1F5F8 ">
+                        <p style="width: 100%; color: black; font-size: 16px; font-weight: bold">Details paiement:</p>
+                        <p style="width: 100%; margin-top: -16px "><a style="color: black; font-size: 14px; font-weight: bold">Date de Paiement:&nbsp;</a>@Model.Item3.date_paiement</p>
+                        <p style="width: 100%; margin-top: -18px"><a style="color: black; font-size: 14px; font-weight: bold"> Numero du Patient:&nbsp;</a>@Model.Item2.patientID</p>
+                        <p style="width: 100%; margin-top: -18px"><a style="color: black; font-size: 14px; font-weight: bold"> Emie par:&nbsp;</a>@ViewBag.FullName </p>
+                        <p style="width:100%; margin-top:-18px"><a style="color: black; font-size: 14px; font-weight: bold">Numero de Facture:&nbsp;</a>@Model.Item3.paiementID</p>
+
+                    </div>
+
+                    <div style="float: right; margin: 10px; padding: 20px; padding-right: 40px ">
+                        <p style="width: 100%; color: black; font-size: 16px; font-weight: bold">Information  Patient : </p>
+                        <p style="width: 100%; margin-top: -16px"> <a style="color: black; font-size: 14px; font-weight: bold"> Nom Complet patient: </a> @Model.Item2.prenom  @Model.Item2.nom</p>
+                        <p style="width: 100%; margin-top: -18px"><a style="color: black; font-size: 14px; font-weight: bold">T&eacute;léphone:&nbsp;</a>@Model.Item2.telephone_patient</p>
+                        <p style="width: 100%; margin-top: -18px"><a style="color: black; font-size: 14px; font-weight: bold">Adresse patient:&nbsp; </a>@Model.Item2.adresse</p>
+                    </div>
+                    <br /><br /> <br /> <br />
+                </div>
+
+
+
+                <br /> <br /><br /> <br />
+
+                <div class="panel-body" style="width: 100%; margin-top: 30px">
+                    <div class="input-group input-group-outline mb-3">
+
+                        <p style="width: 100%; margin-bottom: -2px; margin-left: -2px; margin-top: -18px">
+                            <a style="color: black; font-size: 16px; font-weight: bold; width: 100%; margin-top: 28px">Informations additionnelles </a>
+                            <hr style="width:100%;text-align:left;margin-left:0;background-color:green; color:green; border-width:12px; height:3px">
+
+                    </div>
+
+
+
+                    <div class=" px-0 pb-2" style="background-color:white">
+                        <div class="table-responsive p-0 " style="background-color:white">
+                            <table id="table" class="table align-items-center mb-0 " style="border-color:whitesmoke;border-style:ridge">
+                                <thead>
+                                    <tr style="color: black; ">
+                                        <td>Description</td>
+                                        <td>Total TTH</td>
+                                        <td>Total TVA(18%)</td>
+                                        <td>Total TTC</td>
+                                        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+
+                                </thead>
+                                <tbody>
+
+                                    <tr>
+                                        <td>Consultation</td>
+                                        <td id="tth"></td>
+                                        <td id="tva"></td>
+                                        <td>@Model.Item3.montant_consultation F CFA</td>
+                                        <td></td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                            <hr style="width:100%;text-align:left;margin-left:0;background-color:green; border-width:12px; margin-top:-3px; height:13px">
+                            <div style="width:30%; float:right">
+                                <p style="color: green; font-weight: bold">Montant Consultation :<a style="color:black">@Model.Item3.montant_consultation  CFA</a></p>
+                                <p style="color: green; font-weight: bold">Montant Assurance :<a style="color:black">@Model.Item3.montant_assurance  CFA</a></p>
+                                <p style="color: green; font-weight: bold">Montant à payer :<a style="color:black">@Model.Item1.montantapayer  CFA</a></p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+</body>
+</html>
+<script>
+    document.getElementById('tva').innerText =@Model.Item1.Tva +" F CFA"
+    /**/
+    document.getElementById('tth').innerText =@Model.Item1.Tth + " F CFA"
+    /**/
+
+    function printCertificate() {
+        const printContents = document.getElementById('certificate').innerHTML;
+        const originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+    }
+</script>
+

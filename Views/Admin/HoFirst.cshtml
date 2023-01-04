@@ -1,0 +1,50 @@
+﻿@model  HoFirst
+@using digi_sante.Models;
+<div class="container">
+    <div class="row" style="background-color:white;">
+        <div class="panel panel-primary" style="margin-top:10px ;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <div class="panel-heading mt-n4 mx-3" style="border: solid; background: #6d7fcc; color: white; height: 50px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                <center>
+                    <a style="color:white;font-weight:bold">Details Hospitalisation № @Model.techno.hospitalisationID | Consultation № @Model.techno.consultationID </a>
+                </center>
+            </div>
+            <br />           
+            <br />
+            <div class="panel-body">
+                <div class="input-group input-group-outline mb-3">
+                    <label class="text" style="width:100%">Date d'entr&eacute;e</label>
+                    <input type="text" class="form-control" value="@Model.techno.date_entree.ToString().Substring(0, 10)" name="Name" required readonly>
+                </div>
+                @if (Model.techno.date_sortie != null)
+                {
+                    <div class="input-group input-group-outline mb-3">
+                        <label class="text" style="width:100%">Date de Sortie</label>
+                        <input type="text" value="@Model.techno.date_sortie.ToString().Substring(0, 10)" class="form-control" name="Surname" required readonly>
+                    </div>
+                }
+                else
+                {
+                    <div class="input-group input-group-outline mb-3">
+                        <label class="text" style="width:100%">Date de Sortie</label>
+                        <input type="text" value="@Model.techno.date_sortie" class="form-control" name="Surname" required readonly>
+                    </div>
+                }
+
+                <div class="input-group input-group-outline mb-3">
+                    <label class="text" style="width:100%">Num&eacute;ro du lit</label>
+                    <input type="text" class="form-control" value="@Model.techno.numero_lit" name="lit" required readonly>
+                </div>
+                <div class="input-group input-group-outline mb-3">
+                    <label class="text" style="width:100%">Num&eacute;ro de la salle</label>
+                    <input type="text" class="form-control" value="@Model.techno.numero_salle" name="salle" required readonly>
+                </div>
+
+
+               
+                    <button class="btn btn-primary" onclick="window.location.reload()" type="submit" style="float:right; background-color:black"> Retour</button>
+                
+
+            </div>
+        </div>
+    </div>
+</div>

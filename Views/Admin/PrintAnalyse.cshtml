@@ -1,0 +1,111 @@
+﻿@model PrintAnalyse
+@{
+    ViewBag.Title = "-";
+
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+    }
+@using digi_sante.Models
+<!DOCTYPE html>
+<html lang="en" style="background-color:white">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+<body>
+    <div class="col-12">
+        <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("Consultation","Admin")">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i>&nbsp;Retour</a>
+    </div>
+    <center><input type="submit" onclick="printCertificate()" value="Imprimer" class="btn-blue" Text="Enregistrer" style="border:none;font-style:normal;background-color:black;color:white;margin-top:30px;height:60px; width:200px" Visible="true" /></center>
+
+    <br />
+    <div class="container-fluid py-4" style="background-color:white;width:90%;margin-left:5%;margin-right:5%">
+        <div class="row">
+
+            <div id="certificate" class="flex">
+                <div>
+                    <img src="~/images/note.png" style="width:12%" />
+
+                    <h2 style="float: right; color: green; font-family: Arial, Helvetica, sans-serif">@Model.nom_structure</h2>
+                </div>
+                <div class="card-body px-0 pb-3">
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-4 col-md-4 col-xl-4">
+                            <p style="width:100%"> <a style="color: black; font-size: 14px; font-weight: bold">Adresse : &nbsp;</a>@Model.adresse_structure</p>
+                            <p style="width: 100%; margin-top: -18px"><a style="color: black; font-size: 14px; font-weight: bold">T&eacute;phone:&nbsp;</a>@Model.telephone_structure</p>
+                            <p style="width: 100%; margin-top: -18px"><a style="color: black; font-size: 14px; font-weight: bold">Email:&nbsp; </a>@Model.email_structure</p>
+                        </div>
+                        <div class="col-lg-4 col-sm-4 col-md-4 col-xl-4">
+                            <p style="width: 100%; "> <a style="color: black; font-size: 14px; font-weight: bold"> Titre:&nbsp;</a>@Model.titre_docteur </p>
+                            <p style="width: 100%; margin-top: -18px"> <a style="color: black; font-size: 14px; font-weight: bold">Traitant :&nbsp;</a>@Model.FullNameDocteur</p>
+                        </div>
+                        <div class="col-lg-4 col-sm-4 col-md-4 col-xl-4">
+                            <p style="width:100%; margin-top:-20px"><a style="color: black; font-size: 14px; font-weight: bold">Date de Naissance:&nbsp;</a>@Model.date_naissance_patient.Substring(0,10)</p>
+                            <p style="width:100%; margin-top:-20px"><a style="color: black; font-size: 14px; font-weight: bold">Nom du patient :&nbsp;</a>@Model.FullNamePatient</p>
+                            <p style="width:100%;margin-top:-20px"><a style="color: black; font-size: 14px; font-weight: bold"> Adresse Patient :&nbsp;</a>@Model.adresse_patient</p>
+                        </div>
+                    </div>                       
+                                 
+                    <hr style="width:100%;text-align:left;margin-left:0;background-color:black">
+                    <div>
+
+                        <h6 style="color: black; font-size: 14px; font-family: Arial, Helvetica, sans-serif; line-height:10px ">Numero Consultation :&nbsp;  @Model.NumeroConsultation</h6>
+                        @foreach (var c in Model.detail_analyses)
+                        {
+                <h6 style="color: black; font-size: 14px; font-family: Arial, Helvetica, sans-serif; ">Numero Demande :&nbsp;   @c.detail_analyseID</h6>}
+
+
+                    </div>
+                    <br />
+                    <div class="panel-body" style="width: 100%">
+                        <div class="input-group input-group-outline mb-3">
+                            <p style="width: 100%; height: 35px; background-color: #34495E; margin-bottom: -2px; margin-left: -2px">
+                                <a style="color: white; font-size: 16px; font-weight: bold; width: 100%;">LISTE DES ANALYSES A FAIRE </a>
+
+                            </p>
+
+                        </div>
+
+
+                        <div class=" px-0 pb-2" style="background-color:white">
+                            <div class="table-responsive p-0 " style="background-color:white">
+                                <table id="table" class="table align-items-center mb-0 " style="border-color:whitesmoke;border-style:ridge">
+                                    <thead>
+                                        <tr>
+                                            <th>#NOM ANALYSE</th>
+                                            <th></th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var c in Model.detail_analyses)
+                                        {
+
+                            <tr>
+                                <td>
+                                    @Model.liste_analyses.Find(a => a.liste_analyseID == c.listeAnalyseID).nom
+                                </td>
+
+
+                            </tr>
+}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+</body>
+</html>
+<script>
+    function printCertificate() {
+        const printContents = document.getElementById('certificate').innerHTML;
+        const originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+    }
+</script>

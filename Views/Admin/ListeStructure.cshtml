@@ -1,0 +1,328 @@
+﻿@model PagedList.IPagedList<Structure>
+@{
+    ViewBag.Title = "Laboratoires Affiliées";
+
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+@using PagedList.Mvc;
+@using digi_sante.Models;
+
+<style>
+    table {
+        background: #f5f5f5;
+        border-collapse: separate;
+        box-shadow: inset 0 1px 0 #fff;
+        font-size: 12px;
+        line-height: 24px;
+        text-align: left;
+        width: 800px;
+    }
+
+    th {
+        background: linear-gradient(black,black);
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        box-shadow: inset 0 1px 0 black;
+        color: #fff;
+        font-weight: bold;
+        padding: 10px 15px;
+        position: relative;
+        text-shadow: 0 1px 0 #000;
+    }
+
+        th:after {
+            background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.08));
+            content: '';
+            display: block;
+            height: 25%;
+            left: 0;
+            margin: 1px 0 0 0;
+            position: absolute;
+            top: 25%;
+            width: 100%;
+        }
+
+        th:first-child {
+            border-left: 1px solid #777;
+            box-shadow: inset 1px 1px 0 black;
+        }
+
+        th:last-child {
+            box-shadow: inset -1px 1px 0 black;
+        }
+
+    td {
+        border-right: 1px solid #fff;
+        border-left: 1px solid #e8e8e8;
+        border-top: 1px solid #fff;
+        border-bottom: 1px solid #e8e8e8;
+        transition: all 300ms;
+    }
+
+        td:first-child {
+            box-shadow: inset 1px 0 0 #fff;
+        }
+
+        td:last-child {
+            border-right: 1px solid #e8e8e8;
+            box-shadow: inset -1px 0 0 #fff;
+        }
+
+    tr {
+    }
+
+        tr:nth-child(odd) td {
+            background: #f1f1f1;
+        }
+
+        tr:last-of-type td {
+            box-shadow: inset 0 -1px 0 #fff;
+        }
+
+            tr:last-of-type td:first-child {
+                box-shadow: inset 1px -1px 0 #fff;
+            }
+
+            tr:last-of-type td:last-child {
+                box-shadow: inset -1px -1px 0 #fff;
+            }
+
+    tbody:hover td {
+        color: transparent;
+        text-shadow: 0 0 3px #aaa;
+    }
+
+    tbody:hover tr:hover td {
+        color: #444;
+        text-shadow: 0 1px 0 #fff;
+    }
+
+
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+
+<div class="container-fluid p-4" style="margin-top:-30px">
+    <div class="row">
+        <div class="col-12">
+            <div class="card my-4">
+
+                <div class="card-header">
+                    <div class=" shadow-primary border-radius-lg pt-4 pb-3" style="border: solid; font-size: 30px; background-color: #03DAFC; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        @if (ViewBag.sms != null)
+                        {
+                            <h3 class="text-capitalize  text-center" style="color:white">
+                                @ViewBag.sms
+                            </h3>
+
+                        }
+                        else
+                        {
+                            <h3 class="text-capitalize  text-center" style="color:white">
+                                @ViewBag.message
+
+                            </h3>
+
+                        }
+                    </div>
+                </div>
+                <center> <p style="background-color:white;color:green">@TempData["lockStructure"]</p></center>
+
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <center style="margin-bottom:5px">
+                            <div class="row" style="width:100%; margin-bottom:10px">
+                                <div class="col-lg-8 col-sm-8 col-md-8 col-xl-8">
+                                    @using (Html.BeginForm("ListeStructure", "Admin", FormMethod.Get))
+                                    {
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <a><input type="text" name="searching" class="form-control" style="background-color:whitesmoke;width:96%" placeholder=" Chercher  patient" /></a>
+                                            </div>
+                                            <div class="col-6">
+                                                <button class="btn btn-primary" style="float: left; background-color: #03DAFC; "> <span class="fa fa-search"></span>Rechercher</button>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="col-lg-2 col-sm-2 col-md-2 col-xl-2">
+                                    <a href="@Url.Action("ListeStructure","Admin")" class="btn btn-primary" style="float: right; background-color: #03DAFC; width: 100%">  Initialiser</a>
+                                </div>
+                                <div class="col-lg-2 col-sm-2 col-md-2 col-xl-2">
+                                    <a href="@Url.Action("AjouterPatient","Admin")" class="btn btn-primary" style="float: right; background-color: #03DAFC; width: 100%">Ajouter </a>
+                                </div>
+                            </div>
+                        </center>
+
+                        @if (Model.Count < 1)
+                        {
+                            <center>
+                                <h2>Aucune structure affiliée disponible</h2>
+                                <img src="~/images/dossierVide.png" style="width:30%;" />
+                            </center>
+                        }
+                        else
+                        {
+                            <div class="table-responsive p-0">
+                                <table class="table align-items-center mb-0" id="tableID">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-uppercase text-white text-xxs font-weight-bolder ps-2">Nom  </th>
+                                            <th class="text-uppercase text-white text-xxs font-weight-bolder  ps-2">Adresse</th>
+                                            <th class="text-uppercase text-white text-xxs font-weight-bolder  ps-2">
+                                                Email
+                                            </th>
+                                            <th class="text-uppercase text-white text-xxs font-weight-bolder  ps-2">
+                                                T&eacute;l&eacute;phone
+                                            </th>
+                                            <th class="text-uppercase text-white text-xxs font-weight-bolder  ps-2">Type</th>
+                                            <th class="text-uppercase text-white text-xxs font-weight-bolder  ps-2">Date Creation</th>
+                                            <th class="text-uppercase text-white text-xxs font-weight-bolder  ps-2">Modifier</th>
+                                            <th class="text-uppercase text-white text-xxs font-weight-bolder  ps-2">bloquer</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var a in Model)
+                                        {
+                                        <tr>
+                                            <td><h6 class="mb-0 text-sm"> @a.nom </h6></td>
+                                            <td><h6 class="mb-0 text-sm"> @a.adresse </h6></td>
+                                            <td><h6 class="mb-0 text-sm"> @a.email </h6></td>
+                                            <td><h6 class="mb-0 text-sm"> @a.telephone</h6></td>
+                                            <td><h6 class="mb-0 text-sm"> @a.type</h6></td>
+                                            <td><h6 class="mb-0 text-sm"> @a.date_creation</h6></td>                                           
+                                            <td>
+                                                <a href="@Url.Action("ModifierStructure","Admin",new {No=a.structureID})">
+                                                    <span style="width:100%;height:20px" class="fa fa-edit"> </span>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a onclick="bloquageModal(@a.structureID)">
+                                                    <span style="width:100%;height:20px" class="fa fa-lock"> </span>
+                                                </a>
+                                            </td>
+
+
+                                        </tr>
+                                        }
+                                    </tbody>
+
+                                </table>
+                            </div>
+                            <center>
+                                <div class="pagination" style="width:200px;margin-right:2.5%;margin-left:2.5%">
+                                    @Html.PagedListPager(Model, page => Url.Action("ListeStructure", new { page, searching = ViewBag.CurrentFilter }) + "#Product", new PagedListRenderOptions { MaximumPageNumbersToDisplay = 4, ContainerDivClasses = new List<string> { "MenuTab", "MenuTab" }, LiElementClasses = new List<string> { "pagination-bar", "pagination-bar" }, DelimiterBetweenPageNumbers = "-" })
+                                </div>
+                            </center>
+                        }
+
+                    </div>
+                   
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="bloquageModal" class="modal container-fluid ">
+    <div class="container-fluid" style="width:50%">
+        <div class="row">
+            <div class="col-12">
+                <div class="card p-4">
+
+                    <center> <p style="background-color: white; color: red">Voulez-vous bloquer ce patient ?</p></center>
+                    <div class="card-body">
+                        <div class="col-lg-6">
+                            <a class="btn btn-primary" onclick="bloquage()" style="color: white; background-color: #6d7fcc; width: 100%"> Oui</a>
+                        </div>
+                        <input type="text" class="form-control" id="structureID" name="structureID" hidden />
+
+                        <div class="col-lg-6">
+                            <a class="btn btn-primary" onclick=" document.getElementById('bloquageModal').style.display = 'none'" style="color: white; background-color: #6d7fcc; width: 100% ">Non</a>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+
+<script type="text/javascript">
+    function bloquageModal(id)
+    {
+        document.getElementById('bloquageModal').style.display = 'block'
+        document.getElementById('structureID').value = id;
+    }
+    function bloquage()
+    {
+
+        console.log(document.getElementById('structureID').value)
+
+
+        $.post('@Url.Action("desactiverStructure")', { No: document.getElementById('structureID').value},
+                             function (reponse)
+                             {
+
+                                window.location.reload()
+
+
+                            }).fail(function (xhr, status, error)
+                            {
+                                window.location.reload()
+
+                           });
+
+    }
+
+</script>
+
+
+

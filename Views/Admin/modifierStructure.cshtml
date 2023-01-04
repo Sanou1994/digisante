@@ -1,0 +1,182 @@
+﻿@{
+    ViewBag.Title = "Structure";
+    ViewBag.FullName = @ViewBag.FullName;
+    ViewBag.NoProfil = @ViewBag.NoProfil;
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<div class="col-12" style="margin-bottom:50px">
+    <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("ListeStructure","Admin")">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i>&nbsp;Retour</a>
+</div>
+@using (Html.BeginForm("ModifierStructure", "Admin", FormMethod.Post))
+{
+    <div class="container-fluid py-4 pb-2">
+        <div class="row">
+            <div class="col-12">
+                <div class="card p-4" style="margin:10px">
+                    <div class="card-header" style="border: solid; font-size: 30px; background-color: #6d7fcc; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <div class=" shadow-primary border-radius-lg">
+                            <h3 class="text-capitalize  text-center">Modifier Structure</h3>
+                        </div>
+                    </div>
+                    <center> <p style="background-color: white; color: red">@ViewBag.sms</p></center>
+                    <center> <p style="background-color:white;color:green">@ViewBag.message</p></center>
+                    <div class="card-body">
+                        <div class="container">
+                            <div class="row" style="background-color:white;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                                <div class="panel panel-primary">                                   
+                                    <div class="panel-body">
+
+                                        <div class="input-group input-group-outline mb-3">
+                                            <label class="text" style="width:100%">Nom Structure</label>
+                                            <input type="text" value="@ViewBag.NameStructure" name="NameStructure" id="NameStructure" onchange="hideError()" class="form-control" required>
+                                        </div>
+                                        <p class="text-danger" id="NameStructureError" style="font-size: 80%;font-weight: bold">Veuillez saisir le nom svp </p>
+
+                                        <div class="input-group input-group-outline mb-3">
+                                            <label class="text" style="width:100%">Adresse</label>
+                                            <input type="text" value="@ViewBag.Adresse" name="AdresseStructure" id="AdresseStructure" onchange="hideError()" class="form-control" required>
+                                        </div>
+                                        <p class="text-danger" id="AdresseStructureError" style="font-size: 80%;font-weight: bold">Veuillez saisir l'adresse svp </p>
+
+                                        <div class="input-group input-group-outline mb-3">
+                                            <label class="text" style="width:100%">Email</label>
+                                            <input name="EmailStructure" value="@ViewBag.Email" type="Email" class="form-control">
+                                        </div>
+                                        <input name="No" value="@ViewBag.No" type="text" class="form-control" hidden>
+
+                                        <div>
+                                            <label class="text" style="width:100%">T&eacute;l&eacute;phone  <span id="NumeroFormatStructure" style="color:red">Numero Format invalid</span></label>
+                                            <p id="PhoneParaStructure" style="border-style: solid; border-width: 1px; border-radius: 5px; border-color: #DFE3E7 "><input name="PhoneTStructure" id="PhoneTStructure" onkeypress="return isNumberKey2(this.id);" onchange="showPhoneStructure()" type="tel" class="form-control " required></p>
+                                        </div>
+                                        <input name="PhoneStructure" id="PhoneStructure" type="text" class="form-control" hidden>
+                                        <p class="text-danger" id="PhoneTStructureError" style="font-size: 80%;font-weight: bold">Veuillez saisir le numéro de téléphone svp </p>
+
+
+                                        <div class="input-group input-group-outline mb-3">
+                                            <label class="text" style="width:100%">Type</label>
+                                            <select id="type" name="TypeStructure" class="form-control" required>
+                                                <option value="Laboratoire" selected>Laboratoire</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <button class="btn btn-primary" onclick="showError()" style="float:right; background-color:black"> Enregistrer</button>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+<script>
+    $('#NameStructureError').hide();
+    $('#AdresseStructureError').hide();
+    $('#PhoneTStructureError').hide();
+
+
+    document.getElementById("NumeroFormatStructure").style.display = 'none';
+    const phoneInputFieldStructure = document.querySelector("#PhoneTStructure");
+    const phoneInputStructure = window.intlTelInput(phoneInputFieldStructure, {
+       autoPlaceholder: "off",
+        initialCountry: "sn",
+        formatOnDisplay: false,
+        nationalMode: true,
+        onlyCountries: ['dz', 'ao', 'bj', 'bw', 'bf', 'bi', 'cm', 'cv', 'cf', 'td', 'km', 'cg', 'cd', 'ci', 'dj', 'eg',
+            'gk', 'er', 'et', 'ga', 'gm', 'gh', 'gn', 'gw', 'ke', 'ls', 'lr', 'ly', 'mj', 'ml', 'mw', 'mr', 'mu', 'yt',
+            'ma', 'mz', 'na', 'ne', 'ng', 're', 'rw', 'st', 'sn', 'sc', 'sl', 'so', 'za', 'ss', 'sd', 'sz', 'tz',
+            'tg', 'tn', 'ug', 'eh', 'zm', ' zw'],
+
+        separateDialCode: true,
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+    $('#PhoneTStructure').on("countrychange", function (event) {
+
+        // Get the selected country data to know which country is selected.
+        var selectedCountryData = phoneInputStructure.getSelectedCountryData();
+
+        // Get an example number for the selected country to use as placeholder.
+        newPlaceholder = intlTelInputUtils.getExampleNumber(selectedCountryData.iso2, true, intlTelInputUtils.numberFormat.INTERNATIONAL),
+
+            // Reset the phone number input.
+            phoneInputStructure.setNumber("");
+
+        // Convert placeholder as exploitable mask by replacing all 1-9 numbers with 0s
+        mask = newPlaceholder.replace(/[1-9]/g, "0");
+
+        // Apply the new mask for the input
+        $(this).mask(mask);
+    });
+
+     if (@Html.Raw(Json.Encode(@ViewBag.Phone)) != null)
+    {
+
+     phoneInputStructure.setNumber("+" +@Html.Raw(Json.Encode(@ViewBag.Phone)));
+     document.getElementById("PhoneStructure").value = @Html.Raw(Json.Encode(@ViewBag.Phone));
+
+    }
+
+        function showPhoneStructure()
+        {
+           
+            if ($('#NameStructure').val() != null) { $('#NameStructureError').hide(); }
+            if ($('#AdresseStructure').val() != null) { $('#AdresseStructureError').hide(); }
+            if ($('#PhoneTStructure').val() != null) { $('#PhoneTStructureError').hide(); }
+
+          
+            if (phoneInputStructure.isValidNumber())
+        {
+                document.getElementById("NumeroFormatStructure").style.display = 'none';
+                document.getElementById("PhoneParaStructure").style.borderColor = "#DFE3E7";
+                document.getElementById("PhoneStructure").value = phoneInputStructure.getSelectedCountryData().dialCode + "" + document.getElementById("PhoneTStructure").value;
+        }
+        else
+        {
+                document.getElementById("NumeroFormatStructure").style.display = 'none';
+                document.getElementById("PhoneParaStructure").style.borderColor = "#DFE3E7";
+                document.getElementById("PhoneStructure").value = phoneInputStructure.getSelectedCountryData().dialCode + "" + document.getElementById("PhoneTStructure").value;
+
+        }
+
+        }
+
+    function isNumberKey2(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+
+
+
+
+    function showError() {
+        if ($('#NameStructure').val().length == 0) { $('#NameStructureError').show(); }
+        if ($('#AdresseStructure').val().length == 0) { $('#AdresseStructureError').show(); }
+        if ($('#PhoneTStructure').val().length == 0) { $('#PhoneTStructureError').show(); }
+
+      
+
+    }
+    function hideError() {
+
+       
+        if ($('#NameStructure').val() != null) { $('#NameStructureError').hide(); }
+        if ($('#AdresseStructure').val() != null) { $('#AdresseStructureError').hide(); }
+        if ($('#PhoneTStructure').val() != null) { $('#PhoneTStructureError').hide(); }
+
+       
+
+    }
+
+</script>
+

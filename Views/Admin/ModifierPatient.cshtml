@@ -1,0 +1,248 @@
+﻿
+@{
+    ViewBag.Title = "Modifier Patient";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="col-12" style="margin-bottom:20px">
+    <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("ListePatients","Admin")">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-arrow-90deg-left"></i>&nbsp;Retour</a>
+</div>
+
+@using (Html.BeginForm("ModifierPatient", "Admin", FormMethod.Post))
+{
+    <div class="container-fluid py-4 pb-2">
+        <div class="row">
+            <div class="col-12">
+                <div class="card p-4" style="margin:10px">
+                    <div class="card-header" style="border: solid; font-size: 30px; background-color: #6d7fcc; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <div class=" shadow-primary border-radius-lg">
+                            <h3 class="text-capitalize  text-center">Modifier Patient </h3>
+                        </div>
+                    </div>
+                    <center> <p style="background-color:white;color:red">@ViewBag.sms</p></center>
+                    <center> <p style="background-color:white;color:green">@ViewBag.message</p></center>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline ">
+                                    <label class="text" style="width:100%;color:black">Prénom</label>
+                                    <input type="text" class="form-control" onchange="hideError()" value="@ViewBag.Name " style="background-color:whitesmoke" name="Name" id="Name" required>
+                                </div>
+                                <p class="text-danger" id="NameError" style="font-size: 80%;font-weight: bold">Veuillez saisir le prénom svp </p>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline ">
+                                    <label class="text" style="width:100%;color:black">Nom</label>
+                                    <input type="text" class="form-control" onchange="hideError()" value="@ViewBag.Surname " style="background-color:whitesmoke" name="Surname" id="Surname" required>
+                                </div>
+                                <p class="text-danger" id="SurnameError" style="font-size: 80%;font-weight: bold">Veuillez saisir le nom svp </p>
+
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline">
+                                    <label class="text" style="width:100%;color:black">Adresse</label>
+                                    <input type="text" class="form-control" style="background-color:whitesmoke" value="@ViewBag.Adresse " name="Adresse">
+                                    <input name="No" type="text" value="@ViewBag.No" class="form-control" hidden>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline">
+                                    <label class="text" style="width:100%;color:black">Date de Naissance </label>
+                                    <input type="date" class="form-control" value="@ViewBag.Birth" onchange="hideError()" id="myDate" style="background-color:whitesmoke" name="Birth"  required>
+                                </div>
+                                <p class="text-danger" id="BirthError" style="font-size: 80%;font-weight: bold">Veuillez saisir la date de naissance svp </p>
+
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline">
+                                    <label class="=text" style="width:100%;color:black">Nom complet accompagnant </label>
+                                    <input type="text" class="form-control" style="background-color:whitesmoke" value="@ViewBag.Acc " name="Accompagner" placeholder="nom complet accompagnant">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline">
+                                    <label class="text" style="width:100%;color:black">Sexe</label>
+                                    <select name="Gender" onchange="hideError()" class="form-control" style="background-color:whitesmoke" required>
+                                        @if (ViewBag.Gender != null && ViewBag.Gender == "Femme")
+                                        {
+                                            <option selected>@ViewBag.Gender </option>
+                                            <option value="Homme">Homme </option>
+
+                                        }
+                                        else if (ViewBag.Gender != null && ViewBag.Gender == "Homme")
+                                        {
+                                            <option selected>@ViewBag.Gender </option>
+                                            <option value="Femme" selected>Femme</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="Homme">Homme </option>
+                                            <option value="Femme" selected>Femme</option>
+                                        }
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline">
+                                    <label class="text" style="width:100%;color:black">Profession</label>
+                                    <input type="text" class="form-control" value="@ViewBag.Profession " style="background-color:whitesmoke" name="Profession">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div>
+                                    <label class="text" style="width:100%">T&eacute;l&eacute;phone  <span id="NumeroFormat" style="color:red">Numero Format invalid</span></label>
+                                    <p id="PhonePara" style="border-style: solid; border-width: 1px; border-radius: 5px; border-color: #DFE3E7 "><input name="PhoneT" id="PhoneT" onchange="showPhone()" type="tel" onkeypress="return isNumberKey2(this.id);" class="form-control " required></p>
+                                </div>
+                                <p class="text-danger" id="PhoneTError" style="font-size: 80%;font-weight: bold">Veuillez saisir le numéro de téléphone svp </p>
+
+                                <input name="Phone"  id="Phone" type="text" class="form-control" hidden>
+                            </div>
+                        </div>
+
+
+                        <button class="btn btn-primary" onclick="showError()" style="float:right; background-color:black"> <span class="fa fa-user"></span> Enregistrer</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+<script src="~/assets/js/core/popper.min.js"></script>
+<script src="~/assets/js/core/bootstrap.min.js"></script>
+<script src="~/assets/js/plugins/perfect-scrollbar.min.js"></script>
+<script src="~/assets/js/plugins/smooth-scrollbar.min.js"></script>
+
+<script >
+    $('#SurnameError').hide();
+    $('#PhoneTError').hide();
+    $('#NameError').hide();
+    $('#BirthError').hide();
+
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+    if (mm < 10) {
+        mm = '0' + mm;
+    }
+
+    today = yyyy + '-' + mm + '-' + dd;
+    document.getElementById("myDate").setAttribute("max", today);    
+
+    // Recuper la date de naissance dans le champ
+    var date = document.getElementById("myDate").getAttribute('value');
+    document.getElementById("myDate").value = new Date(Number(date.split('/')[2]), Number(date.split('/')[1]) - 1, Number(date.split('/')[0])).toJSON().slice(0, 10)
+</script>
+
+<script>
+    document.getElementById("NumeroFormat").style.display = 'none';
+    const phoneInputField = document.querySelector("#PhoneT");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+        // allowDropdown: false,
+        // autoHideDialCode: false,
+         autoPlaceholder: "off",
+        // dropdownContainer: document.body,
+        //  excludeCountries: ["us"],
+        formatOnDisplay: false,
+        /*  geoIpLookup: function(callback) {
+            $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+              var countryCode = (resp && resp.country) ? resp.country : "sn";
+              callback(countryCode);
+           });
+          },*/
+        //hiddenInput: "full_number",
+        initialCountry: "sn",
+        //localizedCountries: { 'sn': 'Senegal' },
+        nationalMode: true,
+        onlyCountries: ['dz', 'ao', 'bj', 'bw', 'bf', 'bi', 'cm', 'cv', 'cf', 'td', 'km', 'cg', 'cd', 'ci', 'dj', 'eg',
+            'gk', 'er', 'et', 'ga', 'gm', 'gh', 'gn', 'gw', 'ke', 'ls', 'lr', 'ly', 'mj', 'ml', 'mw', 'mr', 'mu', 'yt',
+            'ma', 'mz', 'na', 'ne', 'ng', 're', 'rw', 'st', 'sn', 'sc', 'sl', 'so', 'za', 'ss', 'sd', 'sz', 'tz',
+            'tg', 'tn', 'ug', 'eh', 'zm', ' zw'],
+        // placeholderNumberType: "MOBILE",
+        // preferredCountries: ['cn', 'jp'],
+        separateDialCode: true,
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+
+    $('#PhoneT').on("countrychange", function (event) {
+
+        // Get the selected country data to know which country is selected.
+        var selectedCountryData = phoneInput.getSelectedCountryData();
+
+        // Get an example number for the selected country to use as placeholder.
+        newPlaceholder = intlTelInputUtils.getExampleNumber(selectedCountryData.iso2, true, intlTelInputUtils.numberFormat.INTERNATIONAL),
+
+            // Reset the phone number input.
+            phoneInput.setNumber("");
+
+        // Convert placeholder as exploitable mask by replacing all 1-9 numbers with 0s
+        mask = newPlaceholder.replace(/[1-9]/g, "0");
+
+        // Apply the new mask for the input
+        $(this).mask(mask);
+    });
+
+     if (@Html.Raw(Json.Encode(@ViewBag.Telephone)) != null)
+     {
+         phoneInput.setNumber("+" +@Html.Raw(Json.Encode(@ViewBag.Telephone)));
+         document.getElementById("Phone").value = +@Html.Raw(Json.Encode(@ViewBag.Telephone));
+
+    }
+
+
+    function showPhone() {
+        if ($('#Name').val() != null) { $('#NameError').hide(); }
+        if ($('#Surname').val() != null) { $('#SurnameError').hide(); }
+        if ($('#PhoneT').val() != null) { $('#PhoneTError').hide(); }
+        if ($('#myDate').val() != null) { $('#BirthError').hide(); }
+
+        if (phoneInput.isValidNumber()) {
+
+            document.getElementById("NumeroFormat").style.display = 'none';
+            document.getElementById("PhonePara").style.borderColor = "#DFE3E7";
+            document.getElementById("Phone").value = phoneInput.getSelectedCountryData().dialCode + "" + document.getElementById("PhoneT").value;
+        }
+        else {
+
+            document.getElementById("NumeroFormat").style.display = 'none';
+            document.getElementById("PhonePara").style.borderColor = "#DFE3E7";
+            document.getElementById("Phone").value = phoneInput.getSelectedCountryData().dialCode + "" + document.getElementById("PhoneT").value;
+
+        }
+
+    }
+    function showError() {
+        if ($('#Name').val().length == 0) {
+            $('#NameError').show();
+        }
+        if ($('#Surname').val().length == 0) { $('#SurnameError').show(); }
+        if ($('#PhoneT').val().length == 0) { $('#PhoneTError').show(); }
+        if ($('#Birth').val().length == 0) { $('#BirthError').show(); }
+
+    }
+    function hideError() {
+
+        if ($('#Name').val() != null) { $('#NameError').hide(); }
+        if ($('#Surname').val() != null) { $('#SurnameError').hide(); }
+        if ($('#PhoneT').val() != null) { $('#PhoneTError').hide(); }
+        if ($('#Birth').val() != null) { $('#BirthError').hide(); }
+
+
+    }
+    function isNumberKey2(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+</script>

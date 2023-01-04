@@ -1,0 +1,254 @@
+﻿@model PagedList.IPagedList<digi_sante.Models.Departement>
+
+@{
+    ViewBag.Title = "AjouterUtilisateur";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+@using PagedList.Mvc;
+<div class="col-12" style="margin-bottom:50px">
+    <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("ListeUtilisateur","Admin")">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-arrow-90deg-left"></i>&nbsp;Retour</a>
+</div>
+
+@using (Html.BeginForm("AjouterUtilisateur", "Admin", FormMethod.Post))
+{
+
+
+    <div class="container-fluid py-4 pb-2">
+        <div class="row">
+            <div class="col-12">
+                <div class="card p-4" style="margin:10px">
+                    <div class="card-header" style="border: solid; font-size: 30px; background-color: #03DAFC; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <div class=" shadow-primary border-radius-lg">
+                            <h3 class="text-capitalize  text-center" style="color:white">Nouveau Compte </h3>
+                        </div>
+                    </div>
+                    <center> <p style="background-color: white; color: red">@ViewBag.sms</p></center>
+                    <center> <p style="background-color:white;color:green">@ViewBag.Message</p></center>
+                    <div class="panel-body">
+                        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6  ">
+                            <div class="input-group input-group-outline mb-3">
+                                <label class="text" style="width:100%">Prénom</label>
+                                <input type="text" value="@ViewBag.Name" name="Name" id="Name" onchange="hideError()" class="form-control" required>
+                            </div>
+                            <p class="text-danger" id="NameError" style="font-size: 80%;font-weight: bold">Veuillez saisir le nom svp </p>
+
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 ">
+
+                            <div class="input-group input-group-outline mb-3">
+                                <label class="text" style="width:100%">Nom</label>
+                                <input type="text" value="@ViewBag.Surname" name="Surname" onchange="hideError()" id="Surname" class="form-control" required>
+                            </div>
+                            <p class="text-danger" id="SurnameError" style="font-size: 80%;font-weight: bold">Veuillez saisir le prénom svp </p>
+
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 ">
+                            <div class="input-group input-group-outline mb-3">
+                                <label class="text" style="width:100%">Adresse</label>
+                                <input type="text" value="@ViewBag.Adresse" name="Adresse" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 ">
+                            <div class="input-group input-group-outline mb-3">
+                                <label class="text" style="width:100%">Email</label>
+                                <input name="Email" value="@ViewBag.Email" type="Email" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 col-md-12 col-lg-4 col-xl-12 ">
+                            <div class="input-group input-group-outline mb-3">
+                                <label class="text" style="width:100%">Titre</label>
+                                <select name="Titre" onchange="hideError()"   style="width:100%"id="Titre" class="form-control " required>
+                                    <option></option>
+                                    <option>Caissier(e)</option>
+                                    <option>Infirmier(e)</option>
+                                    <option>Docteur</option>
+                                    <option>Biochimiste</option>
+                                    <option>Biologiste</option>
+                                    <option>Technicien-Laboratoire</option>
+                                    <option>Caissier(e)-Laboratoire</option>
+                                </select>
+                            </div>
+                            <p class="text-danger" id="TitreError" style="font-size: 80%;font-weight: bold">Veuillez choisir le titre svp </p>
+
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-6 ">
+                            <div class="input-group input-group-outline mb-3">
+                                <label class="text" style="width:100%">Role</label>
+                                <select name="Role" id="Role" onchange="hideError()" class="form-control" required>
+                                    <option></option>
+                                    <option>Manager</option>
+                                    <option>Utilisateur </option>
+                                </select>
+                            </div>
+                            <p class="text-danger" id="RoleError" style="font-size: 80%;font-weight: bold">Veuillez choisir le role svp </p>
+
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-6 ">
+                            <div class="input-group input-group-outline mb-3">
+                                <label class="text" style="width:100%">Département</label>
+                                <select class="form-control" onchange="hideError()" name="Id_departement" id="Id_departement" required>
+                                    <option></option>
+                                    @if (Model != null)
+                                    {
+                                        foreach (var departement in Model)
+                                        {
+                                            <option value="@departement.departementID">@departement.nom</option>
+                                        }
+
+                                    }
+                                </select>
+                            </div>
+                            <p class="text-danger" id="Id_departementError" style="font-size: 80%;font-weight: bold">Veuillez saisir le département svp </p>
+
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 ">
+                            <div >
+                                <label class="text" style="width:100%">T&eacute;l&eacute;phone  <span id="NumeroFormat" style="color:red">Numero Format invalid</span></label>
+                                <p id="PhonePara" style="border-style: solid; width: 100%; border-width: 1px; border-radius: 5px; border-color: #DFE3E7 "><input name="PhoneT"  id="PhoneT" onkeypress="return isNumberKey2(this.id);" onchange="showPhone()" type="tel" class="form-control " required></p>
+                            </div>
+                            <input name="Phone" id="Phone" type="text" class="form-control" hidden>
+                            <p class="text-danger" id="PhoneTError" style="font-size: 80%;font-weight: bold">Veuillez saisir le téléphone svp </p>
+
+                        </div>
+
+
+                        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 ">
+                            <div class="input-group input-group-outline mb-3">
+                                <label class="text" style="width:100%">Mot de passe</label>
+                                <input name="Pwd" id="Pwd" onchange="hideError()" type="password" class="form-control" required>
+                            </div>
+                            <p class="text-danger" id="PwdError" style="font-size: 80%;font-weight: bold">Veuillez saisir le mot de passe svp </p>
+
+                        </div>
+                    </div>
+                        <button class="btn btn-primary" onclick="showError()" style="width:30%;float:right ; background-color:black"> <span class="fa fa-user"></span> Enregistrer</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+<script>
+    $('#NameError').hide();
+    $('#SurnameError').hide();
+    $('#TitreError').hide();
+    $('#PwdError').hide();
+    $('#PhoneTError').hide();
+    $('#RoleError').hide();
+    $('#Id_departementError').hide();
+
+    document.getElementById("NumeroFormat").style.display = 'none';
+    const phoneInputField = document.querySelector("#PhoneT");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+
+       autoPlaceholder: "off",
+
+        formatOnDisplay: false,
+        initialCountry: "sn",
+        nationalMode: true,
+        onlyCountries: ['dz', 'ao', 'bj', 'bw', 'bf', 'bi', 'cm', 'cv', 'cf', 'td', 'km', 'cg', 'cd', 'ci', 'dj', 'eg',
+            'gk', 'er', 'et', 'ga', 'gm', 'gh', 'gn', 'gw', 'ke', 'ls', 'lr', 'ly', 'mj', 'ml', 'mw', 'mr', 'mu', 'yt',
+            'ma', 'mz', 'na', 'ne', 'ng', 're', 'rw', 'st', 'sn', 'sc', 'sl', 'so', 'za', 'ss', 'sd', 'sz', 'tz',
+            'tg', 'tn', 'ug', 'eh', 'zm', ' zw'],
+        separateDialCode: true,
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+
+    $('#PhoneT').on("countrychange", function (event) {
+
+        // Get the selected country data to know which country is selected.
+        var selectedCountryData = phoneInput.getSelectedCountryData();
+
+        // Get an example number for the selected country to use as placeholder.
+        newPlaceholder = intlTelInputUtils.getExampleNumber(selectedCountryData.iso2, true, intlTelInputUtils.numberFormat.INTERNATIONAL),
+
+            // Reset the phone number input.
+            phoneInput.setNumber("");
+
+        // Convert placeholder as exploitable mask by replacing all 1-9 numbers with 0s
+        mask = newPlaceholder.replace(/[1-9]/g, "0");
+
+
+    });
+     if (@Html.Raw(Json.Encode(@ViewBag.Phone)) != null)
+     {
+         phoneInput.setNumber("+" +@Html.Raw(Json.Encode(@ViewBag.Phone)));
+         document.getElementById("Phone").value = @Html.Raw(Json.Encode(@ViewBag.Phone));
+
+
+    }
+    function isNumberKey2(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+
+    function showPhone()
+    {
+        if ($('#Name').val() != null) { $('#NameError').hide(); }
+        if ($('#Surname').val() != null) { $('#SurnameError').hide(); }
+        if ($('#Titre').val() != null) { $('#TitreError').hide(); }
+        if ($('#Pwd').val() != null) { $('#PwdError').hide(); }
+
+        if ($('#PhoneT').val() != null) { $('#PhoneTError').hide(); }
+        if ($('#Role').val() != null) { $('#RoleError').hide(); }
+        if ($('#Id_departement').val() != null) { $('#Id_departementError').hide(); }
+
+        if (phoneInput.isValidNumber())
+        {
+            document.getElementById("NumeroFormat").style.display = 'none';
+            document.getElementById("PhonePara").style.borderColor = "#DFE3E7";
+            document.getElementById("Phone").value = phoneInput.getSelectedCountryData().dialCode + "" + document.getElementById("PhoneT").value;
+
+        }
+        else
+        {
+            document.getElementById("NumeroFormat").style.display = 'none';
+            document.getElementById("PhonePara").style.borderColor = "#DFE3E7";
+            document.getElementById("Phone").value = phoneInput.getSelectedCountryData().dialCode + "" + document.getElementById("PhoneT").value;
+
+        }
+
+    }
+
+
+
+
+    function showError() {
+        if ($('#Name').val().length == 0) { $('#NameError').show(); }
+        if ($('#Surname').val().length == 0) { $('#SurnameError').show(); }
+        if ($('#Titre').val().length == 0) { $('#TitreError').show(); }
+
+        if ($('#Pwd').val().length == 0) { $('#PwdError').show(); }
+        if ($('#PhoneT').val().length == 0) { $('#PhoneTError').show(); }
+        if ($('#Role').val().length == 0) { $('#RoleError').show(); }
+        if ($('#Id_departement').val().length == 0) { $('#Id_departementError').show(); }
+
+
+    }
+    function hideError() {
+
+        if ($('#Name').val() != null) { $('#NameError').hide(); }
+        if ($('#Surname').val() != null) { $('#SurnameError').hide(); }
+        if ($('#Titre').val() != null) { $('#TitreError').hide(); }
+        if ($('#Pwd').val() != null) { $('#PwdError').hide(); }
+
+        if ($('#PhoneT').val() != null) { $('#PhoneTError').hide(); }
+        if ($('#Role').val() != null) { $('#RoleError').hide(); }
+        if ($('#Id_departement').val() != null) { $('#Id_departementError').hide(); }
+
+
+
+    }
+
+
+</script>
+

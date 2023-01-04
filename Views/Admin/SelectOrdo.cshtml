@@ -1,0 +1,71 @@
+﻿@model SelectOrdo
+@{
+    ViewBag.Title = "OrdonnanceList";
+    Layout = null;
+}
+@using digi_sante.Models;
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+<!-- Nucleo Icons -->
+<link href="~/assets/css/nucleo-icons.css" rel="stylesheet" />
+<link href="~/assets/css/nucleo-svg.css" rel="stylesheet" />
+<!-- Font Awesome Icons -->
+<script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<!-- CSS Files -->
+<link id="pagestyle" href="~/assets/css/material-dashboard.css?v=3.0.0" rel="stylesheet" />
+
+<div class="container-fluid py-4" style="background-color:white;width:60%;float:right">
+    <div class="row">
+        <p style="color:green;font-weight:bold"><h4>Nom Complet du patient(e): @Model.nomCompletPatient</h4></p>
+        <br />
+        <div class="col-12">
+            <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2" style="background-color: #a5c422; font-weight: bold; color: white; font-size: 16px; border-radius: 50px 20px; ">
+                    <div class=" shadow-primary border-radius-lg pt-4 pb-3" style="border: solid; background: #6d7fcc; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <h6 class="text-white text-capitalize ps-3">Ordonnance</h6>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table id="table" class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder " style="border-left-color:rgb(60,179,113);display:none"></th>
+
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder " style="border-left-color:rgb(60,179,113)"> #Description Ordonnance</th>
+
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder " style="">№ Ordonnance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var a in Model.detailsOrdos)
+                                {
+                                    <tr>
+                                        <td>@a.description</td>
+
+                                        <td>@a.ordonnanceID</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <br />  <center>
+                    <a href="@Url.Action("PrintPrescription","Admin", new {pres=Model.NumberOrdo})" target="_blank"><img src="~/images/Print1.jpg" style="width:100px" /> </a>
+                </center>
+
+               
+                    <center><input type="submit" value="Terminer" onclick="window.location.reload()" class="btn-blue" Text="Terminer" style="border:none;font-style:normal;background-color:black;color:white;margin-top:30px;height:60px; width:60%" Visible="true" /></center>
+                
+
+                <br />
+            </div>
+
+        </div>
+    </div>
+
+</div>
+

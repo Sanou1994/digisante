@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "NOTFOUND";   
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<div class="col-12 pb-4">
+    <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("ListePaiement","Admin")">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i>&nbsp;Retour</a>
+</div>
+<div class="container" style="width:50%;height:100%;">
+    <div class="row" style="background-color:white;margin-top:10px ;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <br /><br />
+                <div class="text-center">
+                    <h4>@ViewBag.sms</h4>
+                </div>
+            </div>
+            <div class="panel-footer text-center">
+                <br /> <br />
+            </div>
+        </div>
+    </div>
+</div>
+
+

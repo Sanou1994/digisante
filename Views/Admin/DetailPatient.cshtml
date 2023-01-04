@@ -1,0 +1,814 @@
+﻿@model DetailPatient
+
+@{
+    ViewBag.Title = "detailPatient";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+@using digi_sante.Models;
+<style>
+    table {
+        background: #f5f5f5;
+        border-collapse: separate;
+        box-shadow: inset 0 1px 0 #fff;
+        font-size: 12px;
+        line-height: 24px;
+        text-align: left;
+        width: 800px;
+    }
+
+    th {
+        background: linear-gradient(black,black);
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        box-shadow: inset 0 1px 0 black;
+        color: #fff;
+        font-weight: bold;
+        padding: 10px 15px;
+        position: relative;
+        text-shadow: 0 1px 0 #000;
+    }
+
+        th:after {
+            background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.08));
+            content: '';
+            display: block;
+            height: 25%;
+            left: 0;
+            margin: 1px 0 0 0;
+            position: absolute;
+            top: 25%;
+            width: 100%;
+        }
+
+        th:first-child {
+            border-left: 1px solid #777;
+            box-shadow: inset 1px 1px 0 black;
+        }
+
+        th:last-child {
+            box-shadow: inset -1px 1px 0 black;
+        }
+
+    td {
+        border-right: 1px solid #fff;
+        border-left: 1px solid #e8e8e8;
+        border-top: 1px solid #fff;
+        border-bottom: 1px solid #e8e8e8;
+        transition: all 300ms;
+    }
+
+        td:first-child {
+            box-shadow: inset 1px 0 0 #fff;
+        }
+
+        td:last-child {
+            border-right: 1px solid #e8e8e8;
+            box-shadow: inset -1px 0 0 #fff;
+        }
+
+    tr {
+    }
+
+        tr:nth-child(odd) td {
+            background: #f1f1f1;
+        }
+
+        tr:last-of-type td {
+            box-shadow: inset 0 -1px 0 #fff;
+        }
+
+            tr:last-of-type td:first-child {
+                box-shadow: inset 1px -1px 0 #fff;
+            }
+
+            tr:last-of-type td:last-child {
+                box-shadow: inset -1px -1px 0 #fff;
+            }
+
+    tbody:hover td {
+        color: transparent;
+        text-shadow: 0 0 3px #aaa;
+    }
+
+    tbody:hover tr:hover td {
+        color: #444;
+        text-shadow: 0 1px 0 #fff;
+    }
+
+
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        width: 100%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+
+
+    <!-- RECUPERTATION PATIENT-->
+    <div class="container">
+        <div class="row" style="background-color:white; border-radius:5px; margin:20px;  ">
+            <div class="col-12 justify-content-center p-2" style="height:50px">
+                <center class="card-title" style="border: solid;font-size:3px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                    <h5 style="color:black" class="mb-2">DOSSIER MEDICAL PATIENT</h5>
+                </center>
+            </div>
+            <br />
+            <div class="col-md-6 col-lg-6 col-sm-6  mb-4 mb-lg-0">
+                <div class="card-body">
+                    <p style="color:black; font-size:14px">Nom : @Model.Name</p>
+                    <p style="color: black;  font-size: 14px ">Prénom : @Model.Surname</p>
+                    <p style="color: black; font-size: 14px">Age :  @Model.Age Ans</p>
+                    <p style="color: black; font-size: 14px">Sexe :  @Model.Gender</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-6 col-sm-6 mb-4 mb-lg-0" style="">
+                <div class="card-body">
+                    <p style="color: black; font-size: 14px">Adresse : @Model.Adresse</p>
+                    <p style="color: black; font-size: 14px">Téléphone : @Model.Telephone</p>
+                    <p style="color: black; font-size: 14px">Profession :  @Model.Profession</p>
+
+
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <a class="btn btn-primary" style="background-color: #03DAFC; float: left" href="#" onclick="ouvrirModifierPatientModal()">Modifier</a>
+
+            </div>
+          
+
+        </div>
+    </div>
+  
+
+    <!--FIN EN TETE-->
+
+    <div class="container mt-2">
+        <div class="row">
+            <div class="col-md-6 col-lg-6 mb-4 mb-lg-0">
+                <div class="card">
+                    <center class="card-title" style="border: solid;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <h3 style="color:black" class="mb-2">Consultations</h3>
+                    </center>
+                    <div class="card-body">
+                        <div class=" mb-3">
+                            <a class="btn btn-primary" style="background-color:  #03DAFC; float: left " href="@Url.Action("AjouterPaiement","Admin", new {No= ViewBag.No })">Ajouter</a>
+                            <a class="btn btn-primary" style="background-color: #03DAFC; float: right " href="@Url.Action("ListeConsultation","Admin",new {No= ViewBag.No })">Voir +</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-6 mb-4 mb-lg-0">
+                <div class="card">
+                    <center class="card-title" style="border: solid;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <h3 style="color:black" class="mb-2">Analyses</h3>
+                    </center>
+                    <div class="card-body">
+                        <div class=" mb-3">
+                            <a onclick="partager('ANALYSE')" class="btn btn-primary" style="color: white; background-color: #03DAFC; ">
+                                <span class="fa fa-share"></span>Partager
+                            </a>
+
+                            <a class="btn btn-primary" style="background-color: #03DAFC; float: right" href="@Url.Action("AnalyseList","Admin",new {No= ViewBag.No })">Voir +</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-6 col-lg-6 mb-4 mb-lg-0">
+                <div class="card">
+                    <center class="card-title" style="border: solid;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <h3 style="color:black" class="mb-2">Hospilisations</h3>
+                    </center>
+                    <div class="card-body">
+                        <div class=" mb-3">
+                            <center>
+                                <a onclick="partager('ORDONNANCE')" class="btn btn-primary" style="color: white; float: left; background-color: #03DAFC; ">
+                                    <span class="fa fa-share"></span>Partager
+                                </a>
+                                <a class="btn btn-primary" style="background-color: #03DAFC; float: right" href="@Url.Action("HospitalisationList","Admin",new {No= ViewBag.No })">Voir +</a>
+                            </center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-6 mb-4 mb-lg-0">
+                <div class="card">
+                    <center class="card-title" style="border: solid;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <h3 style="color:black" class="mb-2">Ordonnances</h3>
+                    </center>
+                    <div class="card-body">
+                        <div class=" mb-3">
+
+                            <a onclick="partager('ORDONNANCE')" class="btn btn-primary" style="color: white; background-color: #03DAFC; ">
+                                <span class="fa fa-share"></span>Partager
+                            </a>
+                            <a class="btn btn-primary" style="background-color: #03DAFC; float: right" href="@Url.Action("OrdonnanceList","Admin" , new {patientID=ViewBag.No })">Voir +</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div id="docteur" class="modal container-fluid ">
+    @using (Html.BeginForm("configuerPolitiqueAccess", "Admin", FormMethod.Post))
+    {
+        <div class="container" style="width: 70%;">
+            <div class="row" style="background-color:white;margin-top:10px ;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                <div class="panel panel-primary">
+                    <div class="panel-heading" style="border: solid; background: #03DAFC; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <center>
+                            <a style="color:white;font-weight:bold">Configuration politique d'accès </a>
+                            <button class="btn btn-primary" onclick="document.getElementById('docteur').style.display='none'" style=" float:right;background-color:white;color:black;margin-top:5px;">X</button>
+                        </center>
+                    </div>
+                    <br />
+                    <center> <p style="color:red" id="message"></p></center>
+                    <br />
+                    <div class="row">
+                        <input name="idPatient" value="@ViewBag.No" type="text" class="form-control" hidden>
+                        <div class="col-lg-12">
+                            <div>
+                                <label class="text" style="width:100%">T&eacute;l&eacute;phone  <span id="NumeroFormat" style="color:red">Numero Format invalid</span></label>
+                                <p id="PhonePara" style="border-style: solid; border-width: 1px; border-radius: 5px; border-color: #DFE3E7 "><input name="PhoneT" id="PhoneT" onclick="clearPopup()" onchange="checkIfPhoneNumberExist()" type="tel" class="form-control " required></p>
+                            </div>
+                            <input name="Phone" id="Phone" type="text" class="form-control" hidden>
+                            <p class="text-danger" id="PhoneTError" style="font-size: 80%;font-weight: bold">Veuillez saisir le téléphone svp </p>
+
+                            <div class="form-check form-switch d-flex  mb-3">
+                                <input class="form-check-input" type="checkbox" onchange="checkConfirmationButton()" id="confirmation" onclick="" hidden>
+                                <label class="text" style="margin-left:10px;" id="ConfirmerLabel" hidden>Confirmer</label>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="input-group input-group-outline mb-3">
+                                <label class="text" style="width:100%">Date Limite</label>
+                                <input name="DateLimite" onchange="showDate()" id="DateLimite" type="date" class="form-control" required>
+                            </div>
+                        </div>
+                        <input name="DateLimiteLong" id="DateLimiteLong" type="text" class="form-control" hidden>
+                        <input name="Type_dossier" id="Type_dossier" type="text" class="form-control" hidden>
+
+                        <div class="col-lg-6">
+                            <div class="input-group input-group-outline mb-3">
+                                <label class="text" style="width:100%">Heure Limite</label>
+                                <input type="time" id="HeureLimite" value="00:00" onchange="showHeure()" name="HeureLimite" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <center style="margin-top:20px;">
+                                <p class="text-danger" id="DateLimiteError" style="font-size: 80%;font-weight: bold">Veuillez entrer la date svp </p>
+                                <p class="text-danger" id="HeureLimiteError" style="font-size: 80%;font-weight: bold">Veuillez choisir l'heure svp </p>
+
+                            </center>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <center style="margin-top:20px;">
+                                <button class="btn btn-primary" onclick="showError()" style=" background-color:black;margin:20px;" id="valider">Valider</button>
+                            </center>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+
+
+<!--MODIFIER PATIENT -->
+<div id="modifierPatient" class="modal container-fluid ">
+    <div class="container" style="width:70%">
+        
+        <div class="row">
+
+            <div class="col-12">
+                <div class="card p-4" style="margin:10px">
+                    <center>
+                        <a class="btn btn-primary" onclick="document.getElementById('modifierPatient').style.display = 'none'" style="width:5%; background-color:black; float:right;">X&ensp;</a>
+                    </center>
+                    
+                    <div class="card-header" style="border: solid; font-size: 30px; background-color: #03DAFC; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <div class=" shadow-primary border-radius-lg">
+                            <h3 class="text-capitalize  text-center" style="color:white">MODIFIER PATIENT </h3>
+                        </div>
+                    </div>
+                    <center> <p style="background-color:white;color:red" id="smsM"></p></center>
+                    <center> <p style="background-color:white;color:green" id="messageM"></p></center>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline ">
+                                    <label class="text" style="width:100%;color:black">Prénom</label>
+                                    <input type="text" class="form-control" onchange="hideErrorM()" style="background-color:whitesmoke" name="Name" id="NameM" required>
+                                </div>
+                                <p class="text-danger" id="NameErrorM" style="font-size: 80%;font-weight: bold">Veuillez saisir le prénom svp </p>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline ">
+                                    <label class="text" style="width:100%;color:black">Nom</label>
+                                    <input type="text" class="form-control" onchange="hideErrorM()" style="background-color:whitesmoke" name="Surname" id="SurnameM" required>
+                                </div>
+                                <p class="text-danger" id="SurnameErrorM" style="font-size: 80%;font-weight: bold">Veuillez saisir le nom svp </p>
+
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline">
+                                    <label class="text" style="width:100%;color:black">Adresse</label>
+                                    <input type="text" class="form-control" style="background-color:whitesmoke" name="Adresse" id="AdresseM">
+                                    <input name="patientIDM" id="patientIDM" type="text" class="form-control" hidden>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline">
+                                    <label class="text" style="width:100%;color:black">Date de Naissance </label>
+                                    <input type="date" class="form-control" onchange="hideErrorM()" id="myDateM" style="background-color:whitesmoke" name="Birth" required>
+                                </div>
+                                <p class="text-danger" id="BirthErrorM" style="font-size: 80%;font-weight: bold">Veuillez saisir la date de naissance svp </p>
+
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline">
+                                    <label class="=text" style="width:100%;color:black">Nom complet accompagnant </label>
+                                    <input type="text" class="form-control" style="background-color:whitesmoke" name="Accompagner" id="AccompagnerM" placeholder="nom complet accompagnant">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline">
+                                    <label class="text" style="width:100%;color:black">Sexe</label>
+                                    <select name="Gender" id="GenderM" onchange="hideErrorM()" class="form-control" style="background-color:whitesmoke" required>
+
+                                        <option value="Homme">Homme </option>
+                                        <option value="Femme" selected>Femme</option>
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline">
+                                    <label class="text" style="width:100%;color:black">Profession</label>
+                                    <input type="text" class="form-control" style="background-color:whitesmoke" id="ProfessionM" name="Profession">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div>
+                                    <label class="text" style="width:100%">T&eacute;l&eacute;phone  <span id="NumeroFormatM" style="color:red">Numero Format invalid</span></label>
+                                    <p id="PhoneParaM" style="border-style: solid; border-width: 1px; border-radius: 5px; border-color: #DFE3E7 "><input name="PhoneT" id="PhoneTM" onchange="showPhoneM()" type="tel" onkeypress="return isNumberKey2(this.id);" class="form-control " required></p>
+                                </div>
+                                <p class="text-danger" id="PhoneTErrorM" style="font-size: 80%;font-weight: bold">Veuillez saisir le numéro de téléphone svp </p>
+
+                                <input name="Phone" id="PhoneM" type="text" class="form-control" hidden>
+                            </div>
+                        </div>
+                        <center>
+                            <button class="btn btn-primary" onclick="document.getElementById('modifierPatient').style.display = 'none'" style="float:left; background-color:black"> Fermer</button>
+
+                            <button class="btn btn-primary" onclick="showErrorM()" style="float:right; background-color:black"> Enregistrer</button>
+
+                        </center>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!--PERMET DE FAIRE UNE RECHERCHE DANS LE SELECTE-->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script type="text/javascript">
+    // In your Javascript (external .js resource or <script> tag)
+    $(document).ready(function () {
+        $('#id_choisi').select2();
+    });
+</script>
+
+<script type="text/javascript">
+    document.getElementById("NumeroFormat").style.display = 'none';
+    const phoneInputField = document.querySelector("#PhoneT");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+        // allowDropdown: false,
+        // autoHideDialCode: false,
+           autoPlaceholder: "off",
+        // dropdownContainer: document.body,
+        //  excludeCountries: ["us"],
+        // formatOnDisplay: false,
+        /*  geoIpLookup: function(callback) {
+            $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+              var countryCode = (resp && resp.country) ? resp.country : "sn";
+              callback(countryCode);
+           });
+          },*/
+        //hiddenInput: "full_number",
+        initialCountry: "sn",
+        //localizedCountries: { 'sn': 'Senegal' },
+        nationalMode: true,
+        onlyCountries: ['dz', 'ao', 'bj', 'bw', 'bf', 'bi', 'cm', 'cv', 'cf', 'td', 'km', 'cg', 'cd', 'ci', 'dj', 'eg',
+            'gk', 'er', 'et', 'ga', 'gm', 'gh', 'gn', 'gw', 'ke', 'ls', 'lr', 'ly', 'mj', 'ml', 'mw', 'mr', 'mu', 'yt',
+            'ma', 'mz', 'na', 'ne', 'ng', 're', 'rw', 'st', 'sn', 'sc', 'sl', 'so', 'za', 'ss', 'sd', 'sz', 'tz',
+            'tg', 'tn', 'ug', 'eh', 'zm', ' zw'],
+        // placeholderNumberType: "MOBILE",
+        // preferredCountries: ['cn', 'jp'],
+        separateDialCode: true,
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+
+    function partager() {
+        $('#PhoneTError').hide();
+        $('#DateLimiteError').hide();
+        $('#HeureLimiteError').hide();
+        $('#id_choisiError').hide();
+        clearPopup();
+        document.getElementById('docteur').style.display = 'block'
+        document.getElementById("HeureLimite").disabled = true;
+        document.getElementById("Type_dossier").value = "ANALYSE";
+
+    }
+    function showHeure() {
+        if ($('#PhoneT').val() != null) { $('#PhoneTError').hide(); }
+        if ($('#DateLimite').val() != null) { $('#DateLimiteError').hide(); }
+        if ($('#HeureLimite').val() != null) { $('#HeureLimiteError').hide(); }
+        if ($('#id_choisi').val() != null) { $('#id_choisiError').hide(); }
+
+        const dateControlHeure = document.getElementById("HeureLimite");
+        const dateControlDate = document.getElementById("DateLimite");
+        document.getElementById("DateLimiteLong").value = dateControlDate.valueAsNumber + dateControlHeure.valueAsNumber
+    }
+
+    function showDate()
+    {
+        if ($('#PhoneT').val() != null) { $('#PhoneTError').hide(); }
+        if ($('#DateLimite').val() != null) { $('#DateLimiteError').hide(); }
+        if ($('#HeureLimite').val() != null) { $('#HeureLimiteError').hide(); }
+        if ($('#id_choisi').val() != null) { $('#id_choisiError').hide(); }
+
+        const dateControlDate = document.getElementById("DateLimite");
+        document.getElementById("DateLimiteLong").value = dateControlDate.valueAsNumber
+        document.getElementById("HeureLimite").disabled = false;
+
+    }
+
+    function checkIfPhoneNumberExist()
+    {
+        if ($('#PhoneT').val() != null) { $('#PhoneTError').hide(); }
+        if ($('#DateLimite').val() != null) { $('#DateLimiteError').hide(); }
+        if ($('#HeureLimite').val() != null) { $('#HeureLimiteError').hide(); }
+        if ($('#id_choisi').val() != null) { $('#id_choisiError').hide(); }
+
+        if (phoneInput.isValidNumber()) {
+            document.getElementById("NumeroFormat").style.display = 'none';
+            document.getElementById("PhonePara").style.borderColor = "#DFE3E7";
+            document.getElementById("Phone").value = phoneInput.getSelectedCountryData().dialCode + "" + document.getElementById("PhoneT").value;
+            const phone = document.getElementById("Phone").value;
+        let users = @Html.Raw(Json.Encode(@Model.utilisateurs.ToList()));
+        const user = users.filter(user => user.telephone == Number(phone))[0];
+        if (user!= null)
+        {
+
+            if (user.status == false)
+            {
+                document.getElementById("valider").hidden = false;
+                document.getElementById("message").innerText = "Ce numéro existe déjà , voulez-vous continuer ?";
+                document.getElementById("ConfirmerLabel").hidden = false;
+                document.getElementById("confirmation").hidden = false;
+                document.getElementById("valider").hidden = true;
+            }
+            else
+            {
+                if (user.validite_compte_temporaire == true) {
+                    document.getElementById("ConfirmerLabel").hidden = true;
+                    document.getElementById("confirmation").hidden = true;
+                    document.getElementById("message").innerText = "Ce numéro est déja utilisé par un " + user.titre + " qui a déjà une déléguation encours";
+                    document.getElementById("valider").hidden = true;
+                }
+                else
+                {
+                    document.getElementById("valider").hidden = false;
+                    document.getElementById("message").innerText = "Ce numéro est déja utilisé par un " + user.titre;
+                    document.getElementById("ConfirmerLabel").hidden = false;
+                    document.getElementById("confirmation").hidden = false;
+                    document.getElementById("valider").hidden = true;
+                }
+
+            }
+        }
+        }
+        else {
+            document.getElementById("PhonePara").style.borderColor = "red";
+            document.getElementById("NumeroFormat").style.display = 'block';
+            document.getElementById("PhoneT").value = null;
+
+        }
+
+
+
+    }
+
+    function checkConfirmationButton()
+    {
+       if (document.getElementById("confirmation").checked)
+       {
+           document.getElementById("valider").hidden = false;
+       }
+        else
+        {
+           document.getElementById("valider").hidden = true;
+
+        }
+
+    }
+
+    function clearPopup()
+    {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+
+        today = yyyy + '-' + mm + '-' + dd;
+        document.getElementById("DateLimite").setAttribute("min", today);
+        document.getElementById("valider").hidden = false;
+        document.getElementById("ConfirmerLabel").hidden = true;
+        document.getElementById("confirmation").hidden = true;
+        document.getElementById("message").innerText = "";
+        document.getElementById("PhoneT").value = "";
+        document.getElementById("confirmation").checked = false;
+    }
+    function showError() {
+        if ($('#PhoneT').val().length == 0) { $('#PhoneTError').show(); }
+        if ($('#DateLimite').val().length == 0) { $('#DateLimiteError').show(); }
+        if ($('#HeureLimite').val().length == 0) { $('#HeureLimiteError').show(); }
+        if ($('#id_choisi').val() == null) { $('#id_choisiError').show(); }
+    }
+
+    function hideError() {
+        if ($('#PhoneT').val() != null) { $('#PhoneTError').hide(); }
+        if ($('#DateLimite').val() != null) { $('#DateLimiteError').hide(); }
+        if ($('#HeureLimite').val() != null) { $('#HeureLimiteError').hide(); }
+        if ($('#id_choisi').val() != null) { $('#id_choisiError').hide(); }
+
+    }
+
+</script>
+
+<!--EDITE FA-->
+
+
+<!-- SRIPT MODIFIER PATIENT-->
+<script>
+
+    $('#SurnameErrorM').hide();
+    $('#NameErrorM').hide();
+    $('#PhoneTErrorM').hide();
+    $('#BirthErrorM').hide();
+
+    function showErrorM() {
+
+
+
+        if ($('#NameM').val().length == 0) {  $('#NameErrorM').show();}
+        else if ($('#SurnameM').val().length == 0) { $('#SurnameErrorM').show(); }
+        else if ($('#PhoneTM').val().length == 0) { $('#PhoneTErrorM').show(); }
+        else if ($('#myDateM').val().length == 0) { $('#BirthErrorM').show(); }
+        else { modifierPatient() }
+    }
+
+    function modifierPatient()
+    {
+        
+        document.getElementById("smsM").innerText=null
+        document.getElementById("messageM").innerText = null
+
+        $.post('@Url.Action("modifierPatient")',
+            {
+                Accompagner: $('#AccompagnerM').val(),
+                Name: $('#NameM').val(),
+                Surname: $('#SurnameM').val(),
+                Gender: $('#GenderM').val(),
+                Birth: $('#myDateM').val(),
+                Adresse: $('#AdresseM').val(),
+                Profession: $('#ProfessionM').val(),
+                Phone: $('#PhoneM').val(),
+                // ID du patient qu'on veut modifier
+                No: @Html.Raw(Json.Encode(@ViewBag.No))
+            },
+            function (reponse)
+            {
+
+                switch (reponse.code) {
+                    case 200:
+                        document.getElementById("smsM").innerText = null
+                        document.getElementById("messageM").innerText = reponse.message
+                        setTimeout(() => { window.location.reload() }, 1000);
+                        break;
+                    case 201:
+                        document.getElementById("messageM").innerText = null
+                        document.getElementById("smsM").innerText = reponse.message
+                        break;
+                    default:
+                        document.getElementById("messageM").innerText = null
+                        document.getElementById("smsM").innerText = reponse.message
+
+                }
+
+
+
+            }).fail(function (xhr, status, error) {
+                document.getElementById("smsM").innerText = " Une erreur interne est survenue"
+
+            });
+
+    }
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+    if (mm < 10) {
+        mm = '0' + mm;
+    }
+
+    today = yyyy + '-' + mm + '-' + dd;
+    document.getElementById("myDateM").setAttribute("max", today);
+
+</script>
+
+
+<script>
+    const phoneInputFieldM = document.querySelector("#PhoneTM");
+    const phoneInputM = window.intlTelInput(phoneInputFieldM, {
+        // allowDropdown: false,
+        // autoHideDialCode: false,
+        autoPlaceholder: "off",
+        // dropdownContainer: document.body,
+        //  excludeCountries: ["us"],
+        formatOnDisplay: false,
+        /*  geoIpLookup: function(callback) {
+            $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+              var countryCode = (resp && resp.country) ? resp.country : "sn";
+              callback(countryCode);
+           });
+          },*/
+        //hiddenInput: "full_number",
+        initialCountry: "sn",
+        //localizedCountries: { 'sn': 'Senegal' },
+        nationalMode: true,
+        onlyCountries: ['dz', 'ao', 'bj', 'bw', 'bf', 'bi', 'cm', 'cv', 'cf', 'td', 'km', 'cg', 'cd', 'ci', 'dj', 'eg',
+            'gk', 'er', 'et', 'ga', 'gm', 'gh', 'gn', 'gw', 'ke', 'ls', 'lr', 'ly', 'mj', 'ml', 'mw', 'mr', 'mu', 'yt',
+            'ma', 'mz', 'na', 'ne', 'ng', 're', 'rw', 'st', 'sn', 'sc', 'sl', 'so', 'za', 'ss', 'sd', 'sz', 'tz',
+            'tg', 'tn', 'ug', 'eh', 'zm', ' zw'],
+        // placeholderNumberType: "MOBILE",
+        // preferredCountries: ['cn', 'jp'],
+        separateDialCode: true,
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+
+    $('#PhoneTM').on("countrychange", function (event) {
+
+        // Get the selected country data to know which country is selected.
+        var selectedCountryData = phoneInputM.getSelectedCountryData();
+
+        // Get an example number for the selected country to use as placeholder.
+        newPlaceholder = intlTelInputUtils.getExampleNumber(selectedCountryData.iso2, true, intlTelInputUtils.numberFormat.INTERNATIONAL),
+
+            // Reset the phone number input.
+            phoneInputM.setNumber("");
+
+        // Convert placeholder as exploitable mask by replacing all 1-9 numbers with 0s
+        mask = newPlaceholder.replace(/[1-9]/g, "0");
+
+        // Apply the new mask for the input
+        $(this).mask(mask);
+    });
+
+    function ouvrirModifierPatientModal()
+    {
+
+        document.getElementById('modifierPatient').style.display = 'block';
+       
+
+        document.getElementById("NumeroFormatM").style.display = 'none';
+       
+        document.getElementById('patientIDM').value = @Html.Raw(Json.Encode(ViewBag.No));
+        var date =  @Html.Raw(Json.Encode(Model.Birth))
+        $('#AccompagnerM').val( @Html.Raw(Json.Encode(Model.Acc))),
+                $('#NameM').val( @Html.Raw(Json.Encode(Model.Name))),
+                $('#SurnameM').val( @Html.Raw(Json.Encode(Model.Surname))),
+                $('#GenderM').val( @Html.Raw(Json.Encode(Model.Gender))),
+               $('#myDateM').val(new Date(Number(date.split("/")[1].split("(")[1].split(")")[0])).toJSON().slice(0, 10)),
+                $('#AdresseM').val( @Html.Raw(Json.Encode(Model.Adresse))),
+                $('#ProfessionM').val( @Html.Raw(Json.Encode(Model.Profession))),
+                 phoneInputM.setNumber("+" + @Html.Raw(Json.Encode(Model.Telephone)))
+        $('#PhoneM').val( @Html.Raw(Json.Encode(Model.Telephone)))
+        // Recuper la date de naissance dans le champ
+        console.log( @Html.Raw(Json.Encode(Model.Adresse)))
+
+
+
+    }
+    function showPhoneM() {
+        if ($('#NameM').val() != null) { $('#NameErrorM').hide(); }
+        if ($('#SurnameM').val() != null) { $('#SurnameErrorM').hide(); }
+        if ($('#PhoneTM').val() != null) { $('#PhoneTErrorM').hide(); }
+        if ($('#myDateM').val() != null) { $('#BirthErrorM').hide(); }
+
+        if (phoneInput.isValidNumber()) {
+
+            document.getElementById("NumeroFormatM").style.display = 'none';
+            document.getElementById("PhoneParaM").style.borderColor = "#DFE3E7";
+            document.getElementById("PhoneM").value = phoneInputM.getSelectedCountryData().dialCode + "" + document.getElementById("PhoneTM").value;
+        }
+        else {
+
+            document.getElementById("NumeroFormatM").style.display = 'none';
+            document.getElementById("PhoneParaM").style.borderColor = "#DFE3E7";
+            document.getElementById("PhoneM").value = phoneInputM.getSelectedCountryData().dialCode + "" + document.getElementById("PhoneTM").value;
+
+        }
+
+    }
+
+    function hideErrorM() {
+
+        if ($('#NameM').val() != null) { $('#NameErrorM').hide(); }
+        if ($('#SurnameM').val() != null) { $('#SurnameErrorM').hide(); }
+        if ($('#PhoneTM').val() != null) { $('#PhoneTErrorM').hide(); }
+        if ($('#myDateM').val() != null) { $('#BirthErrorM').hide(); }
+
+
+    }
+    function isNumberKey2(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+
+</script>
+<!--FIN MODIFIER-->

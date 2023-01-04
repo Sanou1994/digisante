@@ -1,0 +1,82 @@
+﻿@{
+    ViewBag.Title = "Activation";
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
+    <link rel="icon" type="~/image/png" href="~/images/hosto.ico">
+    <title>
+        @ViewBag.Title
+    </title>
+    <!--     Fonts and icons     -->
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+    <!-- Nucleo Icons -->
+    <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <!-- CSS Files -->
+    <link id="pagestyle" href="../assets/css/material-dashboard.css?v=3.0.0" rel="stylesheet" />
+</head>
+
+<body style="background-image:url(../../Assets/img/doctor.PNG);background-repeat:no-repeat; background-position: center; background-size: 100%;">
+    <div class="container position-sticky z-index-sticky top-0">
+
+    </div>
+    <main class="main-content  mt-0">
+        <div class="page-header align-items-start min-vh-100">
+            <span class="mask  opacity-6"></span>
+            <div class="container my-auto">
+                <div class="row" >
+                    <div class="col-lg-4 col-md-8 col-12 mx-auto">
+                        <div class="card z-index-0 fadeIn3 fadeInBottom" style="border: solid; background: #15010C; opacity: 0.6; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                           
+                            <center> <p style="background-color:red;color:white">@ViewBag.message</p></center>
+                            <div class="card-body">
+                                <center> <p style=" color: red">@TempData["sms"]</p></center>
+                                <form role="form" class="text-start" method="post" action="@Url.Action("Activation","Home")">
+                                    <div class="form-check form-switch d-flex align-items-start ">
+                                        <p style="color: white" id="message"></p>
+                                    </div>
+                                    <div class="input-group input-group-outline">
+                                        <input type="text" style="color:white" placeholder="Veuillez entrer votre code d'activation svp" onkeypress="return isNumberKey2(this.id);" class="form-control" name="code" required>
+                                    </div>
+                                    <div class="text-center">
+                                        <button type="submit" class="btn  w-100 my-4 mb-2" style="background-color:white; color:black; opacity:0.8">Valider</button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+
+
+    <script>
+        function isNumberKey2(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode;
+            if (charCode != 46 && charCode > 31
+                && (charCode < 48 || charCode > 57))
+                return false;
+
+            return true;
+        }
+    </script>
+</body>
+
+</html>
+

@@ -1,0 +1,515 @@
+﻿@model OrdonnanceList
+@using PagedList.Mvc;
+@using digi_sante.Models;
+@{
+    ViewBag.Title = "AnalyseList";
+
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<style>
+
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+,
+<div class="container-fluid p-4" style="margin-top:-30px">
+    <div class="row">
+        <div class="col-12">
+            <div class="card my-4">
+
+                <div class="card-header">
+                    <div class=" shadow-primary border-radius-lg pt-4 pb-3" style="border: solid; font-size: 30px; background-color: #03DAFC; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        @if (ViewBag.sms != null)
+                        {
+                            <h3 class="text-capitalize  text-center" style="color:white">
+                                @ViewBag.sms
+                            </h3>
+
+                        }
+                        else
+                        {
+                            <h3 class="text-capitalize  text-center" style="color:white">
+                                @ViewBag.message 
+
+                            </h3>
+
+                        }
+                    </div>
+                </div>
+                <center> <p style="background-color:white;color:green">@TempData["lockOrdonnanceList"]</p></center>
+
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <center style="margin-bottom:5px">
+                            <div class="row" style="width:100%; margin-bottom:10px">
+                                <div class="col-lg-8 col-sm-8 col-md-8 col-xl-8">
+                                    @using (Html.BeginForm("OrdonnanceList", "Admin", FormMethod.Get))
+                                    {
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <a><input type="text" value="@ViewBag.No" name="patientID" class="form-control" hidden /></a>
+                                                    <a><input type="text" name="searching" class="form-control" style="background-color:whitesmoke;width:96%;margin-top:10px" placeholder=" Chercher par date ,numéro" /></a>
+                                                </div>
+                                                <div class="col-6 pt-2">
+                                                    <button class="btn btn-primary" style="float: left; background-color: #03DAFC;"> <span class="fa fa-search"></span>Rechercher</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="col-lg-2 col-sm-2 col-md-2 col-xl-2 pt-2">
+                                    <a href="@Url.Action("OrdonnanceList","Admin" , new { No=ViewBag.No})" class="btn btn-primary" style="float: right; background-color: #03DAFC; width: 100%">  Initialiser</a>
+                                </div>
+
+                            </div>
+                        </center>
+
+                        @if (Model.ordonnances.Count < 1)
+                        {
+                            <center>
+                                <h2>Aucun analyse  disponible</h2>
+
+                            </center>
+                        }
+                        else
+                        {
+                            <table class="table align-items-center mb-0" id="tableID" style="width:100%">
+
+
+                                <thead>
+                                    <tr>
+                                        <th style="display:none"></th>
+                                        <th>Numéro </th>
+                                        <th>Date</th>
+                                        <th>Détails</th>
+                                        <th></th>
+                                        <th>Action</th>
+                                        <th></th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var a in Model.ordonnances)
+                                    {
+                                        <tr>
+                                            <td style="color:black">
+                                                @a.ordonnanceID
+
+                                            </td>
+
+                                            <td style="color:black">
+
+                                                @a.date_ordonnance.ToString()
+
+
+                                            </td>
+                                           
+
+                                            <td>
+                                                @if (@Model.detail_ordonnances.FindAll(b => b.ordonnanceID == a.ordonnanceID).Count != 0)
+                                                {
+                                                    <a id="@a.ordonnanceID" onclick="testclick2(this.id);" class="btn btn-primary" style="color: white; background-color: #6d7fcc; ">
+                                                        <span class="fa fa-eye"></span>Voir
+                                                    </a>
+
+                                                   
+                                                }
+                                                else
+                                                {
+                                                    <button  class="btn btn-primary" style="color: white; background-color: #6d7fcc; " disabled>
+                                                        <span class="fa fa-eye"></span>Voir
+                                                    </button>
+                                                }
+
+                                            </td>
+
+                                           
+
+                                            <td>
+                                                <div class="col-lg-2 pt-2">
+                                                    <a onclick="partager('SUIVI')" class="btn btn-primary" style="color: white; background-color: #6d7fcc; ">
+                                                        <span class="fa fa-share"></span>Partager
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="col-lg-2 pt-2">
+                                                    <a href="@Url.Action("PrintPrescription","Admin", new {pres=a.ordonnanceID})" target="_blank" class="btn btn-primary" style="color: white; background-color: #6d7fcc; ">
+                                                        <span class="fa fa-print"></span>Imprimer
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                    }
+                                </tbody>
+                            </table>
+
+
+
+                        }
+
+
+
+
+
+                    </div>
+                    <center>
+
+                        <div class="pagination" style="width:200px;margin-right:2.5%;margin-left:2.5%">
+                            @Html.PagedListPager(Model.ordonnances, page => Url.Action("OrdonnanceList", new { page, searching = ViewBag.CurrentFilter }) + "#Product", new PagedListRenderOptions { MaximumPageNumbersToDisplay = 4, ContainerDivClasses = new List<string> { "MenuTab", "MenuTab" }, LiElementClasses = new List<string> { "pagination-bar", "pagination-bar" }, DelimiterBetweenPageNumbers = "-" })
+
+                        </div>
+                    </center>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<div id="docteur" class="modal container-fluid ">
+    @using (Html.BeginForm("configuerPolitiqueAccess", "Admin", FormMethod.Post))
+    {
+        <div class="container" style="width: 70%;">
+            <div class="row" style="background-color:white;margin-top:10px ;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                <div class="panel panel-primary">
+                    <div class="panel-heading" style="border: solid; background: #6d7fcc; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <center>
+                            <a style="color:white;font-weight:bold">Configurer la politique d'accès </a>
+                            <button class="btn btn-primary" onclick="document.getElementById('docteur').style.display='none'" style=" float:right;background-color:white;color:black;margin-top:5px;">X</button>
+                        </center>
+                    </div>
+                    <br />
+                    <center> <p style="color:red" id="message"></p></center>
+                    <br />
+                    <div class="row">
+                        <input name="idPatient" value="@ViewBag.Ids" type="text" class="form-control" hidden>
+                        <div class="col-lg-12">
+                            <div>
+                                <label class="text" style="width:100%">T&eacute;l&eacute;phone  <span id="NumeroFormat" style="color:red">Numero Format invalid</span></label>
+                                <p id="PhonePara" style="border-style: solid; border-width: 1px; border-radius: 5px; border-color: #DFE3E7 "><input name="PhoneT" id="PhoneT" onclick="clearPopup()" onchange="checkIfPhoneNumberExist()" type="tel" class="form-control " required></p>
+                            </div>
+                            <input name="Phone" id="Phone" type="text" class="form-control" hidden>
+                            <p class="text-danger" id="PhoneTError" style="font-size: 80%;font-weight: bold">Veuillez saisir le téléphone svp </p>
+
+                            <div class="form-check form-switch d-flex  mb-3">
+                                <input class="form-check-input" type="checkbox" onchange="checkConfirmationButton()" id="confirmation" onclick="" hidden>
+                                <label class="text" style="margin-left:10px;" id="ConfirmerLabel" hidden>Confirmer</label>
+                            </div>
+                            <div class="input-group input-group-outline mb-3">
+                                <label class="text" style="width:100%">Choisir Analyse</label>
+                                <select class="form-control" onchange="hideError()" style="width: 100%; height: 40px; background-color: whitesmoke " name="id_choisi" id="id_choisi" required>
+                                    <option value="" selected disabled hidden>Choisir Analyse</option>
+                                    
+                                </select>
+                            </div>
+                            <p class="text-danger" id="id_choisiError" style="font-size: 80%;font-weight: bold">Veuillez choisir une analyse svp </p>
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="input-group input-group-outline mb-3">
+                                <label class="text" style="width:100%">Date Limite</label>
+                                <input name="DateLimite" onchange="showDate()" id="DateLimite" type="date" class="form-control" required>
+                            </div>
+                        </div>
+                        <input name="DateLimiteLong" id="DateLimiteLong" type="text" class="form-control" hidden>
+                        <input name="Type_dossier" id="Type_dossier" type="text" class="form-control" hidden>
+
+                        <div class="col-lg-6">
+                            <div class="input-group input-group-outline mb-3">
+                                <label class="text" style="width:100%">Heure Limite</label>
+                                <input type="time" id="HeureLimite" value="00:00" onchange="showHeure()" name="HeureLimite" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <center style="margin-top:20px;">
+                                <p class="text-danger" id="DateLimiteError" style="font-size: 80%;font-weight: bold">Veuillez entrer la date svp </p>
+                                <p class="text-danger" id="HeureLimiteError" style="font-size: 80%;font-weight: bold">Veuillez choisir l'heure svp </p>
+
+                            </center>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <center style="margin-top:20px;">
+                                <button class="btn btn-primary" onclick="showError()" style=" background-color:black;margin:20px;" id="valider">Valider</button>
+                            </center>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+<div id="myModal" class="modal">
+
+    <!-- Modal content -->
+
+
+</div>
+
+<script type="text/javascript">
+    // In your Javascript (external .js resource or <script> tag)
+    $(document).ready(function () {
+        $('#id_choisi').select2();
+    });
+
+    function testclick2(id) {
+        var modal = document.getElementById('myModal');
+        modal.style.display = "block";
+
+        $.ajax({
+            type: "POST",
+            url: "/Admin/SelectOrdo",
+            data: '{ordo:"' + id + '"}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "html",
+            success: function (response) {
+                $('#myModal').html(response);
+                $('#myModal').display();
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    };
+</script>
+<script>
+    if (localStorage.getItem("clickStatus") == 'true') {
+        document.getElementById("interne").style.display = 'none';
+        document.getElementById("externe").style.display = 'block';
+
+
+    }
+    else {
+        document.getElementById("interne").style.display = 'block';
+        document.getElementById("externe").style.display = 'none';
+
+    }
+
+
+</script>
+<script type="text/javascript">
+    document.getElementById("NumeroFormat").style.display = 'none';
+    const phoneInputField = document.querySelector("#PhoneT");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+        // allowDropdown: false,
+        // autoHideDialCode: false,
+           autoPlaceholder: "off",
+        // dropdownContainer: document.body,
+        //  excludeCountries: ["us"],
+        // formatOnDisplay: false,
+        /*  geoIpLookup: function(callback) {
+            $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+              var countryCode = (resp && resp.country) ? resp.country : "sn";
+              callback(countryCode);
+           });
+          },*/
+        //hiddenInput: "full_number",
+        initialCountry: "sn",
+        //localizedCountries: { 'sn': 'Senegal' },
+        nationalMode: true,
+        onlyCountries: ['dz', 'ao', 'bj', 'bw', 'bf', 'bi', 'cm', 'cv', 'cf', 'td', 'km', 'cg', 'cd', 'ci', 'dj', 'eg',
+            'gk', 'er', 'et', 'ga', 'gm', 'gh', 'gn', 'gw', 'ke', 'ls', 'lr', 'ly', 'mj', 'ml', 'mw', 'mr', 'mu', 'yt',
+            'ma', 'mz', 'na', 'ne', 'ng', 're', 'rw', 'st', 'sn', 'sc', 'sl', 'so', 'za', 'ss', 'sd', 'sz', 'tz',
+            'tg', 'tn', 'ug', 'eh', 'zm', ' zw'],
+        // placeholderNumberType: "MOBILE",
+        // preferredCountries: ['cn', 'jp'],
+        separateDialCode: true,
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+
+    function partager() {
+        $('#PhoneTError').hide();
+        $('#DateLimiteError').hide();
+        $('#HeureLimiteError').hide();
+        $('#id_choisiError').hide();
+        clearPopup();
+        document.getElementById('docteur').style.display = 'block'
+        document.getElementById("HeureLimite").disabled = true;
+        document.getElementById("Type_dossier").value = "ANALYSE";
+
+    }
+    function showHeure() {
+        if ($('#PhoneT').val() != null) { $('#PhoneTError').hide(); }
+        if ($('#DateLimite').val() != null) { $('#DateLimiteError').hide(); }
+        if ($('#HeureLimite').val() != null) { $('#HeureLimiteError').hide(); }
+        if ($('#id_choisi').val() != null) { $('#id_choisiError').hide(); }
+
+        const dateControlHeure = document.getElementById("HeureLimite");
+        const dateControlDate = document.getElementById("DateLimite");
+        document.getElementById("DateLimiteLong").value = dateControlDate.valueAsNumber + dateControlHeure.valueAsNumber
+    }
+
+    function showDate()
+    {
+        if ($('#PhoneT').val() != null) { $('#PhoneTError').hide(); }
+        if ($('#DateLimite').val() != null) { $('#DateLimiteError').hide(); }
+        if ($('#HeureLimite').val() != null) { $('#HeureLimiteError').hide(); }
+        if ($('#id_choisi').val() != null) { $('#id_choisiError').hide(); }
+
+        const dateControlDate = document.getElementById("DateLimite");
+        document.getElementById("DateLimiteLong").value = dateControlDate.valueAsNumber
+        document.getElementById("HeureLimite").disabled = false;
+
+    }
+
+    function checkIfPhoneNumberExist()
+    {
+        if ($('#PhoneT').val() != null) { $('#PhoneTError').hide(); }
+        if ($('#DateLimite').val() != null) { $('#DateLimiteError').hide(); }
+        if ($('#HeureLimite').val() != null) { $('#HeureLimiteError').hide(); }
+        if ($('#id_choisi').val() != null) { $('#id_choisiError').hide(); }
+
+        if (phoneInput.isValidNumber()) {
+            document.getElementById("NumeroFormat").style.display = 'none';
+            document.getElementById("PhonePara").style.borderColor = "#DFE3E7";
+            document.getElementById("Phone").value = phoneInput.getSelectedCountryData().dialCode + "" + document.getElementById("PhoneT").value;
+            const phone = document.getElementById("Phone").value;
+        let users = @Html.Raw(Json.Encode(@Model.utilisateurs));
+        const user = users.filter(user => user.telephone == Number(phone))[0];
+        if (user!= null)
+        {
+
+            if (user.status == false)
+            {
+                document.getElementById("valider").hidden = false;
+                document.getElementById("message").innerText = "Ce numéro existe déjà , voulez-vous continuer ?";
+                document.getElementById("ConfirmerLabel").hidden = false;
+                document.getElementById("confirmation").hidden = false;
+                document.getElementById("valider").hidden = true;
+            }
+            else
+            {
+                if (user.validite_compte_temporaire == true) {
+                    document.getElementById("ConfirmerLabel").hidden = true;
+                    document.getElementById("confirmation").hidden = true;
+                    document.getElementById("message").innerText = "Ce numéro est déja utilisé par un " + user.titre + " qui a déjà une déléguation encours";
+                    document.getElementById("valider").hidden = true;
+                }
+                else
+                {
+                    document.getElementById("valider").hidden = false;
+                    document.getElementById("message").innerText = "Ce numéro est déja utilisé par un " + user.titre;
+                    document.getElementById("ConfirmerLabel").hidden = false;
+                    document.getElementById("confirmation").hidden = false;
+                    document.getElementById("valider").hidden = true;
+                }
+
+            }
+        }
+        }
+        else {
+            document.getElementById("PhonePara").style.borderColor = "red";
+            document.getElementById("NumeroFormat").style.display = 'block';
+            document.getElementById("PhoneT").value = null;
+
+        }
+
+
+
+    }
+
+    function checkConfirmationButton()
+    {
+       if (document.getElementById("confirmation").checked)
+       {
+           document.getElementById("valider").hidden = false;
+       }
+        else
+        {
+           document.getElementById("valider").hidden = true;
+
+        }
+
+    }
+
+    function clearPopup()
+    {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+
+        today = yyyy + '-' + mm + '-' + dd;
+        document.getElementById("DateLimite").setAttribute("min", today);
+        document.getElementById("valider").hidden = false;
+        document.getElementById("ConfirmerLabel").hidden = true;
+        document.getElementById("confirmation").hidden = true;
+        document.getElementById("message").innerText = "";
+        document.getElementById("PhoneT").value = "";
+        document.getElementById("confirmation").checked = false;
+    }
+    function showError() {
+        if ($('#PhoneT').val().length == 0) { $('#PhoneTError').show(); }
+        if ($('#DateLimite').val().length == 0) { $('#DateLimiteError').show(); }
+        if ($('#HeureLimite').val().length == 0) { $('#HeureLimiteError').show(); }
+        if ($('#id_choisi').val() == null) { $('#id_choisiError').show(); }
+    }
+
+    function hideError() {
+        if ($('#PhoneT').val() != null) { $('#PhoneTError').hide(); }
+        if ($('#DateLimite').val() != null) { $('#DateLimiteError').hide(); }
+        if ($('#HeureLimite').val() != null) { $('#HeureLimiteError').hide(); }
+        if ($('#id_choisi').val() != null) { $('#id_choisiError').hide(); }
+
+    }
+
+</script>

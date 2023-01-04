@@ -1,0 +1,614 @@
+﻿@model Tuple<PagedList.IPagedList<Hospitalisation>, List<Detail_hospitalisation>, List<Utilisateur>, PagedList.IPagedList<Hospitalisation>>
+@using PagedList.Mvc;
+@using digi_sante.Models;
+@{
+    ViewBag.Title = "Hospitalisation Liste";
+
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<style>
+
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+
+<div class="container-fluid p-4" style="margin-top:-30px">
+    <div class="row">
+        <div class="col-12">
+            <div class="card my-4">
+
+                <div class="card-header">
+                    <div class=" shadow-primary border-radius-lg pt-4 pb-3" style="border: solid; font-size: 30px; background-color: #03DAFC; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        @if (ViewBag.sms != null)
+                        {
+                            <h3 class="text-capitalize  text-center" style="color:white">
+                                @ViewBag.sms
+                            </h3>
+
+                        }
+                        else
+                        {
+                            <h3 class="text-capitalize  text-center" style="color:white">
+                                @ViewBag.message
+
+                            </h3>
+
+                        }
+                    </div>
+                </div>
+                <center> <p style="background-color:white;color:green">@TempData["lockHospitalisationList"]</p></center>
+
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <center style="margin-bottom:5px">
+                            <div class="row" style="width:100%; margin-bottom:10px">
+                                <div class="col-lg-8 col-sm-8 col-md-8 col-xl-8" style="background-color: #03DAFC; color: white">
+                                    <center style="width:100%;color:white;">Filtrage par un champ de la liste</center>
+                                    @using (Html.BeginForm("HospitalisationList", "Admin", FormMethod.Get))
+                                    {
+                                        <div class="container">
+                                            <div class="col-4 ">
+                                                <a><input type="text" id="searching" name="searching" onchange="hideSpaceWord()" value="@ViewBag.searching" placeholder=" chercher par  numéro" class="form-control" style="background-color:whitesmoke;width:96%;margin-top:10px" /></a>
+                                            </div>
+                                            <a><input type="text" value="@ViewBag.No" name="No" class="form-control" hidden /></a>
+
+                                            <div class="row" style="margin-top:5px;margin-bottom:5px;">
+                                                <div class="col-4 ">
+                                                    <label class="text" style="width: 100%; color: white; float: left">Date Entree </label>
+                                                    <a><input type="date" name="dateEntree" value="@ViewBag.DateDebut" id="DateDebut" class="form-control" style="background-color:whitesmoke;width:96%;margin-top:10px" /></a>
+
+                                                </div>
+                                                <div class="col-4 ">
+                                                    <label class="text" style="width:100%;color:white;float:left">Date Sortie </label>
+                                                    <a><input type="date" name="dateSortie" value="@ViewBag.FinDebut" id="FinDebut" class="form-control" style="background-color:whitesmoke;width:96%;margin-top:10px" /></a>
+                                                </div>
+                                                <div class="col-4" style="margin-top:20px">
+                                                    <button class="btn btn-primary" style="float: left;color:black; background-color:white;margin-top: 10px"> <span class="fa fa-search"></span>Rechercher&nbsp;&nbsp;</button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    }
+
+                                </div>
+                                <div class="col-lg-2 col-sm-2 col-md-2 col-xl-2 pt-2">
+                                    <a href="@Url.Action("HospitalisationList","Admin" , new { No=ViewBag.No})" class="btn btn-primary" style="float: right; background-color: #03DAFC; width: 100%">  Initialiser</a>
+                                </div>
+
+                            </div>
+                        </center>
+
+                        @if (Model.Item1.Count < 1)
+                        {
+                            <center>
+                                <h2>Aucun analyse  disponible</h2>
+
+                            </center>
+                        }
+                        else
+                        {
+                            <table class="table align-items-center mb-0" id="tableID" style="width:100%">
+
+
+                                <thead>
+                                    <tr>
+                                        <th style="display:none"></th>
+                                        <th>Numéro </th>
+                                        <th>Date entrée</th>
+                                        <th>Date sortie</th>
+                                        <th>Etat</th>
+                                        <th></th>
+                                        <th>Action</th>
+                                        <th></th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var a in Model.Item1)
+                                    {
+                                        <tr>
+                                            <td style="color:black">
+                                                @a.hospitalisationID
+
+                                            </td>
+
+                                            <td style="color:black">
+                                                @a.date_entree.ToString().Substring(0, 10)
+                                            </td>
+                                            <td style="color:black">
+                                                @if (a.date_sortie != null)
+                                                {
+                                                    <span>@a.date_sortie.ToString().Substring(0, 10)</span>
+
+                                                }
+                                                else
+                                                {
+                                                    <span> -</span>
+
+                                                }
+                                            </td>
+                                            <td style="color:black">
+                                                @if (a.date_sortie != null)
+                                                {
+                                                    <h6 class="text-capitalize  text-center" style="color:red">
+                                                        Terminée
+                                                    </h6>
+
+                                                }
+                                                else
+                                                {
+                                                    <h6 class="text-capitalize  text-center" style="color:green">
+                                                        Encours
+
+                                                    </h6>
+
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="col-lg-2 pt-2">
+                                                    <a href="@Url.Action("VoirObservationSuivi","Admin" , new { idPatient=ViewBag.No,hospitalisationID=a.hospitalisationID})" class="btn btn-primary" style="color: white; background-color: #6d7fcc; ">
+                                                        <span class="fa fa-share"></span>Voir Suivie
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="col-lg-2 pt-2">
+                                                    @if (a.date_sortie != null)
+                                                    {
+                                                        <h6 class="text-capitalize  text-center" style="color:red">
+                                                            Terminée
+                                                        </h6>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <a onclick="bloquageModal(@a.hospitalisationID)" class="btn btn-primary" style="color: white; background-color: #6d7fcc; ">
+                                                            <span class="fa fa-lock"></span>Mettre fin
+                                                        </a>
+
+                                                    }
+
+
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                <div class="col-lg-2 pt-2">
+                                                    <a onclick="partager(this.id)" id="@a.hospitalisationID" class="btn btn-primary" style="color: white; background-color: #6d7fcc; ">
+                                                        <span class="fa fa-share"></span>Partager
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="col-lg-2 pt-2">
+                                                    <a href="@Url.Action("PrintAnalyse","Admin", new {pres=a.hospitalisationID})" target="_blank" class="btn btn-primary" style="color: white; background-color: #6d7fcc; ">
+                                                        <span class="fa fa-print"></span>Imprimer
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                    }
+                                </tbody>
+                            </table>
+
+
+
+                        }
+
+
+
+
+
+                    </div>
+                    <center>
+
+                        <div class="pagination" style="width:200px;margin-right:2.5%;margin-left:2.5%">
+                            @Html.PagedListPager(Model.Item1, page => Url.Action("HospitalisationList", new { page, searching = ViewBag.CurrentFilter }) + "#Product", new PagedListRenderOptions { MaximumPageNumbersToDisplay = 4, ContainerDivClasses = new List<string> { "MenuTab", "MenuTab" }, LiElementClasses = new List<string> { "pagination-bar", "pagination-bar" }, DelimiterBetweenPageNumbers = "-" })
+
+                        </div>
+                    </center>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<div id="docteur" class="modal container-fluid ">
+    @using (Html.BeginForm("configuerPolitiqueAccess", "Admin", FormMethod.Post))
+    {
+        <div class="container" style="width: 70%;">
+            <div class="row" style="background-color:white;margin-top:10px ;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                <div class="panel panel-primary">
+                    <div class="panel-heading" style="border: solid; background: #6d7fcc; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <center>
+                            <a style="color:white;font-weight:bold">Configurer la politique d'accès </a>
+                            <button class="btn btn-primary" onclick="document.getElementById('docteur').style.display='none'" style=" float:right;background-color:white;color:black;margin-top:5px;">X</button>
+                        </center>
+                    </div>
+                    <br />
+                    <center> <p style="color:red" id="message"></p></center>
+                    <br />
+                    <div class="row">
+                        <input name="idPatient" value="@ViewBag.No" type="text" class="form-control" hidden>
+                        <div class="col-lg-12">
+                            <div>
+                                <label class="text" style="width:100%">T&eacute;l&eacute;phone  <span id="NumeroFormat" style="color:red">Numero Format invalid</span></label>
+                                <p id="PhonePara" style="border-style: solid; border-width: 1px; border-radius: 5px; border-color: #DFE3E7 "><input name="PhoneT" id="PhoneT" onclick="clearPopup()" onchange="checkIfPhoneNumberExist()" type="tel" class="form-control " required></p>
+                            </div>
+                            <input name="Phone" id="Phone" type="text" class="form-control" hidden>
+                            <p class="text-danger" id="PhoneTError" style="font-size: 80%;font-weight: bold">Veuillez saisir le téléphone svp </p>
+
+                            <div class="form-check form-switch d-flex  mb-3">
+                                <input class="form-check-input" type="checkbox" onchange="checkConfirmationButton()" id="confirmation" hidden>
+                                <label class="text" style="margin-left:10px;" id="ConfirmerLabel" hidden>Confirmer</label>
+                            </div>
+
+                            <div>
+                                <div class="input-group input-group-outline ">
+                                    <label class="text" style="width:100%;color:black">Numéro Hospitalisation</label>
+                                    <input type="text" class="form-control" onchange="hideError()" style="background-color:whitesmoke" name="id_choisi" id="id_choisi" disabled>
+                                </div>
+                            </div>                          
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="input-group input-group-outline mb-3">
+                                <label class="text" style="width:100%">Date Limite</label>
+                                <input name="DateLimite" onchange="showDate()" id="DateLimite" type="date" class="form-control" required>
+                            </div>
+                        </div>
+                        <input name="DateLimiteLong" id="DateLimiteLong" type="text" class="form-control" hidden>
+                        <input name="Type_dossier" id="Type_dossier" type="text" class="form-control" hidden>
+
+                        <div class="col-lg-6">
+                            <div class="input-group input-group-outline mb-3">
+                                <label class="text" style="width:100%">Heure Limite</label>
+                                <input type="time" id="HeureLimite" value="00:00" onchange="showHeure()" name="HeureLimite" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <center style="margin-top:20px;">
+                                <p class="text-danger" id="DateLimiteError" style="font-size: 80%;font-weight: bold">Veuillez entrer la date svp </p>
+                                <p class="text-danger" id="HeureLimiteError" style="font-size: 80%;font-weight: bold">Veuillez choisir l'heure svp </p>
+
+                            </center>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <center style="margin-top:20px;">
+                                <button class="btn btn-primary" onclick="showError()" style=" background-color:black;margin:20px;" id="valider">Valider</button>
+                            </center>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+<div id="myModal" class="modal">
+
+    <!-- Modal content -->
+
+
+</div>
+<div id="bloquageModal" class="modal container-fluid ">
+    <div class="container-fluid" style="width:50%">
+        <div class="row">
+            <div class="col-12">
+                <div class="card p-4">
+
+                    <center> <p style="background-color: white; color: red">Voulez-vous mettre fin à cette hospitalisation ?</p></center>
+                    <div class="card-body">
+                        <div class="col-lg-6">
+                            <a class="btn btn-primary" onclick="bloquage()" style="color: white; background-color: #6d7fcc; width: 100%"> Oui</a>
+                        </div>
+                        <input type="text" class="form-control" id="hospiID" name="No" hidden />
+
+                        <div class="col-lg-6">
+                            <a class="btn btn-primary" onclick=" document.getElementById('bloquageModal').style.display = 'none'" style="color: white; background-color: #6d7fcc; width: 100% ">Non</a>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<script type="text/javascript">
+    // In your Javascript (external .js resource or <script> tag)
+    $(document).ready(function () {
+        $('#id_choisi').select2();
+    });
+
+    function testclick2(id) {
+        var modal = document.getElementById('myModal');
+        modal.style.display = "block";
+
+        var exam = 1;
+        // var name = chatinput1;
+        $.ajax({
+            type: "POST",
+            url: "/Admin/AnalyseFirst",
+            data: '{analyseID:"' + id + '"}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "html",
+            success: function (response) {
+                $('#myModal').html(response);
+                $('#myModal').display();
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    };
+</script>
+<script>
+    if (localStorage.getItem("clickStatus") == 'true') {
+        document.getElementById("interne").style.display = 'none';
+        document.getElementById("externe").style.display = 'block';
+
+
+    }
+    else {
+        document.getElementById("interne").style.display = 'block';
+        document.getElementById("externe").style.display = 'none';
+
+    }
+
+
+</script>
+<script type="text/javascript">
+    document.getElementById("NumeroFormat").style.display = 'none';
+    const phoneInputField = document.querySelector("#PhoneT");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+        // allowDropdown: false,
+        // autoHideDialCode: false,
+           autoPlaceholder: "off",
+        // dropdownContainer: document.body,
+        //  excludeCountries: ["us"],
+        // formatOnDisplay: false,
+        /*  geoIpLookup: function(callback) {
+            $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+              var countryCode = (resp && resp.country) ? resp.country : "sn";
+              callback(countryCode);
+           });
+          },*/
+        //hiddenInput: "full_number",
+        initialCountry: "sn",
+        //localizedCountries: { 'sn': 'Senegal' },
+        nationalMode: true,
+        onlyCountries: ['dz', 'ao', 'bj', 'bw', 'bf', 'bi', 'cm', 'cv', 'cf', 'td', 'km', 'cg', 'cd', 'ci', 'dj', 'eg',
+            'gk', 'er', 'et', 'ga', 'gm', 'gh', 'gn', 'gw', 'ke', 'ls', 'lr', 'ly', 'mj', 'ml', 'mw', 'mr', 'mu', 'yt',
+            'ma', 'mz', 'na', 'ne', 'ng', 're', 'rw', 'st', 'sn', 'sc', 'sl', 'so', 'za', 'ss', 'sd', 'sz', 'tz',
+            'tg', 'tn', 'ug', 'eh', 'zm', ' zw'],
+        // placeholderNumberType: "MOBILE",
+        // preferredCountries: ['cn', 'jp'],
+        separateDialCode: true,
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+
+    function partager(id) {
+        $('#PhoneTError').hide();
+        $('#DateLimiteError').hide();
+        $('#HeureLimiteError').hide();
+        $('#id_choisiError').hide();
+        clearPopup();
+        document.getElementById('docteur').style.display = 'block'
+        document.getElementById("HeureLimite").disabled = true;
+        document.getElementById("Type_dossier").value = "SUIVI";
+        document.getElementById("id_choisi").value = id;
+
+        
+    }
+    function showHeure() {
+        if ($('#PhoneT').val() != null) { $('#PhoneTError').hide(); }
+        if ($('#DateLimite').val() != null) { $('#DateLimiteError').hide(); }
+        if ($('#HeureLimite').val() != null) { $('#HeureLimiteError').hide(); }
+        if ($('#id_choisi').val() != null) { $('#id_choisiError').hide(); }
+
+        const dateControlHeure = document.getElementById("HeureLimite");
+        const dateControlDate = document.getElementById("DateLimite");
+        document.getElementById("DateLimiteLong").value = dateControlDate.valueAsNumber + dateControlHeure.valueAsNumber
+    }
+
+    function showDate()
+    {
+        if ($('#PhoneT').val() != null) { $('#PhoneTError').hide(); }
+        if ($('#DateLimite').val() != null) { $('#DateLimiteError').hide(); }
+        if ($('#HeureLimite').val() != null) { $('#HeureLimiteError').hide(); }
+        if ($('#id_choisi').val() != null) { $('#id_choisiError').hide(); }
+
+        const dateControlDate = document.getElementById("DateLimite");
+        document.getElementById("DateLimiteLong").value = dateControlDate.valueAsNumber
+        document.getElementById("HeureLimite").disabled = false;
+
+    }
+
+    function checkIfPhoneNumberExist()
+    {
+        if ($('#PhoneT').val() != null) { $('#PhoneTError').hide(); }
+        if ($('#DateLimite').val() != null) { $('#DateLimiteError').hide(); }
+        if ($('#HeureLimite').val() != null) { $('#HeureLimiteError').hide(); }
+        if ($('#id_choisi').val() != null) { $('#id_choisiError').hide(); }
+
+        if (phoneInput.isValidNumber()) {
+            document.getElementById("NumeroFormat").style.display = 'none';
+            document.getElementById("PhonePara").style.borderColor = "#DFE3E7";
+            document.getElementById("Phone").value = phoneInput.getSelectedCountryData().dialCode + "" + document.getElementById("PhoneT").value;
+            const phone = document.getElementById("Phone").value;
+        let users = @Html.Raw(Json.Encode(@Model.Item3.ToList()));
+        const user = users.filter(user => user.telephone == Number(phone))[0];
+        if (user!= null)
+        {
+
+            if (user.status == false)
+            {
+                document.getElementById("valider").hidden = false;
+                document.getElementById("message").innerText = "Ce numéro existe déjà , voulez-vous continuer ?";
+                document.getElementById("ConfirmerLabel").hidden = false;
+                document.getElementById("confirmation").hidden = false;
+                document.getElementById("valider").hidden = true;
+            }
+            else
+            {
+                if (user.validite_compte_temporaire == true) {
+                    document.getElementById("ConfirmerLabel").hidden = true;
+                    document.getElementById("confirmation").hidden = true;
+                    document.getElementById("message").innerText = "Ce numéro est déja utilisé par un " + user.titre + " qui a déjà une déléguation encours";
+                    document.getElementById("valider").hidden = true;
+                }
+                else
+                {
+                    document.getElementById("valider").hidden = false;
+                    document.getElementById("message").innerText = "Ce numéro est déja utilisé par un " + user.titre;
+                    document.getElementById("ConfirmerLabel").hidden = false;
+                    document.getElementById("confirmation").hidden = false;
+                    document.getElementById("valider").hidden = true;
+                }
+
+            }
+        }
+        }
+        else {
+            document.getElementById("PhonePara").style.borderColor = "red";
+            document.getElementById("NumeroFormat").style.display = 'block';
+            document.getElementById("PhoneT").value = null;
+
+        }
+
+
+
+    }
+
+    function checkConfirmationButton()
+    {
+       if (document.getElementById("confirmation").checked)
+       {
+           document.getElementById("valider").hidden = false;
+       }
+        else
+        {
+           document.getElementById("valider").hidden = true;
+
+        }
+
+    }
+
+    function clearPopup()
+    {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+
+        today = yyyy + '-' + mm + '-' + dd;
+        document.getElementById("DateLimite").setAttribute("min", today);
+        document.getElementById("valider").hidden = false;
+        document.getElementById("ConfirmerLabel").hidden = true;
+        document.getElementById("confirmation").hidden = true;
+        document.getElementById("message").innerText = "";
+        document.getElementById("PhoneT").value = "";
+        document.getElementById("confirmation").checked = false;
+    }
+    function showError() {
+        if ($('#PhoneT').val().length == 0) { $('#PhoneTError').show(); }
+        if ($('#DateLimite').val().length == 0) { $('#DateLimiteError').show(); }
+        if ($('#HeureLimite').val().length == 0) { $('#HeureLimiteError').show(); }
+        if ($('#id_choisi').val() == null) { $('#id_choisiError').show(); }
+    }
+
+    function hideError() {
+        if ($('#PhoneT').val() != null) { $('#PhoneTError').hide(); }
+        if ($('#DateLimite').val() != null) { $('#DateLimiteError').hide(); }
+        if ($('#HeureLimite').val() != null) { $('#HeureLimiteError').hide(); }
+        if ($('#id_choisi').val() != null) { $('#id_choisiError').hide(); }
+
+    }
+
+</script>
+<script type="text/javascript">
+    function bloquageModal(id)
+    {
+        document.getElementById('bloquageModal').style.display = 'block'
+        document.getElementById('hospiID').value = id;
+    }
+    function bloquage()
+    {
+
+        $.post('@Url.Action("mettreFinHospitalisation")', { No: document.getElementById('hospiID').value},
+                             function (reponse)
+                             {
+
+                                window.location.reload()
+
+
+                            }).fail(function (xhr, status, error)
+                            {
+                                window.location.reload()
+
+                           });
+
+    }
+
+</script>

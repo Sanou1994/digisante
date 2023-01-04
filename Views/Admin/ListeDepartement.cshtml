@@ -1,0 +1,306 @@
+﻿@model PagedList.IPagedList<digi_sante.Models.Departement>
+
+@{
+    ViewBag.Title = "ListeDepartement";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using PagedList.Mvc;
+<style>
+    table {
+        background: #f5f5f5;
+        border-collapse: separate;
+        box-shadow: inset 0 1px 0 #fff;
+        font-size: 12px;
+        line-height: 24px;
+        text-align: left;
+        width: 800px;
+    }
+
+    th {
+        background: linear-gradient(black,black);
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        box-shadow: inset 0 1px 0 black;
+        color: #fff;
+        font-weight: bold;
+        padding: 10px 15px;
+        position: relative;
+        text-shadow: 0 1px 0 #000;
+    }
+
+        th:after {
+            background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.08));
+            content: '';
+            display: block;
+            height: 25%;
+            left: 0;
+            margin: 1px 0 0 0;
+            position: absolute;
+            top: 25%;
+            width: 100%;
+        }
+
+        th:first-child {
+            border-left: 1px solid #777;
+            box-shadow: inset 1px 1px 0 black;
+        }
+
+        th:last-child {
+            box-shadow: inset -1px 1px 0 black;
+        }
+
+    td {
+        border-right: 1px solid #fff;
+        border-left: 1px solid #e8e8e8;
+        border-top: 1px solid #fff;
+        border-bottom: 1px solid #e8e8e8;
+        transition: all 300ms;
+    }
+
+        td:first-child {
+            box-shadow: inset 1px 0 0 #fff;
+        }
+
+        td:last-child {
+            border-right: 1px solid #e8e8e8;
+            box-shadow: inset -1px 0 0 #fff;
+        }
+
+    tr {
+    }
+
+        tr:nth-child(odd) td {
+            background: #f1f1f1;
+        }
+
+        tr:last-of-type td {
+            box-shadow: inset 0 -1px 0 #fff;
+        }
+
+            tr:last-of-type td:first-child {
+                box-shadow: inset 1px -1px 0 #fff;
+            }
+
+            tr:last-of-type td:last-child {
+                box-shadow: inset -1px -1px 0 #fff;
+            }
+
+    tbody:hover td {
+        color: transparent;
+        text-shadow: 0 0 3px #aaa;
+    }
+
+    tbody:hover tr:hover td {
+        color: #444;
+        text-shadow: 0 1px 0 #fff;
+    }
+
+
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+
+<div class="container-fluid p-4" style="margin-top:-30px">
+    <div class="row">
+        <div class="col-12">
+            <div class="card my-4">
+
+                <div class="card-header">
+                    <div class=" shadow-primary border-radius-lg pt-4 pb-3" style="border: solid; font-size: 30px; background-color: #03DAFC; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); ">
+                        @if (ViewBag.sms != null)
+                        {
+                            <h3 class="text-capitalize  text-center" style="color:white">
+                                @ViewBag.sms
+                            </h3>
+
+                        }
+                        else
+                        {
+                            <h3 class="text-capitalize  text-center" style="color:white">
+                                @ViewBag.message
+
+                            </h3>
+
+                        }
+                    </div>
+                </div>
+                <center> <p style="background-color:white;color:green">@TempData["lock"]</p></center>
+               
+                <div class="card-body px-0">
+                    <div class="table-responsive p-0">
+
+                        <center>
+                            <div class="row" style="width:100%; margin-bottom:10px">
+                                <div class="col-lg-8 col-sm-8 col-md-8 col-xl-8">
+                                    @using (Html.BeginForm("ListeDepartement", "Admin", FormMethod.Get))
+                                    {
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <a><input type="text" name="searching" class="form-control" style="background-color:whitesmoke;width:96%" placeholder=" Chercher département" /></a>
+                                            </div>
+                                            <div class="col-6">
+                                                <button class="btn btn-primary" style="float: left; background-color: #03DAFC; "> <span class="fa fa-search"></span>Rechercher</button>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="col-lg-2 col-sm-2 col-md-2 col-xl-2">
+                                    <a href="@Url.Action("ListeDepartement","Admin")" class="btn btn-primary" style="float: right; background-color: #03DAFC; width: 100%">  Initialiser</a>
+                                </div>
+                                <div class="col-lg-2 col-sm-2 col-md-2 col-xl-2">
+                                    <a href="@Url.Action("AjouterDepartement","Admin")" class="btn btn-primary" style="float: right; background-color: #03DAFC; width: 100%">Ajouter </a>
+                                </div>
+                            </div>
+                        </center>
+                        @if (Model.Count < 1)
+                        {
+
+                            <center>
+                                <h2>Aucun département </h2>
+                            </center>
+                        }
+                        else
+                        {
+                            <table class="table align-items-center mb-0" id="tableID" style="width:100%">
+
+
+                                <thead>
+                                    <tr>
+                                        <th>Département</th>
+                                        <th>Modifier</th>
+                                        <th>Bloquer</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var departement in Model)
+                                    {
+                                        <tr>
+                                            <td style="color:black">
+                                                @departement.nom
+                                            </td>
+                                            <td style="color:black">
+                                                <a href="@Url.Action("ModifierDepartement","Admin",new {No=departement.departementID})"><span class="fa fa-edit"></span></a>
+                                            </td>
+                                            <td style="color:black">
+                                                <a onclick="bloquageModal(@departement.departementID)"><span class="fa fa-lock"></span></a>
+                                            </td>
+                                        </tr>
+                                    }
+
+
+
+                                </tbody>
+                            </table>
+                        }
+
+
+                    </div>
+                    <center style="margin-top:2.5%;">
+                        <div class="pagination" style="width:200px;margin-right:2.5%;margin-left:2.5%">
+                            @Html.PagedListPager(Model, page => Url.Action("ListDepartement", new { page, searching = ViewBag.CurrentFilter }) + "#Product", new PagedListRenderOptions { MaximumPageNumbersToDisplay = 5, ContainerDivClasses = new List<string> { "MenuTab", "MenuTab" }, LiElementClasses = new List<string> { "pagination-bar", "pagination-bar" }, DelimiterBetweenPageNumbers = "-" })
+
+                        </div>
+                    </center>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="bloquageModal" class="modal container-fluid ">
+    <div class="container-fluid" style="width:50%">
+        <div class="row">
+            <div class="col-12">
+                <div class="card p-4">
+
+                    <center> <p style="background-color: white; color: red">Voulez-vous bloquer ce département ?</p></center>
+                    <div class="card-body">
+                        <div class="col-lg-6">
+                            <a class="btn btn-primary" onclick="bloquage()" style="color: white; background-color: #6d7fcc; width: 100%"> Oui</a>
+                        </div>
+                        <input type="text" class="form-control" id="idDepart" name="idDepart" hidden />
+
+                        <div class="col-lg-6">
+                            <a class="btn btn-primary" onclick=" document.getElementById('bloquageModal').style.display = 'none'" style="color: white; background-color: #6d7fcc; width: 100% ">Non</a>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+
+<script type="text/javascript">
+    function bloquageModal(id) {
+        document.getElementById('bloquageModal').style.display = 'block'
+        document.getElementById('idDepart').value = id;
+    }
+    function bloquage()
+    {
+
+
+
+        $.post('@Url.Action("desactiverDepartement")', { No: document.getElementById('idDepart').value},
+                             function (reponse)
+                             {
+                                 
+                                window.location.reload()
+
+
+                            }).fail(function (xhr, status, error)
+                            {
+                                window.location.reload()
+
+                           });
+
+    }
+
+</script>

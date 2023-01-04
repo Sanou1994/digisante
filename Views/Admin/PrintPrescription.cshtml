@@ -1,0 +1,95 @@
+﻿@model PrintPrescription
+
+@{
+    ViewBag.Title = "-";
+   
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+@using digi_sante.Models;
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+<body>
+    <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("Consultation","Admin" , new { alse = @Model.numeroConsultation } )">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i>&nbsp;Retour</a>
+    <center><input type="submit" onclick="printCertificate()" value="Imprimer" class="btn-blue" Text="Enregistrer" style="border:none;font-style:normal;background-color:black;color:white;margin-top:30px;height:60px; width:200px" Visible="true" /></center>
+
+    <br />
+    <div class="container-fluid py-4" style="background-color:white;width:90%;margin-left:5%;margin-right:5%">
+        <div class="row">
+            <div id="certificate" class="flex">
+                <div>
+                    <img src="~/images/hosto.png" style="width:15%" />
+
+                    <h2 style="float:right;color:green">@Model.nom_structure </h2>
+                </div>
+                <div style="float:right;margin-top:-50px">
+                    <p style="width:100%"> <a style="color:black;font-weight:bold">Adresse :</a>@Model.adresse_structure</p>
+                    <p style="width:100%"><a style="color:black;font-weight:bold">T&eacute;phone:</a>@Model.telephone_structure</p>
+                    <p style="width:100%"><a style="color:black;font-weight:bold">Email:</a>@Model.email_structure</p>
+                </div>
+
+                <div style="float:left">
+                    <p style="width:100%"> <h3 style="color:black;font-weight:bold">Patient(e) :</h3>@Model.FullNamePatient</p>
+                    <br />
+                    <p style="width:100%"><h4 style="color:black;font-weight:bold">DATE :</h4>@ViewBag.Date</p>
+                </div>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+
+                <div>
+                    <center><h1>Ordonnance </h1></center>
+                </div>
+                <div>
+                    <table>
+                        <tr>
+                            <th>
+                                #Description
+                            </th>
+                        </tr>
+                        @foreach (var a in Model.detail_ordonnances)
+                        {
+
+                            <tr>
+                                <td>
+                                    @a.description
+                                </td>
+                            </tr>
+                        }
+                    </table>
+
+                    <p style="width:100%"> <h3 style="color:black;font-weight:bold">Traitant :</h3>Docteur Jean Paul</p>
+                    <p style="width:100%"> <h6 style="color:black;font-weight:bold">Consultation №:</h6>@Model.numeroConsultation </p>
+                    <p style="width:100%"> <h6 style="color:black;font-weight:bold">Ordonnance №:</h6>@Model.NOrd</p>
+                    <p style="width:100%"> <h3 style="color:black;font-weight:bold">Signature :</h3>________________________________________</p>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    function printCertificate() {
+        const printContents = document.getElementById('certificate').innerHTML;
+        const originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+    }
+</script>

@@ -1,0 +1,231 @@
+﻿
+@{
+    ViewBag.Title = "Parametres";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<style>
+    table {
+        background: #f5f5f5;
+        border-collapse: separate;
+        box-shadow: inset 0 1px 0 #fff;
+        font-size: 12px;
+        line-height: 24px;
+        text-align: left;
+        width: 800px;
+    }
+
+    th {
+        background: linear-gradient(black,black);
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        box-shadow: inset 0 1px 0 black;
+        color: #fff;
+        font-weight: bold;
+        padding: 10px 15px;
+        position: relative;
+        text-shadow: 0 1px 0 #000;
+    }
+
+        th:after {
+            background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.08));
+            content: '';
+            display: block;
+            height: 25%;
+            left: 0;
+            margin: 1px 0 0 0;
+            position: absolute;
+            top: 25%;
+            width: 100%;
+        }
+
+        th:first-child {
+            border-left: 1px solid #777;
+            box-shadow: inset 1px 1px 0 black;
+        }
+
+        th:last-child {
+            box-shadow: inset -1px 1px 0 black;
+        }
+
+    td {
+        border-right: 1px solid #fff;
+        border-left: 1px solid #e8e8e8;
+        border-top: 1px solid #fff;
+        border-bottom: 1px solid #e8e8e8;
+        transition: all 300ms;
+    }
+
+        td:first-child {
+            box-shadow: inset 1px 0 0 #fff;
+        }
+
+        td:last-child {
+            border-right: 1px solid #e8e8e8;
+            box-shadow: inset -1px 0 0 #fff;
+        }
+
+    tr {
+    }
+
+        tr:nth-child(odd) td {
+            background: #f1f1f1;
+        }
+
+        tr:last-of-type td {
+            box-shadow: inset 0 -1px 0 #fff;
+        }
+
+            tr:last-of-type td:first-child {
+                box-shadow: inset 1px -1px 0 #fff;
+            }
+
+            tr:last-of-type td:last-child {
+                box-shadow: inset -1px -1px 0 #fff;
+            }
+
+    tbody:hover td {
+        color: transparent;
+        text-shadow: 0 0 3px #aaa;
+    }
+
+    tbody:hover tr:hover td {
+        color: #444;
+        text-shadow: 0 1px 0 #fff;
+    }
+
+
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+<center style="margin-top: 25px; margin-bottom: 25px" >
+    <h3 style="color:black" > Espace Paramètres</h3>
+</center>
+<div class="container-fluid" style="background-color: #eee;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-lg-4 mb-4 mb-lg-0">
+                <div class="card">
+                    <center class="card-title" style="border: solid;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <h3 style="color:black" class="mb-2">Départements</h3>
+                    </center>
+                    <div class="card-body">
+                        <div class=" mb-3">
+                            <a class="btn btn-primary" style="background-color: #03DAFC; float: left" href="@Url.Action("AjouterDepartement","Admin")">Ajouter</a>
+                            <a class="btn btn-primary" style="background-color: #03DAFC; float: right" href="@Url.Action("ListeDepartement","Admin")">Voir +</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4 mb-lg-0">
+                <div class="card">
+                    <center class="card-title" style="border: solid;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <h3 style="color:black" class="mb-2">Assurances</h3>
+                    </center>
+                    <div class="card-body">
+                        <div class=" mb-3">
+                            <a class="btn btn-primary" style="background-color: #03DAFC; float: left" href="@Url.Action("AjouterAssurance","Admin")">Ajouter</a>
+                            <a class="btn btn-primary" style="background-color: #03DAFC; float: right" href="@Url.Action("ListeAssurance","Admin")">Voir +</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4 mb-lg-0">
+                <div class="card">
+                    <center class="card-title" style="border: solid;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <h3 style="color:black" class="mb-2">Comptes</h3>
+                    </center>
+                    <div class="card-body">
+                        <div class=" mb-3">
+                            <a class="btn btn-primary" style="background-color: #03DAFC; float: left" href="@Url.Action("AjouterUtilisateur","Admin")">Ajouter</a>
+                            <a class="btn btn-primary" style="background-color: #03DAFC; float: right" href="@Url.Action("ListeUtilisateur","Admin")">Voir +</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-6 col-lg-4 mb-4 mb-lg-0">
+                <div class="card">
+                    <center class="card-title" style="border: solid;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <h3 style="color:black" class="mb-2">Profil Structure</h3>
+                    </center>
+                    <div class="card-body">
+                        <div class=" mb-3">
+                            <center>
+                                <a class="btn btn-primary" style="background-color: #03DAFC;" href="@Url.Action("ProfilStructure","Admin")">Voir +</a>
+
+                            </center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4 mb-lg-0">
+                <div class="card">
+                    <center class="card-title" style="border: solid;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <h3 style="color:black" class="mb-2">Analyses</h3>
+                    </center>
+                    <div class="card-body">
+                        <div class=" mb-3">
+                            <a class="btn btn-primary" style="background-color: #03DAFC; float: left" href="@Url.Action("AjouterListeAnalyse","Admin")">Ajouter</a>
+
+                            <a class="btn btn-primary" style="background-color: #03DAFC; float: right" href="@Url.Action("ListeAnalyse","Admin")">Voir +</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4 mb-lg-0">
+                <div class="card">
+                    <center class="card-title" style="border: solid;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <h3 style="color:black" class="mb-2">Laboratoires Affiliés</h3>
+                    </center>
+                    <div class="card-body">
+                        <div class=" mb-3">
+                            <a class="btn btn-primary" style="background-color: #03DAFC; float: left" href="@Url.Action("AjouterStructure","Admin")">Ajouter</a>
+                            <a class="btn btn-primary" style="background-color: #03DAFC; float: right" href="@Url.Action("ListeStructure","Admin")">Voir +</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

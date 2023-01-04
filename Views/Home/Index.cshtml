@@ -1,0 +1,169 @@
+﻿
+@{
+    ViewBag.Title = "Connexion";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
+    <title>
+        @ViewBag.Title
+    </title>
+    <!-- Nucleo Icons -->
+    <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="~/css/intlTelInput.css" />
+    <link id="pagestyle" href="../assets/css/material-dashboard.css?v=3.0.0" rel="stylesheet" />
+    <script src="~/Scripts/intlTelInput.min.js"></script>
+    <script src="~/Scripts/jquery.mask.min.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+
+    <!-- ========== Start Stylesheet ========== -->
+    <link href="~/Assets/css/font-awesome.min.css" rel="stylesheet" />
+    
+</head>
+
+<body style="background-image:url(../../Assets/img/doctor.PNG);background-repeat:no-repeat; background-position: center; background-size: 100%;">
+    <div class="container position-sticky z-index-sticky top-0">
+
+    </div>
+    <main class="main-content  mt-0">
+        <div class="page-header align-items-start min-vh-100">
+            <span class="mask  opacity-6"></span>
+            <div class="container my-auto">
+                <div class="row">
+                    <div class="col-lg-4 col-md-8 col-12 mx-auto">
+                        <div class="card z-index-0 fadeIn3 fadeInBottom" style="border: solid; background: #15010C; opacity: 0.6; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                            
+                            <div class="card-body" style="align-content:center">
+                                <center> <p style=" color: red">@TempData["sms"]</p></center>
+
+                                <center>
+                                    <form role="form" class="text-start" method="post" action="@Url.Action("Index","Home")">
+                                        <div>
+                                            <label class="text" style="width:100%">T&eacute;l&eacute;phone  <span id="NumeroFormat" style="color:red">Numero Format invalid</span></label>
+                                            <p id="PhonePara" style="border-style: solid; border-width: 1px; border-radius: 5px; border-color: #DFE3E7; background-color: #ECF0F1"><input name="PhoneT" id="PhoneT" onchange="showPhone()" type="tel" class="form-control " required></p>
+                                        </div>
+                                        <input name="phone" id="phone" type="text" class="form-control" hidden>
+
+                                        <div class="input-group input-group-outline mb-3">
+                                            <input type="password" class="form-control" style="color:white" placeholder="Mot de passe" name="pwd" id="Password" required>
+                                        </div>
+                                        <div class="form-check form-switch d-flex align-items-center mb-3">
+                                            <input class="form-check-input" type="checkbox" id="rememberMe" onclick="DispayPassword()">
+                                            <label class="form-check-label mb-0 ms-2" for="rememberMe">Afficher le mot de passe </label>
+                                        </div>
+                                        <div class="text-center">
+                                            <button type="submit" name="submit" id="submit " style="background-color:#00BCCF; color:white; width:200px; height:50px; font-size:20px">
+                                                CONNEXION<i class="fa fa-paper-plane"></i>
+                                            </button>
+                                        </div>
+
+                                    </form>
+                                </center>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        function DispayPassword() {
+            var input = document.getElementById("Password");
+            if (input.type === "password") {
+                input.type = "text";
+            }
+            else {
+                input.type = "password";
+            }
+        }
+
+        function isNumberKey2(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode;
+            if (charCode != 46 && charCode > 31
+                && (charCode < 48 || charCode > 57))
+                return false;
+
+            return true;
+        }
+    </script>
+
+    <script>
+        document.getElementById("NumeroFormat").style.display = 'none';
+        const phoneInputField = document.querySelector("#PhoneT");
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            autoPlaceholder: "off",
+            formatOnDisplay: true,
+            hiddenInput: "full_number",
+            initialCountry: "sn",
+            nationalMode: true,
+            onlyCountries: ['dz', 'ao', 'bj', 'bw', 'bf', 'bi', 'cm', 'cv', 'cf', 'td', 'km', 'cg', 'cd', 'ci', 'dj', 'eg',
+                'gk', 'er', 'et', 'ga', 'gm', 'gh', 'gn', 'gw', 'ke', 'ls', 'lr', 'ly', 'mj', 'ml', 'mw', 'mr', 'mu', 'yt',
+                'ma', 'mz', 'na', 'ne', 'ng', 're', 'rw', 'st', 'sn', 'sc', 'sl', 'so', 'za', 'ss', 'sd', 'sz', 'tz',
+                'tg', 'tn', 'ug', 'eh', 'zm', ' zw'],
+
+            separateDialCode: true,
+            utilsScript:
+                "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        });
+
+        $('#PhoneT').on("countrychange", function (event) {
+
+            // Get the selected country data to know which country is selected.
+            var selectedCountryData = phoneInput.getSelectedCountryData();
+
+            // Get an example number for the selected country to use as placeholder.
+            newPlaceholder = intlTelInputUtils.getExampleNumber(selectedCountryData.iso2, true, intlTelInputUtils.numberFormat.INTERNATIONAL),
+
+                // Reset the phone number input.
+                phoneInput.setNumber("");
+
+            // Convert placeholder as exploitable mask by replacing all 1-9 numbers with 0s
+            mask = newPlaceholder.replace(/[1-9]/g, "0");
+
+
+        });
+
+
+        // When the plugin loads for the first time, we have to trigger the "countrychange" event manually,
+        // but after making sure that the plugin is fully loaded by associating handler to the promise of the
+        // plugin instance.
+
+        phoneInput.promise.then(function () {
+            $("#PhoneT").trigger("countrychange");
+        });
+
+
+        function showPhone() {
+            document.getElementById("phone").value = null
+            if (phoneInput.isValidNumber()) {
+
+                document.getElementById("NumeroFormat").style.display = 'none';
+                document.getElementById("PhonePara").style.borderColor = "#DFE3E7";
+                document.getElementById("phone").value = phoneInput.getSelectedCountryData().dialCode + "" + document.getElementById("PhoneT").value;
+            }
+            else {
+
+                document.getElementById("NumeroFormat").style.display = 'none';
+                document.getElementById("PhonePara").style.borderColor = "#DFE3E7";
+                document.getElementById("phone").value = phoneInput.getSelectedCountryData().dialCode + "" + document.getElementById("PhoneT").value;
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,1043 @@
+﻿@model Tuple<List<Ordonnance>, List<Analyse>, List<Hospitalisation>, ConsultationData>
+@{ ViewBag.Title = "Consultation";
+    ViewBag.FullName = @ViewBag.FullName;
+    ViewBag.NoProfil = @ViewBag.NoProfil;
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+    var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+    serializer.MaxJsonLength = Int32.MaxValue;
+    var jsonModel = serializer.Serialize(@ViewBag.cims); }
+@using digi_sante.Models
+<style>
+
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+<div class="col-12">
+    <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("ListConsultation","Admin")">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i>&nbsp;Retour</a>
+    <a type="button" style="float: right;display:none; font-size: 20px; font-weight: bold; " href="@Url.Action("Cim","Admin",new {alse= Convert.ToInt64(@ViewBag.ConsulID)*78})">C.I.M &nbsp;<i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </a>
+</div>
+
+<div class="container-fluid py-4">
+
+    <div class="row" style="background-color:white;margin-top:10px ;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+        <div class="col-lg-8" style="background-color:white">
+            <div class="panel-heading" style="border: solid; background: #6d7fcc; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                <center>
+                    <a style="color:white;font-weight:bold"> @ViewBag.message</a>  
+                </center>
+            </div>
+            <center> <p style="background-color:white;color:green">@ViewBag.sms</p></center>
+            <center> <p style="background-color: white; color: black">@TempData["Consultation"]</p> </center>
+            <br />
+            <div class="row">
+                <div class="col-lg-4">
+                    <a id="myBtn" class="col-lg-10   btn btn-primary" style="float: right;color:white; background-color: #6d7fcc; width: 100%; margin-left: 10px"> Ordonnance</a>
+                </div>
+
+                <div class="col-lg-4">
+                    <a id="myBtn1" class="col-lg-10 btn btn-primary" style="float: right; color: white; background-color: #6d7fcc; width: 100%; margin-left: 10px "> Demande Analyse</a>
+                </div>
+
+                <div class="col-lg-4">
+                    <a class="col-lg-10 btn btn-primary" onclick="showHospi()" style="float: right; background-color: #6d7fcc; color: white; width: 100%; margin-left: 10px "> Hospitaliser</a>
+                </div>
+
+
+                <br />
+            </div>
+
+
+            @using (Html.BeginForm("Consultation", "Admin", FormMethod.Post))
+            {
+                <input type="text" value=" @Model.Item4.consultationID" style="display:none" name="ConID" />
+                 <div class="panel-body">
+                    <div class="input-group input-group-outline mb-3">
+                        <label class="text" style="width:100%">Observation lors du  Paiement</label>
+                        <textarea style="color:#1b3b65;font-family: Verdana;width:100%" disabled> @Model.Item4.observationPaiement  </textarea>
+                    </div>
+                    <hr />
+                    <div class="input-group input-group-outline mb-3">
+                        <label class="text" style="width:100%">Observation</label>
+                        <textarea id="Observation" name="Observation" rows="10" cols="70" style="color:#1b3b65;font-family: Verdana;width:100%"> @Model.Item4.observationTraitant</textarea>
+                    </div>
+                    <hr />
+                    <div class="input-group input-group-outline mb-3">
+                        <label class="text" style="width:100%">Constante</label>
+                        <textarea id="Note" name="Note" rows="10" cols="70" style="color:#1b3b65;font-family: Verdana;width:100%"> @Model.Item4.constant </textarea>
+                    </div>
+                    <button class="btn btn-primary" style="float:right; background-color:black" type="submit"> <span class="fa"></span> Enregistrer</button>
+                </div>
+             }
+        </div>
+        <div class="col-lg-4">
+            <div class="row">
+
+                <div class="col-lg-12">
+                    <div class="card my-4">
+                        <div class="container">
+                            <div class="row" style="background-color:white;">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading" style="border: solid; background: #6d7fcc; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                                        <center>
+                                            <a style="color: white; font-weight: bold">Ordonnances</a>
+                                        </center>
+                                    </div>
+                                    <br />
+
+                                    <div class="row">
+                                        @foreach (var a in Model.Item1)
+                                        {
+                                            <div class="col-lg-4">
+                                                <a id="@a.ordonnanceID" onclick="testclick(this.id);" style="cursor:pointer;">
+                                                    <img src="~/images/note.png" style="width:60px" />
+                                                    <label style="width:100%">№ @a.ordonnanceID-@a.date_ordonnance </label>
+                                                </a>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="card my-4">
+                            <div class="container">
+                                <div class="row" style="background-color:white;">
+                                    <div class="panel panel-primary">
+                                        <div class="panel-heading" style="border: solid; background: #6d7fcc; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                                            <center>
+                                                <a style="color: white; font-weight: bold">Analyses</a>
+                                            </center>
+                                        </div>
+                                        <br />
+
+                                        <div class="row">
+                                            @foreach (var a in Model.Item2)
+                                            {
+                                                <div class="col-lg-4">
+                                                    <a id="@a.analyseID" onclick="testclick2(this.id);" style="cursor:pointer;">
+                                                        <img src="~/images/note.png" style="width:60px" />
+                                                        <label style="width:100%">№ @a.analyseID-@a.date_analyse </label>
+                                                    </a>
+                                                </div>}
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="card my-4">
+                            <div class="container">
+                                <div class="row" style="background-color:white;">
+                                    <div class="panel panel-primary">
+                                        <div class="panel-heading" style="border: solid; background: #6d7fcc; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                                            <center>
+                                                <a style="color: white; font-weight: bold">Hospitalisations</a>
+                                            </center>
+                                        </div>
+                                        <br />
+
+                                        <div class="row">
+                                            @foreach (var a in Model.Item3)
+                                            {
+                                                <div class="col-lg-4">
+                                                    <a id="@a.hospitalisationID" onclick="testclick3(this.id);" style="cursor:pointer;">
+                                                        <img src="~/images/note.png" style="width:60px" />
+                                                        <label style="width:100%">№ @a.hospitalisationID </label>
+                                                    </a>
+                                                </div>}
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!--ORDONNANCE-->
+<div id="demandeOrdo" class="modal">
+    <div class="container-fluid py-4" style="background-color:white;width:60%;float:right">
+        <center>
+            <a class="btn btn-primary" onclick="document.getElementById('demandeOrdo').style.display='none'" style=" float:right;background-color:white;color:black;margin-top:5px;">X</a>
+        </center>
+        <div class="row">
+
+            <p style="color:black;font-weight:bold"><h4>Nouvelle Ordonnance | @ViewBag.message</h4></p>
+            <center>
+                <p style="font-weight:bold"><h4 class="text-danger" id="errorValidation"> Veuillez saisir au moins une description svp !</h4></p>
+                <p style="font-weight:bold"><h4 class="text-danger" id="errorChampsVide">Veuillez remplir les champs vides !</h4></p>
+
+            </center>
+
+            <br />
+            <div class="col-12">
+                <div class="card my-4">
+                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                        <div class=" shadow-primary border-radius-lg pt-4 pb-3" style="border: solid; background: #6d7fcc; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); ">
+                            <h6 class="text-white text-capitalize ps-3">Nouvelle Ordonnance</h6>
+                        </div>
+                    </div>
+                    <div class="card-body px-0 pb-2">
+                        <div class="table-responsive p-0">
+                            <table id="table" class="table align-items-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder " style="border-left-color:rgb(60,179,113);display:none"></th>
+
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder " style="border-left-color:rgb(60,179,113)"> #Description Ordonnance</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bodyContent">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <table id="tblCustomers" style="width:100%">
+                        <thead style="background-color: #6d7fcc; color: white" class="table align-items-center mb-0" role="rowgroup">
+                            <tr>
+                                <th style="color:white;border-left-color:rgb(60,179,113)"> #Description Ordonnance</th>
+                                <th style="color:white;display:none">№ Consulation</th>
+                                <th style="color:white;display:none">№ Ordonnance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h6 class="mb-0 text-sm">
+
+                                            <input type="text" id="Ordonnance" class="mb-0 text-sm" style="width:100%;color:black;" />
+                                        </h6>
+
+                                    </div>
+
+
+
+                                </td>
+                                <td style="display:none">
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h6 class="mb-0 text-sm">
+                                            <input type="text" id="TEXTBOX_ID2" class="mb-0 text-sm" style="width:100%;color:black;" value="@ViewBag.Cons" readonly />
+                                        </h6>
+
+                                    </div>
+                                </td>
+
+                                <td style="display:none">
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h6 class="mb-0 text-sm">
+                                            <input type="text" id="TEXTBOX_ID3" class="mb-0 text-sm" style="width:100%;color:black;" value="@ViewBag.suis" readonly />
+                                        </h6>
+
+                                    </div>
+                                </td>
+
+
+                                <td>
+                                    <center>
+                                        <button id="btnAdd" type="button" class="btn btn-primary" style="border:none;background-color:black;width:100%">
+                                            Ajouter
+                                        </button>
+                                    </center>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+
+                    <center>
+                        <input type="submit" id="save" value="Enregistrer / Terminer" class="btn-blue" Text="Enregistrer/Terminer" style="border:none;font-style:normal;background-color:black;color:white;margin-top:30px;height:60px; width:60%" Visible="true" />
+                    </center>
+
+                    <br />
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!--ANNALYSE-->
+<div id="demandeAnalyse" class="modal">
+    <div class="container-fluid py-4" style="background-color:white;width:60%;float:right">
+        <center>
+            <a class="btn btn-primary" onclick="document.getElementById('demandeAnalyse').style.display = 'none'; window.location.reload()" style=" float:right;background-color:white;color:black;margin-top:5px;">X</a>
+        </center>
+        <div class="row">
+            <div class="container" style="background-color:white">
+                <p style="color:black;font-weight:bold"><h4>Nouvelle Analyse | @ViewBag.message</h4></p>
+                <center>
+                    <p style="font-weight:bold"><h4 class="text-danger" id="errorValidationAnalyse"> Veuillez choisir une analyse svp !</h4></p>
+                    <p style="font-weight:bold"><h4 class="text-danger" id="errorValidationLaboratoire"> Veuillez choisir un Laboratoire svp !</h4></p>
+                    <p style="font-weight:bold"><h4 class="text-danger" id="errorValidationAnalyseLaboratoire"> Veuillez choisir un Laboratoire et une analyse svp !</h4></p>
+
+                </center>
+                <br />
+                <div class="col-12">
+                    <div class="card my-4">
+                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                            <div class=" shadow-primary border-radius-lg pt-4 pb-3" style="border: solid; background: #a5c422;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); ">
+                                <h6 class="text-white text-capitalize ps-3">Liste des analyses</h6>
+                            </div>
+                        </div>
+                        <div class="card-body px-0 pb-2">
+                            <div class="table-responsive p-0">
+                                <table id="table" class="table align-items-center mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder " style="border-left-color:rgb(60,179,113);display:none"></th>
+
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder " style="border-left-color:rgb(60,179,113)"> #Nom  Analyse</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder ">Laboratoire</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="bodyContentAnalyse">
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                                <table id="tblCustomers" style="width:100%">
+                                    <thead style="background-color:rgb(60,179,113);color:white" class="table align-items-center mb-0" role="rowgroup">
+                                        <tr>
+                                            <th style="color:white;border-left-color:rgb(60,179,113)"> #Nom  Analyse</th>
+                                            <th style="color:white;">Laboratoire</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-sm">
+                                                        <select class="form-control" onchange="chooseAnalyse()" style="width: 100%; height: 40px; background-color: whitesmoke " name="AnalyseList" id="AnalyseList">
+                                                            <option id="init" value="" selected disabled hidden style="text-align:left">Choisir un élément </option>
+                                                            @if (Model.Item4.liste_anaylses.Count != 0)
+                                                            {
+                                                                foreach (var ListA in Model.Item4.liste_anaylses)
+                                                                {
+
+                                                                    <option value="@ListA.nom">@ListA.nom</option>
+                                                                }
+                                                            }
+
+                                                        </select>
+                                                    </h6>
+
+                                                </div>
+
+
+
+                                            </td>
+                                            <td>
+                                                <h6 class="mb-0 text-sm" id="laboLabel">
+                                                    <select class="form-control" onchange="chooseLabo()" style="width: 100%; height: 40px; background-color: whitesmoke " name="LaboratoireList" id="LaboratoireList">
+                                                        <option value="" selected disabled hidden style="text-align:left">Choisir un laboratoire </option>
+                                                        <option class="Laboratoire"></option>
+                                                        <option class="Laboratoire" value="0">Autre</option>
+                                                    </select>
+
+                                                </h6>
+
+                                                <h6 id="sairirLabel">
+                                                    <input type="text" id="saisirNomLabo" class="mb-0 text-sm" style="width:100%;color:black" value="" placeholder="Saisir le nom du Laboratoire" />
+                                                </h6>
+
+
+                                            </td>
+                                            <td style="display:none">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-sm">
+                                                        <input type="text" id="TEXTBOX_ID2" class="mb-0 text-sm" style="width:100%;color:black" value="@ViewBag.Cons" readonly />
+                                                    </h6>
+
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                <center>
+                                                    <button onclick="btnAddAnalyse()" type="button" class="btn btn-primary " style="border:none;background-color:black;width:100%">
+                                                        Ajouter
+                                                    </button>
+                                                </center>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                    <br />
+
+                    <center><input type="submit" id="saveAnalyse" value="Enregistrer / Terminer" class="btn-blue" Text="Enregistrer/Terminer" style="border:none;font-style:normal;background-color:black;color:white;margin-top:30px;height:60px; width:60%" Visible="true" /></center>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+<!--HOSPITALISATION-->
+
+<div class="modal container-fluid" id="hospitalisation">
+    <div class="row" style="background-color:white;">
+        <div class="panel panel-primary">
+            <div class="panel-heading" style="border: solid; background: #6d7fcc; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                <center>
+                    <p style="color:black;float:left;font-weight:bold"><h4>Hospitalisation | @ViewBag.message</h4></p>
+                    <a class="btn btn-primary" onclick="document.getElementById('hospitalisation').style.display='none' " style=" float:right;background-color:white;color:black;margin-top:5px;">X</a>
+
+                </center>
+            </div>
+            <br />
+            <center> <p style="background-color:red;color:white">@ViewBag.sms</p></center>
+            <br />
+            <div class="panel-body">
+                <div class="input-group input-group-outline mb-3">
+                    <label class="=text" style="width:100%">Date d'entr&eacute;e</label>
+                    <input type="date" onchange="hideError()" class="form-control" id="dateEntree" name="dateEntree" required>
+                </div>
+                <p class="text-danger" id="dateEntreeError" style="font-size: 80%;font-weight: bold">Veuillez saisir la date d'entrée svp </p>
+
+                <div class="input-group input-group-outline mb-3">
+                    <label class="=text" style="width:100%">Date de Sortie</label>
+                    <input type="date" class="form-control" id="datesortie" name="datesortie">
+                </div>
+
+                <div class="input-group input-group-outline mb-3">
+                    <label class="=text" style="width:100%">Num&eacute;ro du lit</label>
+                    <input type="text" class="form-control" name="lit" id="lit">
+                </div>
+                <div class="input-group input-group-outline mb-3">
+                    <label class="text" style="width:100%">Num&eacute;ro de la salle</label>
+                    <input type="text" class="form-control" name="salle" id="salle">
+                </div>
+                <div class="row d-flex justify-content-end">
+                    <div class="col-4 ">
+                    </div>
+                    <div class="col-2 ">
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-primary " onclick="saveHospitalisation()" type="submit" style="background-color: black">  Enregistrer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!--FIN HOSPITALISATION-->
+<div id="myModal" class="modal">
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js">
+
+</script>
+<script type="text/javascript">
+    function showHospi() {
+        document.getElementById('hospitalisation').style.display = 'block'
+        $('#dateEntreeError').hide();
+        $('#dateSortieError').hide();
+    }
+
+
+    $(function () {
+
+        $("#AnalyseList").select2();
+        $("#LaboratoireList").select2();
+        $("#Patient").select2();
+
+
+    });
+</script>
+<script type="text/javascript">
+
+    function testclick(id) {
+        var modal = document.getElementById('myModal');
+        modal.style.display = "block";
+
+        $.ajax({
+            type: "POST",
+            url: "/Admin/SelectOrdo",
+            data: '{ordo:"' + id + '"}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "html",
+            success: function (response) {
+                $('#myModal').html(response);
+                $('#myModal').display();
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    };
+
+    function testclick2(id) {
+        var modal = document.getElementById('myModal');
+        modal.style.display = "block";
+        $.ajax({
+            type: "POST",
+            url: "/Admin/AnalyseFirst",
+            data: '{analyseID:"' + id + '"}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "html",
+            success: function (response) {
+                $('#myModal').html(response);
+                $('#myModal').display();
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    };
+    function testclick3(id) {
+        var modal = document.getElementById('myModal');
+        modal.style.display = "block";
+      
+        $.ajax({
+            type: "POST",
+            url: "/Admin/HoFirst",
+            data: '{hostpi:"' + id + '"}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "html",
+            success: function (response) {
+                $('#myModal').html(response);
+                $('#myModal').display();
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    };
+    function hideError() {
+
+        if (document.getElementById("dateEntree").value != null) {
+            $('#dateEntreeError').hide();
+        }
+
+    }
+</script>
+<script src="~/ckeditor/ckeditor.js">
+
+</script>
+
+<script>
+    CKEDITOR.replace('Note');
+    CKEDITOR.replace('Observation');
+    $('#sairirLabel').hide();
+    $('#saisirNomLabo').hide();
+</script>
+
+<script>
+        var btn = document.getElementById("myBtn");
+        var btn1 = document.getElementById("myBtn1");
+
+    btn.onclick = function ()
+    {
+            $('#errorValidation').hide();
+            $('#errorChampsVide').hide();
+            document.getElementById('demandeOrdo').style.display = "block";
+
+        }
+
+    btn1.onclick = function ()
+    {
+            $('#errorValidationAnalyse').hide();
+            $('#errorValidationLaboratoire').hide();
+            $('#errorValidationAnalyseLaboratoire').hide();
+            document.getElementById('demandeAnalyse').style.display = "block";
+
+    }
+
+
+</script>
+
+
+<!--JS NEW ORDO-->
+<script>
+    // total de lignes
+    var rowIdx = 0;
+    // Lists of input value
+    var inpustList = new Array();
+    var id_consultation = @Html.Raw(Json.Encode(Model.Item4.consultationID));
+    var id_patient = @Html.Raw(Json.Encode(Model.Item4.patientID));
+
+    $('#btnAdd').on('click', function ()
+    {
+        var chatinput1 = document.getElementById("Ordonnance").value;
+        if (chatinput1 == "" || chatinput1.length == 0 || chatinput1 == null)
+        {
+
+            $('#errorChampsVide').show();
+            $('#errorValidation').hide();
+        }
+        else
+        {
+            var textBox1 = $("#Ordonnance").val();
+            inpustList.push(textBox1)
+            var indxCurrent = inpustList.length - 1
+            // Adding a row inside the tbody.
+            $('#bodyContent').append(`<tr id="R${++rowIdx}">
+                   <td class="row-index text-center">${textBox1}</td>
+                   <td class="text-center">
+                   <button class="remove" id="${indxCurrent}" style="background-color:#6d7fcc;color:white;font-size:12px;border:none;width:100%;height:28px;text-align:center"
+                    type="button">Retirer</button>
+                    </td>
+                    </tr>`);
+
+
+        }
+        $("#Ordonnance").val(null)
+
+
+        // jQuery button click event to remove a row.
+        $('#bodyContent').on('click', '.remove', function () {
+            // Getting all the rows next to the row
+            // containing the clicked button
+            var child = $(this).closest('tr').nextAll();
+
+            // Iterating across all the rows
+            // obtained to change the index
+            child.each(function () {
+
+                // Getting <tr> id.
+                var id = $(this).attr('id');
+
+                // Gets the row number from <tr> id.
+                var dig = parseInt(id.substring(1));
+
+
+                // Modifying row id.
+                $(this).attr('id', `R${dig - 1}`);
+            });
+
+            // Removing the current row.
+            $(this).closest('tr').remove();
+
+            // Decreasing total number of rows by 1.
+            rowIdx--;
+            delete inpustList[$(this).attr('id')]
+
+
+        });
+
+        $('#save').on('click', function ()
+        {
+            var things = []
+
+            if (inpustList.length != 0)
+            {
+                var body = inpustList.filter(p => p != null).forEach(
+                    s => {
+                        things.push(
+                            {
+                                description: s,
+                                id_consultation: id_consultation,
+                                patientID:id_patient
+                            }
+                        )
+                    }
+                );
+
+                if (things.length != 0)
+                {
+
+                    $.post('@Url.Action("AjouterOrdonnance")', { things: things, consultationID: id_consultation },
+                            function () {
+                                $('#errorValidation').hide();
+                                $('#errorChampsVide').hide();
+                                document.getElementById('demandeOrdo').style.display = 'none'
+                                window.location.reload()
+                            }).fail(function (xhr, status, error) {
+                                //Ajax request failed.
+                                var errorMessage = xhr.status + ': ' + xhr.statusText
+
+                            });
+                 } else
+                 {
+                        $('#errorValidation').show();
+                        $('#errorChampsVide').hide();
+                 }
+            }
+
+
+            else {
+                $('#errorValidation').show();
+                $('#errorChampsVide').hide();
+            }
+
+
+
+        })
+
+
+
+
+
+    })
+
+
+    function saveHospitalisation ()
+    {
+
+        if ($("#dateEntree").val().length == 0)
+          {
+                $('#dateEntreeError').show();
+          }
+
+          else
+        {
+
+
+            $.post('@Url.Action("AjouterHospitalisation")', {
+                consultationID: @Html.Raw(Json.Encode(Model.Item4.consultationID)),
+                            No: @Html.Raw(Json.Encode(Model.Item4.patientID)),
+                    dateEntree: document.getElementById("dateEntree").value,
+                           lit: document.getElementById("lit").value,
+                         salle: document.getElementById("salle").value,
+                    datesortie: document.getElementById("datesortie").value
+            },
+                            function () {
+                                window.location.reload()
+                            }).fail(function (xhr, status, error) {
+                                //Ajax request failed.
+                                var errorMessage = xhr.status + ': ' + xhr.statusText
+
+                            }); 
+
+        } 
+
+
+    }
+
+
+</script>
+<!-- JS ANALYSE-->
+<script>
+    // total de lignes
+    var rowIdx = 0;
+    // Lists of input value
+    var inpustList = new Array();
+
+    function btnAddAnalyse()
+    {
+
+        $('#errorValidationAnalyse').hide();
+        $('#errorValidationLaboratoire').hide();
+        $('#errorValidationAnalyseLaboratoire').hide();
+
+
+        var structures = @Html.Raw(Json.Encode(Model.Item4.liste_structures));
+
+        var textBox1 = $("#AnalyseList").val();
+        var textBox2 = $("#TEXTBOX_ID2").val();
+        var textBox4 = $("#LaboratoireList").val();
+
+
+
+        if (textBox1 == null && textBox4 == null) {
+            $('#errorValidationAnalyse').hide();
+            $('#errorValidationLaboratoire').hide();
+            $('#errorValidationAnalyseLaboratoire').show();
+
+        }
+
+        else if (textBox1 == null || textBox1.length == 0) {
+            $('#errorValidationAnalyseLaboratoire').hide();
+            $('#errorValidationAnalyse').show();
+            $('#errorValidationLaboratoire').hide();
+
+
+        }
+        else if (textBox4 == null || textBox4.length == 0) {
+            $('#errorValidationAnalyseLaboratoire').hide();
+            $('#errorValidationAnalyse').hide();
+            $('#errorValidationLaboratoire').show();
+
+        }
+        else
+        {
+            var listAnalayse = @Html.Raw(Json.Encode(Model.Item4.liste_anaylses));
+            var id_analyse = listAnalayse.filter(z => z.nom == document.getElementById('AnalyseList').value)[0].liste_analyseID;
+            inpustList.push({ id_analyse, textBox4 })
+            var indxCurrent = inpustList.length - 1
+
+            // Adding a row inside the tbody.
+
+            if (textBox4 == "0")
+            {
+                $('#bodyContentAnalyse').append(`<tr id="R${++rowIdx}">
+                   <td class="row-index text-center">${textBox1}</td>
+                   <td class="row-index text-center">${$('#saisirNomLabo').val()}</td>
+                   <td class="row-index text-center">${textBox2}</td>
+                   <td class="text-center">
+                   <button class="remove" id="${indxCurrent}" style="background-color:#6d7fcc;color:white;font-size:12px;border:none;width:100%;height:28px;text-align:center"
+                    type="button">Retirer</button>
+                    </td>
+                    </tr>`);
+            }
+            else
+            {
+                $('#bodyContentAnalyse').append(`<tr id="R${++rowIdx}">
+                   <td class="row-index text-center">${textBox1}</td>
+                   <td class="row-index text-center">${structures.filter(z => z.structureID == textBox4)[0].nom}</td>
+                   <td class="row-index text-center">${textBox2}</td>
+                   <td class="text-center">
+                   <button class="remove" id="${indxCurrent}" style="background-color:#6d7fcc;color:white;font-size:12px;border:none;width:100%;height:28px;text-align:center"
+                    type="button">Retirer</button>
+                    </td>
+                    </tr>`);
+            }
+
+
+
+        }
+
+
+
+
+
+
+    }
+
+          // jQuery button click event to remove a row.
+    $('#bodyContentAnalyse').on('click', '.remove', function () {
+        // Getting all the rows next to the row
+        // containing the clicked button
+        var child = $(this).closest('tr').nextAll();
+
+        // Iterating across all the rows
+        // obtained to change the index
+        child.each(function () {
+
+          // Getting <tr> id.
+            var id = $(this).attr('id');
+
+         // Gets the row number from <tr> id.
+         var dig = parseInt(id.substring(1));
+
+
+         // Modifying row id.
+         $(this).attr('id', `R${dig - 1}`);
+        });
+
+         // Removing the current row.
+         $(this).closest('tr').remove();
+
+         // Decreasing total number of rows by 1.
+                rowIdx--;
+                delete inpustList[$(this).attr('id')]
+
+
+            });
+
+            $('#saveAnalyse').on('click', function () {
+                var things = []
+                if (inpustList.length != 0)
+                {
+                       var body = inpustList.filter(p => p != null).forEach(
+                    s => {
+                        things.push(
+                            {
+                                listeAnalyseID: s.id_analyse,
+                                statut: true,
+                                patientID:@Html.Raw(Json.Encode(Model.Item4.patientID)),
+                                IdLab: s.textBox4
+                            }
+                        )
+                    }
+                );
+
+                    if (things.length != 0) {
+                        $.post('@Url.Action("AjouterAnalyse")', { things: things, consultationID:id_consultation},
+                             function ()
+                             {
+                                 window.location.reload()
+
+                                 $('#errorValidationAnalyseLaboratoire').hide();
+                                 $('#errorValidationAnalyse').hide();
+                                 $('#errorValidationLaboratoire').hide();
+
+                                 document.getElementById('demandeAnalyse').style.display = 'none'
+                    }).fail(function (xhr, status, error) {
+                        //Ajax request failed.
+                       var errorMessage = xhr.status + ': ' + xhr.statusText
+
+                  });
+
+                    }
+                    else {
+                        $('#errorValidationAnalyseLaboratoire').show();
+                        $('#errorValidationAnalyse').hide();
+                        $('#errorValidationLaboratoire').hide();
+
+                    }
+
+
+                }
+                else
+                {
+                    $('#errorValidationAnalyseLaboratoire').show();
+                    $('#errorValidationAnalyse').hide();
+                    $('#errorValidationLaboratoire').hide();
+
+                }
+
+            })
+
+
+
+</script>
+
+<script type="text/javascript">
+
+    function chooseLabo()
+    {
+        $('#errorValidationAnalyse').hide();
+        $('#errorValidationLaboratoire').hide();
+        $('#errorValidation').hide();
+
+
+        if ($('#LaboratoireList').val() == 0 ) {
+
+            $('#sairirLabel').show();
+            $('#saisirNomLabo').show();
+           $('#laboLabel').hide();
+        }
+    }
+
+    function chooseAnalyse()
+    {
+        $('#sairirLabel').hide()
+        $('#laboLabel').show();
+
+        $('#LaboratoireList').empty()
+        if ($("#LaboratoireList").val() == null || $("#LaboratoireList").val().length == 0) { $('#LaboratoireList').append(`<option ></option>`)}
+        $('#LaboratoireList').append(`<option value=0>Autre</option>`)
+
+        var liste_des_structures_qui_font_cette_analyse = [];
+        var analyseChoose = $("#AnalyseList").val();
+        var liste_analyse = @Html.Raw(Json.Encode(Model.Item4.liste_anaylses));
+        var liste_des_id_structure_qui_font_cette_analyse = liste_analyse.filter(d => d.nom == analyseChoose);
+        var liste_structure_qui_font_des_analyse = @Html.Raw(Json.Encode((Model.Item4.liste_structures)));
+        liste_des_id_structure_qui_font_cette_analyse.forEach(p => liste_des_structures_qui_font_cette_analyse.push(liste_structure_qui_font_des_analyse.filter(d => d.structureID == p.structureID)))
+        if (liste_des_structures_qui_font_cette_analyse.length != 0)
+        {
+            $('#errorValidationAnalyse').hide();
+            $('#errorValidationLaboratoire').hide();
+            $('#errorValidation').hide();
+
+            liste_des_structures_qui_font_cette_analyse.forEach(p => $('#LaboratoireList').append(`<option value="${p[0].structureID}">${p[0].nom}</option>`))
+
+
+        }
+        else
+        {
+            $('#errorValidationAnalyse').hide();
+            $('#errorValidationLaboratoire').hide();
+            $('#errorValidation').hide();
+
+        }
+
+    }
+
+
+
+
+
+</script>
+
+<!--HOSPITALISATION JS-->
+<script type="text/javascript">
+
+
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+    if (mm < 10) {
+        mm = '0' + mm;
+    }
+
+    today = yyyy + '-' + mm + '-' + dd;
+    document.getElementById("datesortie").setAttribute("min", today);
+    document.getElementById("dateEntree").setAttribute("min", today);
+
+
+
+
+</script>
+
+

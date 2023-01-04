@@ -1,0 +1,246 @@
+﻿@model VoirObservationSuivi
+@{ ViewBag.Title = "Observation Suivi";
+
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+    }
+@using PagedList.Mvc;
+@using digi_sante.Models;
+<style>
+
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-5">      
+           <div class="row">
+                <div class="col-lg-12">
+                    <div class="card my-4">
+                        <div class="container">
+                            <div class="row" style="background-color:white;">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading" style="border: solid; background: #6d7fcc; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                                        <center>
+                                            <a style="color: white; font-weight: bold; font-size: 20px;"> HISTORIQUE(S) OBSERVATION(S)</a>
+                                        </center>
+                                    </div>
+                                    <br/>                                   
+                                    <div class="card-body px-0 pb-3">
+                                        <div class="table-responsive p-0">
+                                            <br />
+                                            <div class="container">
+                                                @if (Model.listeObservationItemSuivis.Count < 1)
+                                                {
+                                                    <center>
+                                                        <h6> Aucune observation disponible</h6>
+                                                       
+                                                    </center>
+                                                 }
+                                else
+                                {
+                                <div class="row">
+                                    @foreach (var a in Model.listeObservationItemSuivis)
+                                    {
+                                <div class="col-lg-3">
+                                    <a id="@a.observationItemSuiviID" onclick="showObservation(this.id);" style="cursor:pointer;">
+                                        <img src="~/images/note.png" style="width:60px" />
+                                        <label style="width:100%">
+                                            @a.date_observationItemSuivi                                           
+                                        </label>
+                                    </a>
+
+                                </div>}
+                                </div>}
+                                            </div>
+                                        </div>
+                                        <center>
+                                            <div class="pagination" style="width:200px;margin-right:2.5%;margin-left:2.5%">
+
+                                            </div>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+
+
+        <div class="col-lg-7">
+            <div class="row">
+
+                <div class="col-lg-12">
+                    <div class="card my-4">
+                        <div class="container">
+                            <div class="row" style="background-color:white;">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading" style="border: solid; background: #6d7fcc; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                                        <center>
+                                            <a style="color: white; font-weight: bold; font-size: 20px;">  NOUVELLE OBSERVATION</a>
+                                        </center>
+                                    </div>
+                                    <br />
+
+                                    <center>
+                                        <h4>INFORMATION HOSPITALISATION</h4>
+                                    </center>
+                                    <div class="card-body px-0 pb-3">
+
+                                        <div style="float:left;margin-top:20px;">
+                                            <h6 style="width:100%; margin-top:-20px ; font-size: 14px ">Date Entrée:&nbsp; @Model.hospitalisation.date_entree.ToString().Substring(0, 10) </h6>
+                                        </div>
+
+                                        <hr style="width: 100%; text-align: left; margin-left: 0; background-color: black; margin-top: 20px;"><br />
+                                        <div style="float:left;">
+                                            <h6 style="width:100%; margin-top:-20px">Numéro Salle :&nbsp; @Model.hospitalisation.numero_salle</h6>
+                                        </div>
+                                        <div style="float:right;">
+                                            <h6 style="width:100%; margin-top:-20px">Numéro Lit :&nbsp;@Model.hospitalisation.numero_lit</h6>
+                                        </div>
+                                        <hr style="width:100%;text-align:left;margin-left:0;background-color:black">
+                                        <br />
+
+                                        <br />
+                                        <center class="text-danger" id="message"></center>
+                                        
+                                        <div class="panel-body" style="width: 100%;">
+                                            <div class="input-group input-group-outline mb-3">
+                                                <p style="width: 100%; height: 35px; background-color: #34495E; margin-bottom: -2px; margin-left: -2px">
+                                                    <a style="color: white; font-size: 16px; font-weight: bold; width: 50%;">&nbsp;&nbsp; ANCIENNE OBSERVATION  </a>
+                                                    <a style="color: white; font-size: 16px; font-weight: bold; float: right; width: 50%; ">NOUVELLE OBSERVATION</a>
+                                                </p>
+                                                @if (Model.listeObservationItemSuivis.Count > 0)
+                                                {
+                                                <textarea id="NoteObservationChoose" name="NoteObservationChoose" rows="10" cols="70" style="color: #1b3b65; font-family: Verdana; width: 50%;" disabled>@Model.lastObservation  </textarea>
+                                                }
+                                                else
+                                                {
+                                                  <textarea id="NoteObservationChoose" name="NoteObservationChoose" rows="10" cols="70" style="color: #1b3b65; font-family: Verdana; width: 50%;" disabled></textarea>
+                                                }
+
+                                                <textarea id="NoteObservationC" rows="10" cols="70" style="width: 50%;" required></textarea>
+                                            </div>
+
+
+                                        </div>
+
+                                        <div class="panel-body">
+                                            <a href="@Url.Action("HospitalisationList","Admin",new {No=Convert.ToInt64(Model.IdPatient)})" class="btn btn-primary" style="float:left; background-color:black" type="submit"> Retour</a>
+
+                                            <button id="save" onclick="saveObservation()" class="btn btn-primary" style="float:right; background-color:black" type="submit"> Enregistrer</button>
+
+                                        </div>
+                                        <br />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div id="myModal" class="modal">
+
+    <!-- Modal content -->
+
+
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#Patient").select2();
+
+    });
+</script>
+
+<script type="text/javascript">
+    function showObservation(id) {
+        var data = @Html.Raw(Json.Encode(@Model.listeObservationItemSuivis));
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].observationItemSuiviID == id) {
+                document.getElementById('NoteObservationChoose').value = data[i].observation;
+            }
+
+        }
+    }
+    function saveObservation() {
+
+        var modalNoteObservation = document.getElementById('NoteObservationC').value;
+
+        if (modalNoteObservation == "") {
+           document.getElementById('message').innerText ="Veuillez saisir l'observation !";
+        }
+        else
+        {
+            $.post('@Url.Action("AddObservationToSuivi")', { No: @Model.NoSuivi, observation: modalNoteObservation},
+              function ()
+              {
+                                 window.location.reload()
+                                 
+                }).fail(function (xhr, status, error)
+                {
+                        //Ajax request failed.
+                                 window.location.reload();
+                  });
+            
+        }
+    }
+
+</script>
+<script src="~/ckeditor/ckeditor.js"></script>
+
+<script>CKEDITOR.replace('Note');</script>
+<script>
+    if (localStorage.getItem("clickStatus") == 'true') {
+        document.getElementById("save").style.display = 'none';   
+    }
+    else {
+        document.getElementById("save").style.display = 'block';
+    }
+</script>
