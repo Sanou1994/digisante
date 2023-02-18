@@ -15,7 +15,7 @@ namespace  digi_sante.Models
         public string nom { get; set; }
         public string prenom { get; set; }
         public string adresse { get; set; }
-        public DateTime? date_naissance { get; set; }
+        public long? date_naissance { get; set; }
         public string sexe { get; set; }
         public string telephone_patient { get; set; }
         public DateTime? date_enregistrement { get; set; }

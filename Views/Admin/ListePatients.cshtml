@@ -133,7 +133,9 @@
             cursor: pointer;
         }
 </style>
-
+<div class="row">
+    <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("Index", "Admin")">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-angle-double-left" aria-hidden="true"></i>&nbsp;Arrière</a>
+</div>
 <div class="container-fluid p-4" style="margin-top:-30px">
     <div class="row">
         <div class="col-12">
@@ -162,15 +164,15 @@
                             <div class="row" style="width:100%; margin-bottom:10px">
                                 <div class="col-lg-8 col-sm-8 col-md-6 col-xl-8">
                                     @using (Html.BeginForm("ListePatients", "Admin", FormMethod.Get))
-                                    {
-                        <div class="row">
-                            <div class="col-lg-6 col-sm-6 col-md-6 col-xl-6">
-                                <a><input type="text" name="searching" class="form-control" style="background-color:whitesmoke" placeholder=" Chercher " /></a>
-                            </div>
-                            <div class="col-lg-6 col-sm-6 col-md-6 col-xl-6">
-                                <button class="btn btn-primary" style="background-color: #03DAFC ;float:left"> <span class="fa fa-search"></span>Rechercher</button>
-                            </div>
-                        </div>}
+                                     {
+                                    <div class="row">
+                                        <div class="col-lg-6 col-sm-6 col-md-6 col-xl-6">
+                                            <a><input type="text" name="searching" class="form-control" style="background-color:whitesmoke" placeholder=" Chercher " /></a>
+                                        </div>
+                                        <div class="col-lg-6 col-sm-6 col-md-6 col-xl-6">
+                                            <button class="btn btn-primary" style="background-color: #03DAFC ;float:left"> <span class="fa fa-search"></span>Rechercher</button>
+                                        </div>
+                                    </div>}
                                 </div>
                                 <div class="col-lg-2 col-sm-6 col-md-3 col-xl-2">
                                     <a href="@Url.Action("ListePatients","Admin")" class="btn btn-primary" style="float: left; background-color: #03DAFC; width: 100%">  Initialiser</a>
@@ -251,7 +253,8 @@
 
     </td>
     <td style="color:black">
-        @a.date_naissance.ToString().Substring(0, 10)
+        @{ var date = (@a.date_naissance != null) ? new DateTime(@a.date_naissance.Value) : new DateTime(); @date.ToString().Substring(0, 10)}
+
     </td>
     <td style="color:black">
         @a.date_enregistrement
@@ -282,7 +285,8 @@
         </a>
     </td>
 
-</tr>}
+</tr>
+}
     </tbody>
 </table>}
 
@@ -380,7 +384,7 @@
                             </div>
                         </div>
                         <center>
-                            <button class="btn btn-primary" onclick="document.getElementById('ajouterPatient').style.display = 'none'" style="float:left; background-color:black"> Fermer</button>
+                            <button class="btn btn-primary" onclick="document.getElementById('ajouterPatient').style.display = 'none'; window.location.reload()" style="float:left; background-color:black"> Fermer</button>
 
                             <button class="btn btn-primary" onclick="showError()" style="float:right; background-color:black">Enregistrer</button>
 
@@ -548,18 +552,19 @@
             <div class="card p-4">
                 <center> <p style="background-color: white; color: red">Voulez-vous bloquer ce patient ?</p></center>
                 <div class="card-body">
-                    <center>
-                        <div class="col-lg-6">
-                            <a class="btn btn-primary" onclick="bloquage()" style="color: white; background-color: #03DAFC; width: 100%"> Oui</a>
-                        </div>
+                       
                         <input type="text" class="form-control" id="patientID" name="patientID" hidden />
+                        <div class="row">
+                            <div class="col-lg-6 col-xl-6 col-sm-6 col-md-6">
+                                <a class="btn btn-primary" onclick="bloquage()" style="color: white; background-color: #03DAFC; width: 100%"> Oui</a>
+                            </div>
 
-                        <div class="col-lg-6">
-                            <a class="btn btn-primary" onclick=" document.getElementById('bloquageModal').style.display = 'none'" style="color: white; background-color: #03DAFC; width: 100% ">Non</a>
+                            <div class="col-lg-6 col-xl-6 col-sm-6 col-md-6">
+                                <a class="btn btn-primary" onclick=" document.getElementById('bloquageModal').style.display = 'none'" style="color: white; background-color: #03DAFC; width: 100% ">Non</a>
 
+                            </div>
                         </div>
-                    </center>
-                </div>
+                                        </div>
             </div>
         </div>
     </div>
@@ -602,7 +607,8 @@
 
                                         @foreach (var departement in Model.liste_departements)
                                         {
-                            <option value="@departement.departementID">@departement.nom</option>}
+                            <option value="@departement.departementID">@departement.nom</option>
+}
                                     </select>
                                 </div>
                                 <p class="text-danger" id="Id_departementError" style="font-size: 80%;font-weight: bold">Veuillez choisir un département svp </p>
@@ -631,7 +637,8 @@
                                         <option value="" selected disabled hidden>Choisir un assurance</option>
                                         @foreach (var assurance in Model.liste_assurances)
                                         {
-                            <option value="@assurance.assuranceID">@assurance.nom</option>}
+                            <option value="@assurance.assuranceID">@assurance.nom</option>
+}
                                     </select>
                                 </div>
                             </div>
@@ -1294,8 +1301,5 @@
 
 
     }
-
-
-
 
 </script>

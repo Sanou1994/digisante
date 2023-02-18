@@ -3,6 +3,8 @@
 @{
     ViewBag.Title = "detailPatient";
     Layout = "~/Views/Shared/AdminLayout.cshtml";
+    var chars = @Model.date_naissance.Split('/');
+    var dateConvert = chars[2]+"-"+ chars[1]+"-"+ chars[0];
 }
 @using digi_sante.Models;
 <style>
@@ -136,116 +138,133 @@
         }
 </style>
 
-
-    <!-- RECUPERTATION PATIENT-->
-    <div class="container">
-        <div class="row" style="background-color:white; border-radius:5px; margin:20px;  ">
-            <div class="col-12 justify-content-center p-2" style="height:50px">
-                <center class="card-title" style="border: solid;font-size:3px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
-                    <h5 style="color:black" class="mb-2">DOSSIER MEDICAL PATIENT</h5>
-                </center>
-            </div>
-            <br />
-            <div class="col-md-6 col-lg-6 col-sm-6  mb-4 mb-lg-0">
-                <div class="card-body">
-                    <p style="color:black; font-size:14px">Nom : @Model.Name</p>
+<div class="row">
+    <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("ListePatients", "Admin")">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-angle-double-left" aria-hidden="true"></i>&nbsp;Arrière</a>
+</div>
+<!-- RECUPERTATION PATIENT-->
+<div class="container">
+    <div class="card">
+        <center class="card-title" style="border: solid;font-size:3px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <h5 style="color:black" class="mb-2">DOSSIER MEDICAL PATIENT</h5>
+        </center>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 col-lg-4 col-xl-4 col-sm-4"><p style="color:black; font-size:14px">Nom : @Model.Name</p></div>
+                <div class="col-md-4 col-lg-4 col-xl-4 col-sm-4">
                     <p style="color: black;  font-size: 14px ">Prénom : @Model.Surname</p>
+                </div>
+                <div class="col-md-4 col-lg-4 col-xl-4 col-sm-4">
                     <p style="color: black; font-size: 14px">Age :  @Model.Age Ans</p>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-lg-4 col-xl-4 col-sm-4">
                     <p style="color: black; font-size: 14px">Sexe :  @Model.Gender</p>
                 </div>
-            </div>
-            <div class="col-md-6 col-lg-6 col-sm-6 mb-4 mb-lg-0" style="">
-                <div class="card-body">
+                <div class="col-md-4 col-lg-4 col-xl-4 col-sm-4">
                     <p style="color: black; font-size: 14px">Adresse : @Model.Adresse</p>
+                </div>
+                <div class="col-md-4 col-lg-4 col-xl-4 col-sm-4">
                     <p style="color: black; font-size: 14px">Téléphone : @Model.Telephone</p>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-lg-4 col-xl-4 col-sm-4">
                     <p style="color: black; font-size: 14px">Profession :  @Model.Profession</p>
 
+                </div>
+                <div class="col-md-4 col-lg-4 col-xl-4 col-sm-4">
+                </div>
+                <div class="col-md-4 col-lg-4 col-xl-4 col-sm-4">
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="d-flex justify-content-center">
+                    <a class="btn btn-primary" style="background-color: #03DAFC; float: left" href="#" onclick="ouvrirModifierPatientModal()">Modifier</a>
 
                 </div>
-            </div>
-
-
-            <div class="d-flex justify-content-center">
-                <a class="btn btn-primary" style="background-color: #03DAFC; float: left" href="#" onclick="ouvrirModifierPatientModal()">Modifier</a>
 
             </div>
-          
-
         </div>
     </div>
-  
+</div>
 
-    <!--FIN EN TETE-->
 
-    <div class="container mt-2">
-        <div class="row">
-            <div class="col-md-6 col-lg-6 mb-4 mb-lg-0">
-                <div class="card">
-                    <center class="card-title" style="border: solid;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
-                        <h3 style="color:black" class="mb-2">Consultations</h3>
-                    </center>
-                    <div class="card-body">
-                        <div class=" mb-3">
-                            <a class="btn btn-primary" style="background-color:  #03DAFC; float: left " href="@Url.Action("AjouterPaiement","Admin", new {No= ViewBag.No })">Ajouter</a>
-                            <a class="btn btn-primary" style="background-color: #03DAFC; float: right " href="@Url.Action("ListeConsultation","Admin",new {No= ViewBag.No })">Voir +</a>
-                        </div>
+<!--FIN EN TETE-->
+
+<div class="container mt-2">
+    <div class="row">
+        <div class="col-md-6 col-lg-6 mb-4 mb-lg-0">
+            <div class="card">
+                <center class="card-title" style="border: solid;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                    <h3 style="color:black" class="mb-2">Consultations</h3>
+                </center>
+                <div class="card-body">
+                    <div class=" mb-3">
+                        <a onclick=" ouvrirPaiementModal()" class="btn btn-primary" style="color: white; background-color: #03DAFC; ">
+                            Ajouter
+                        </a>
+                        <a class="btn btn-primary" style="background-color: #03DAFC; float: right " href="@Url.Action("ListeConsultation", "Admin", new { No = ViewBag.No })">Voir +</a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-6 mb-4 mb-lg-0">
-                <div class="card">
-                    <center class="card-title" style="border: solid;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
-                        <h3 style="color:black" class="mb-2">Analyses</h3>
-                    </center>
-                    <div class="card-body">
-                        <div class=" mb-3">
-                            <a onclick="partager('ANALYSE')" class="btn btn-primary" style="color: white; background-color: #03DAFC; ">
+        </div>
+        <div class="col-md-6 col-lg-6 mb-4 mb-lg-0">
+            <div class="card">
+                <center class="card-title" style="border: solid;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                    <h3 style="color:black" class="mb-2">Analyses</h3>
+                </center>
+                <div class="card-body">
+                    <div class=" mb-3">
+                        <a onclick="partager('ANALYSE')" class="btn btn-primary" style="color: white; background-color: #03DAFC; ">
+                            <span class="fa fa-share"></span>Partager
+                        </a>
+
+                        <a class="btn btn-primary" style="background-color: #03DAFC; float: right" href="@Url.Action("AnalyseList", "Admin", new { No = ViewBag.No })">Voir +</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-6 col-lg-6 mb-4 mb-lg-0">
+            <div class="card">
+                <center class="card-title" style="border: solid;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                    <h3 style="color:black" class="mb-2">Hospilisations</h3>
+                </center>
+                <div class="card-body">
+                    <div class=" mb-3">
+                        <center>
+                            <a onclick="partager('ORDONNANCE')" class="btn btn-primary" style="color: white; float: left; background-color: #03DAFC; ">
                                 <span class="fa fa-share"></span>Partager
                             </a>
-
-                            <a class="btn btn-primary" style="background-color: #03DAFC; float: right" href="@Url.Action("AnalyseList","Admin",new {No= ViewBag.No })">Voir +</a>
-                        </div>
+                            <a class="btn btn-primary" style="background-color: #03DAFC; float: right" href="@Url.Action("HospitalisationList", "Admin", new { No = ViewBag.No })">Voir +</a>
+                        </center>
                     </div>
                 </div>
             </div>
-
         </div>
-        <div class="row mt-5">
-            <div class="col-md-6 col-lg-6 mb-4 mb-lg-0">
-                <div class="card">
-                    <center class="card-title" style="border: solid;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
-                        <h3 style="color:black" class="mb-2">Hospilisations</h3>
-                    </center>
-                    <div class="card-body">
-                        <div class=" mb-3">
-                            <center>
-                                <a onclick="partager('ORDONNANCE')" class="btn btn-primary" style="color: white; float: left; background-color: #03DAFC; ">
-                                    <span class="fa fa-share"></span>Partager
-                                </a>
-                                <a class="btn btn-primary" style="background-color: #03DAFC; float: right" href="@Url.Action("HospitalisationList","Admin",new {No= ViewBag.No })">Voir +</a>
-                            </center>
-                        </div>
+        <div class="col-md-6 col-lg-6 mb-4 mb-lg-0">
+            <div class="card">
+                <center class="card-title" style="border: solid;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                    <h3 style="color:black" class="mb-2">Ordonnances</h3>
+                </center>
+                <div class="card-body">
+                    <div class=" mb-3">
+
+                        <a onclick="partager('ORDONNANCE')" class="btn btn-primary" style="color: white; background-color: #03DAFC; ">
+                            <span class="fa fa-share"></span>Partager
+                        </a>
+                        <a class="btn btn-primary" style="background-color: #03DAFC; float: right" href="@Url.Action("OrdonnanceList", "Admin", new { patientID = ViewBag.No })">Voir +</a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-6 mb-4 mb-lg-0">
-                <div class="card">
-                    <center class="card-title" style="border: solid;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
-                        <h3 style="color:black" class="mb-2">Ordonnances</h3>
-                    </center>
-                    <div class="card-body">
-                        <div class=" mb-3">
-
-                            <a onclick="partager('ORDONNANCE')" class="btn btn-primary" style="color: white; background-color: #03DAFC; ">
-                                <span class="fa fa-share"></span>Partager
-                            </a>
-                            <a class="btn btn-primary" style="background-color: #03DAFC; float: right" href="@Url.Action("OrdonnanceList","Admin" , new {patientID=ViewBag.No })">Voir +</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
+
     </div>
 </div>
 
@@ -324,25 +343,153 @@
 
 </div>
 
+<!--AJOUTER PAIEMENT -->
+<div id="ajouterPaiement" class="modal container-fluid ">
+    <div class="container" style="width:70%">
+        <div class="row">
+            <div class="col-12">
+                <div class="card p-4" style="margin:10px">
+                    <div class="card-header" style="border: solid; font-size: 30px; background-color: #03DAFC; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                        <div class=" shadow-primary border-radius-lg">
+                            <h3 class="text-capitalize  text-center">Nouveau Paiement</h3>
+                        </div>
+                    </div>
+                    <center> <p style="background-color: white; color: red" id="smsP"></p></center>
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="text" style="width:100%">Nom Patient</label>
+
+                                    <input type="text" class="form-control" name="Surname" Id="SurnamePaiement" style="background-color:whitesmoke" readonly>
+
+                                    <input type="text" style="display:none" id="Id_patient" name="Id_patient" hidden />
+
+                                </div>
+                                <p class="text-danger" id="Id_patientError" style="font-size: 80%;font-weight: bold">Veuillez choisir un patient svp </p>
+
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="=text" style="width:100%">Département</label>
+                                    <select class="form-control" onchange="chooseDepartement()" style="width: 100%; height: 40px; background-color: whitesmoke " name="Id_departement" id="Id_departement" required>
+                                        <option></option>
+
+                                        @foreach (var departement in Model.liste_departements)
+                                        {
+                                            <option value="@departement.departementID">@departement.nom</option>
+                                        }
+                                    </select>
+                                </div>
+                                <p class="text-danger" id="Id_departementError" style="font-size: 80%;font-weight: bold">Veuillez choisir un département svp </p>
+
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="=text" style="width:100%">Docteur</label>
+                                    <select class="form-control" style="width:300px;height:40px;background-color:whitesmoke" name="Id_docteur" id="Id_docteur">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="text" style="width:100%">Montant Consultation</label>
+                                    <input type="text" class="form-control" onchange=" hideErrorP()" onkeypress="return isNumberKey2(this.id);" style="background-color:whitesmoke" id="Mcon" name="Mcon" required>
+                                </div>
+                                <p class="text-danger" id="MconError" style="font-size: 80%;font-weight: bold">Veuillez saisir le montant de la consultation svp </p>
+
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="=text" style="width:100%">Assurance</label>
+                                    <select class="form-control" style="width:300px;height:40px;background-color:whitesmoke" name="Assurance" id="Assurance">
+                                        <option value="" selected disabled hidden>Choisir un assurance</option>
+                                        @foreach (var assurance in Model.liste_assurances)
+                                        {
+                                            <option value="@assurance.assuranceID">@assurance.nom</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="=text" style="width:100%">Montant à payer</label>
+                                    <input type="text" class="form-control" id="ME" style="background-color:whitesmoke" name="ME" readonly>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="text" style="width:100%">Taux de prise en charge  Assurance(%)</label>
+                                    <input type="number" placeholder="0.00" step="0.01" min="0" max="100" onchange="checkTaux()" class="form-control" onkeypress="return isNumberKey2(this.id);" style="background-color:whitesmoke" id="taux_prise_en_charge" name="taux_prise_en_charge">
+                                </div>
+                                <p class="text-danger" id="taux_prise_en_chargeError" style="font-size: 80%;font-weight: bold">Veuillez saisir un taux inférieur ou égal à 100 svp </p>
+
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="=text" style="width:100%">Montant Assurance</label>
+                                    <input type="text" id="MA" class="form-control" style="background-color:whitesmoke" name="MA" readonly>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label for="upload" name="url_lettre_prise_en_charge" class="=text" style="width:100%">Télécharger la prise en charge</label>
+                                    <input type="file" name="file" id="file" accept="application/pdf" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="text" style="width:100%">Observation</label>
+                                    <textarea id="Ob" name="Ob" rows="2" cols="70" style="color: #1b3b65; font-family: Verdana; width: 100%; "></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <center>
+                            <button class="btn btn-primary" onclick="document.getElementById('ajouterPaiement').style.display = 'none'" style="float:left; background-color:black"> Fermer</button>
+
+                            <button class="btn btn-primary" onclick="showErrorP()" style="float:right; background-color:black"> Enregistrer</button>
+
+                        </center>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
 
 
 <!--MODIFIER PATIENT -->
 <div id="modifierPatient" class="modal container-fluid ">
     <div class="container" style="width:70%">
-        
+
         <div class="row">
 
             <div class="col-12">
                 <div class="card p-4" style="margin:10px">
-                    <center>
-                        <a class="btn btn-primary" onclick="document.getElementById('modifierPatient').style.display = 'none'" style="width:5%; background-color:black; float:right;">X&ensp;</a>
-                    </center>
-                    
+                   
+
                     <div class="card-header" style="border: solid; font-size: 30px; background-color: #03DAFC; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
                         <div class=" shadow-primary border-radius-lg">
-                            <h3 class="text-capitalize  text-center" style="color:white">MODIFIER PATIENT </h3>
+                            <div class="row">
+                                <div class="col-md-8 col-lg-8 col-xl-8 col-sm-8 mt-3">
+                                    <h3 class="text-capitalize  text-center" style="color:white">MODIFIER PATIENT </h3>
+                                </div>
+                                <div class="col-md-4 col-lg-4 col-xl-4 col-sm-4 mt-3">
+                                        <a class="btn btn-primary text-center " onclick="document.getElementById('modifierPatient').style.display = 'none'" style="width:5%; background-color:white; float:right;color:black">X&ensp;</a>
+                                </div>
+                            </div>                                
+                            </div>
                         </div>
-                    </div>
                     <center> <p style="background-color:white;color:red" id="smsM"></p></center>
                     <center> <p style="background-color:white;color:green" id="messageM"></p></center>
                     <div class="card-body">
@@ -373,7 +520,7 @@
                             <div class="col-lg-6">
                                 <div class="input-group input-group-outline">
                                     <label class="text" style="width:100%;color:black">Date de Naissance </label>
-                                    <input type="date" class="form-control" onchange="hideErrorM()" id="myDateM" style="background-color:whitesmoke" name="Birth" required>
+                                    <input type="date" class="form-control" value="@dateConvert"  onchange="hideErrorM()" id="myDateM" style="background-color:whitesmoke" name="Birth" required>
                                 </div>
                                 <p class="text-danger" id="BirthErrorM" style="font-size: 80%;font-weight: bold">Veuillez saisir la date de naissance svp </p>
 
@@ -613,8 +760,6 @@
 </script>
 
 <!--EDITE FA-->
-
-
 <!-- SRIPT MODIFIER PATIENT-->
 <script>
 
@@ -636,7 +781,7 @@
 
     function modifierPatient()
     {
-        
+
         document.getElementById("smsM").innerText=null
         document.getElementById("messageM").innerText = null
 
@@ -698,6 +843,7 @@
 
 
 <script>
+
     const phoneInputFieldM = document.querySelector("#PhoneTM");
     const phoneInputM = window.intlTelInput(phoneInputFieldM, {
         // allowDropdown: false,
@@ -747,25 +893,40 @@
 
     function ouvrirModifierPatientModal()
     {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+
+        today = yyyy + '-' + mm + '-' + dd;
+        document.getElementById("myDateM").setAttribute("max", today);
 
         document.getElementById('modifierPatient').style.display = 'block';
-       
+
 
         document.getElementById("NumeroFormatM").style.display = 'none';
-       
+
         document.getElementById('patientIDM').value = @Html.Raw(Json.Encode(ViewBag.No));
-        var date =  @Html.Raw(Json.Encode(Model.Birth))
-        $('#AccompagnerM').val( @Html.Raw(Json.Encode(Model.Acc))),
+
+
+
+
+        // create a date variable
+                $('#AccompagnerM').val( @Html.Raw(Json.Encode(Model.Acc))),
                 $('#NameM').val( @Html.Raw(Json.Encode(Model.Name))),
                 $('#SurnameM').val( @Html.Raw(Json.Encode(Model.Surname))),
                 $('#GenderM').val( @Html.Raw(Json.Encode(Model.Gender))),
-               $('#myDateM').val(new Date(Number(date.split("/")[1].split("(")[1].split(")")[0])).toJSON().slice(0, 10)),
                 $('#AdresseM').val( @Html.Raw(Json.Encode(Model.Adresse))),
                 $('#ProfessionM').val( @Html.Raw(Json.Encode(Model.Profession))),
                  phoneInputM.setNumber("+" + @Html.Raw(Json.Encode(Model.Telephone)))
         $('#PhoneM').val( @Html.Raw(Json.Encode(Model.Telephone)))
         // Recuper la date de naissance dans le champ
-        console.log( @Html.Raw(Json.Encode(Model.Adresse)))
 
 
 
@@ -812,3 +973,116 @@
 
 </script>
 <!--FIN MODIFIER-->
+<!--AJOUTER PAIEMENT-->
+<script>
+    $('#Id_patientError').hide();
+    $('#Id_departementError').hide();
+    $('#MconError').hide();
+    $('#taux_prise_en_chargeError').hide();
+
+    $("#Id_docteur").select2({
+        placeholder: "Choisir docteur"
+    });
+
+    $("#Id_departement").select2({
+        placeholder: "Choisir département"
+    });
+    function isNumberKey2(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+    function showErrorP() {
+        if ($('#Id_patient').val() == null) { $('#Id_patientError').show(); }
+        else if ($('#Id_departement').val() == null) { $('#Id_departementError').show(); }
+        else if ($('#Mcon').val().length == 0) { $('#MconError').show(); }
+        else { ajouterPaiement();}
+    }
+    function hideErrorP() {
+
+        if ($('#Id_patient').val() != null) { $('#Id_patientError').hide(); }
+        if ($('#Id_departement').val() != null) { $('#Id_departementError').hide(); }
+        if ($('#Mcon').val().length != 0) { $('#MconError').hide(); }
+
+    }
+
+    function checkTaux() {
+        if ($('#taux_prise_en_charge').val() > 100) {
+            $('#taux_prise_en_chargeError').show();
+            $('#envoyer').hide();
+
+        }
+        else {
+            $('#taux_prise_en_chargeError').hide();
+            $('#envoyer').show();
+
+        }
+    }
+     function ouvrirPaiementModal()
+    {
+         var patientID = @Html.Raw(Json.Encode(Model.patientID));
+         var patientFullName=@Html.Raw(Json.Encode(Model.Surname)) + " "+@Html.Raw(Json.Encode(Model.Name))
+
+            $('#Id_patient').val(patientID),
+             $('#SurnamePaiement').val(patientFullName)
+            document.getElementById('ajouterPaiement').style.display = 'block'
+
+     }
+
+</script>
+<script>
+    function ajouterPaiement() {
+        document.getElementById("smsP").innerText = null
+        // Checking whether FormData is available in browser
+        if (window.FormData !== undefined) {
+
+            var fileUpload = $("#file").get(0);
+            var files = fileUpload.files;
+            var file = files[0]
+            // Create FormData object
+            var fileData = new FormData();
+            fileData.append("file", file);
+            fileData.append("MA", $('#MA').val());
+            fileData.append("Mcon", $('#Mcon').val());
+            fileData.append("ME", $('#ME').val());
+            fileData.append("Ob", $('#Ob').val());
+            fileData.append("Assurance", $('#Assurance').val());
+            fileData.append("Id_docteur", $('#Id_docteur').val());
+            fileData.append("Id_departement", $('#Id_departement').val());
+            fileData.append("taux_prise_en_charge", $('#taux_prise_en_charge').val());
+            fileData.append("url_lettre_prise_en_charge", $('#url_lettre_prise_en_charge').val());
+            fileData.append("Id_patient", $('#Id_patient').val());
+
+            $.ajax({
+                method: 'post',
+                processData: false,
+                contentType: false,
+                cache: false,
+                data: fileData,
+                enctype: 'multipart/form-data',
+                url: "/Admin/AjouterPaiement",
+                success: function (reponse) {
+                    switch (reponse.code) {
+                        case 200:
+                            window.location.href = "/" + reponse.controller + "/" + reponse.action + "?No=" + reponse.param;
+                            break;
+                        case 201:
+                            document.getElementById("smsP").innerText = reponse.message
+                            break;
+                        default:
+                            document.getElementById("smsP").innerText = reponse.message
+
+                    }
+                }
+            });
+
+        } else {
+            document.getElementById("smsP").innerText = "FormData is not supported."
+        }
+
+    };
+</script>
+

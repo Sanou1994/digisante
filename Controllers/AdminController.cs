@@ -36,7 +36,7 @@ namespace digi_sante.Controllers
 
         // PARTIE PATIENT
         public ActionResult Index()
-        {
+        { 
 
             return View();
         }
@@ -107,7 +107,7 @@ namespace digi_sante.Controllers
                     pa.profession = Profession;
                     pa.prenom_accompagnant = Accompagner;
                     pa.date_enregistrement = DateTime.Now;
-                    pa.date_naissance = Birth;
+                    pa.date_naissance = Birth.Value.Ticks;
                     Reponse reponse = _patientService.AjouterPatient(pa);
 
                     if (reponse.statusCode == 200)
@@ -262,7 +262,7 @@ namespace digi_sante.Controllers
                             utl.sexe = Gender;
                             utl.profession = Profession;
                             utl.prenom_accompagnant = Accompagner;
-                            utl.date_naissance = Birth;
+                            utl.date_naissance = Birth.Value.Ticks;
                             Reponse reponseSave = _patientService.ModifierPatient(utl);
                             if (reponseSave.statusCode == 200)
                             {
@@ -441,6 +441,7 @@ namespace digi_sante.Controllers
                 if (Session["utilisateurID"] != null && Session["structureID"] != null)
                 {
                     Reponse reponse = _patientService.ListeConsultation(No, Convert.ToInt64(Session["structureID"]), page, searching);
+                    ViewBag.No = No;
                     if (reponse.statusCode == 200)
                     {
                         ViewBag.message = reponse.message;
@@ -449,7 +450,7 @@ namespace digi_sante.Controllers
                     }
                     else
                     {
-                        var tpl = new List<Consultation>().ToPagedList(0, 0);
+                        var tpl = new List<Consultation>().ToPagedList(1, 1);
                         ViewBag.sms = reponse.message;
                         return View(tpl);
                     }
@@ -465,7 +466,7 @@ namespace digi_sante.Controllers
             catch
             {
                 ViewBag.sms = "Une erreur interne est survenue";
-                return View(new List<Consultation>().ToPagedList(0, 0));
+                return View(new List<Consultation>().ToPagedList(1, 1));
 
             }
 
@@ -1257,6 +1258,7 @@ namespace digi_sante.Controllers
                             ViewBag.message = reponse.message;
                             return View(reponseDepart.resultat);
 
+
                         }
                         else
                         {
@@ -1571,29 +1573,7 @@ namespace digi_sante.Controllers
         }
 
         // PARTIE DEPARTEMENT
-        [HttpGet]
-        public ActionResult AjouterDepartement()
-        {
-            try
-            {
-                if (Session["utilisateurID"] != null && Session["structureID"] != null)
-                {
-                    return View();
-
-                }
-                else
-                {
-                    TempData["sms"] = "la session est écoulée";
-                    return RedirectToAction("Index", "Home");
-                }
-            }
-            catch (Exception)
-            {
-                return RedirectToAction("Index", "Admin");
-            }
-        }
-
-        [HttpPost]
+         [HttpPost]
         public ActionResult AjouterDepartement(string NameDepartement, Departement departement)
         {
             try
@@ -1605,24 +1585,15 @@ namespace digi_sante.Controllers
                     departement.status = true;
                     departement.structureID = Convert.ToInt64(Session["structureID"]);
                     Reponse reponse = _departementService.AjouterDepartement(Convert.ToInt64(Session["structureID"]), departement);
-                    if (reponse.statusCode == 200)
-                    {
-
-                        ViewBag.message = reponse.message;
-                        return View();
-
-                    }
-                    else
-                    {
-                        ViewBag.NameDepartement = NameDepartement;
-                        ViewBag.sms = reponse.message;
-                        return View();
-                    }
+                    
+                    return Json(new { code = reponse.statusCode, message = reponse.message });                   
 
 
                 }
                 else
                 {
+                    TempData["sms"] = "la session est écoulée";
+
                     return RedirectToAction("Index", "Home");
                 }
             }
@@ -1632,59 +1603,13 @@ namespace digi_sante.Controllers
                 {
 
                     ViewBag.sms = "*impossible d'enregistrer cet utilisateur*";
-                    return View();
+                    return Json(new { code = 500, message = "*impossible d'enregistrer cet utilisateur*" });
                 }
                 else
                 {
                     TempData["sms"] = "la session est écoulée";
                     return RedirectToAction("Index", "Home");
                 }
-            }
-        }
-
-        [HttpGet]
-        public ActionResult modifierDepartement(long? No)
-        {
-            try
-            {
-                if (Session["utilisateurID"] != null && Session["structureID"] != null)
-                {
-                    if (No != null)
-                    {
-
-                        Reponse reponse = _departementService.ChercherDepartement(No);
-                        ViewBag.No = No;
-                        if (reponse.statusCode == 200)
-                        {
-                            ViewBag.NameDepartement = reponse.resultat.nom;
-                            return View();
-
-                        }
-                        else
-                        {
-                            TempData["lock"] = reponse.message;
-                            return RedirectToAction("LisTeDepartement", "Admin");
-                        }
-                    }
-                    else
-                    {
-                        ViewBag.No = No;
-                        TempData["lock"] = " Ce département n'existe pas";
-                        return RedirectToAction("LisTeDepartement", "Admin");
-                    }
-                }
-                else
-                {
-                    TempData["sms"] = "la session est écoulée";
-                    return RedirectToAction("Index", "Home");
-                }
-
-            }
-            catch (Exception)
-            {
-                TempData["lock"] = " une erreur majeur est survenue";
-                return RedirectToAction("LisTeDepartement", "Admin");
-
             }
         }
 
@@ -1705,35 +1630,20 @@ namespace digi_sante.Controllers
                             Departement departement = reponse.resultat;
                             departement.nom = NameDepartement;
                             Reponse reponseNew = _departementService.ModifierDepartement(departement);
-                            if (reponseNew.statusCode == 200)
-                            {
-                                ViewBag.NameDepartement = reponseNew.resultat.nom;
-                                ViewBag.message = reponseNew.message;
-                                return View();
-                            }
-                            else
-                            {
-                                ViewBag.NameDepartement = reponse.resultat.nom;
-                                ViewBag.sms = reponseNew.message;
-                                return View();
-                            }
-
-
+                            return Json(new { code = reponseNew.statusCode, message = reponseNew.message });                          
 
                         }
                         else
                         {
-                            ViewBag.NameDepartement = NameDepartement;
-                            ViewBag.sms = reponse.message;
-                            return View();
+                             return Json(new { code = reponse.statusCode, message = reponse.message });
                         }
 
                     }
                     else
                     {
-                        ViewBag.NameDepartement = NameDepartement;
-                        ViewBag.sms = "*cet département n'exitse pas*";
-                        return View();
+                   
+                        return Json(new { code = 201, message = "*cet département n'exitse pas*" });
+
                     }
                 }
                 else
@@ -1746,9 +1656,9 @@ namespace digi_sante.Controllers
             {
                 if (Session["utilisateurID"] != null && Session["structureID"] != null)
                 {
-                    ViewBag.NameDepartement = NameDepartement;
-                    ViewBag.sms = "*impossible de modifier cet utilisateur*";
-                    return View();
+                   
+                    return Json(new { code = 201, message = "*impossible de modifier cet utilisateur*" });
+
                 }
                 else
                 {
@@ -1838,28 +1748,7 @@ namespace digi_sante.Controllers
 
 
         // PARTIE ASSURANCE
-        [HttpGet]
-        public ActionResult AjouterAssurance()
-        {
-            try
-            {
-                if (Session["utilisateurID"] != null && Session["structureID"] != null)
-                {
-                    return View();
-
-                }
-                else
-                {
-                    TempData["sms"] = "la session est écoulée";
-                    return RedirectToAction("Index", "Home");
-                }
-            }
-            catch (Exception)
-            {
-                return RedirectToAction("Index", "Admin");
-            }
-        }
-
+      
         [HttpPost]
         public ActionResult AjouterAssurance(string Assurance, string Adresse, string Phone, string Contact, Assurance ss)
         {
@@ -1874,29 +1763,16 @@ namespace digi_sante.Controllers
                     ss.prenom_a_contacter = Contact;
                     ss.status = true;
                     ss.structureID = Convert.ToInt64(Session["structureID"]);
-                    Reponse reponse = _assuranceService.AjouterAssurance(Convert.ToInt64(Session["structureID"]), ss);
+                    Reponse reponse = _assuranceService.AjouterAssurance(Convert.ToInt64(Session["structureID"]), ss);                 
 
-                    if (reponse.statusCode == 200)
-                    {
-
-                        ViewBag.message = reponse.message;
-                        return View();
-
-                    }
-                    else
-                    {
-                        ViewBag.Adresse = Adresse;
-                        ViewBag.Contact = Contact;
-                        ViewBag.Phone = Phone;
-                        ViewBag.Assurance = Assurance;
-                        ViewBag.sms = reponse.message;
-                        return View();
-                    }
+                    return Json(new { code = reponse.statusCode, message = reponse.message });                  
 
 
                 }
                 else
                 {
+                    TempData["sms"] = "la session est écoulée";
+
                     return RedirectToAction("Index", "Home");
                 }
             }
@@ -1905,63 +1781,13 @@ namespace digi_sante.Controllers
                 if (Session["utilisateurID"] != null && Session["structureID"] != null)
                 {
 
-                    ViewBag.sms = "*impossible d'enregistrer cette assurance*";
-                    return View();
+                    return Json(new { code = 500, message = "*impossible d'enregistrer cette assurance*" });
                 }
                 else
                 {
                     TempData["sms"] = "la session est écoulée";
                     return RedirectToAction("Index", "Home");
                 }
-            }
-        }
-
-        [HttpGet]
-        public ActionResult modifierAssurance(long? No)
-        {
-            try
-            {
-                if (Session["utilisateurID"] != null && Session["structureID"] != null)
-                {
-                    if (No != null)
-                    {
-
-                        Reponse reponse = _assuranceService.ChercherAssurance(No);
-                        ViewBag.No = No;
-                        if (reponse.statusCode == 200)
-                        {
-                            ViewBag.Assurance = reponse.resultat.nom;
-                            ViewBag.Adresse = reponse.resultat.adresse;
-                            ViewBag.Contact = reponse.resultat.prenom_a_contacter;
-                            ViewBag.Phone = reponse.resultat.telephone;
-                            ViewBag.sms = reponse.message;
-                            return View();
-                        }
-                        else
-                        {
-                            TempData["lockAssurance"] = reponse.message;
-                            return RedirectToAction("ListeAssurance", "Admin");
-                        }
-                    }
-                    else
-                    {
-                        ViewBag.No = No;
-                        TempData["lockAssurance"] = " Cette assurance n'existe pas";
-                        return RedirectToAction("ListeAssurance", "Admin");
-                    }
-                }
-                else
-                {
-                    TempData["sms"] = "la session est écoulée";
-                    return RedirectToAction("Index", "Home");
-                }
-
-            }
-            catch (Exception)
-            {
-                TempData["lockAssurance"] = " une erreur majeur est survenue";
-                return RedirectToAction("ListeAssurance", "Admin");
-
             }
         }
 
@@ -1984,42 +1810,21 @@ namespace digi_sante.Controllers
                             assurance.adresse = Adresse;
                             assurance.telephone = Phone;
                             assurance.prenom_a_contacter = Contact;
-
                             Reponse reponseNew = _assuranceService.ModifierAssurance(assurance);
-                            if (reponseNew.statusCode == 200)
-                            {
-
-                                ViewBag.message = reponseNew.message;
-                                return View();
-                            }
-                            else
-                            {
-                                ViewBag.Adresse = Adresse;
-                                ViewBag.Contact = Contact;
-                                ViewBag.Phone = Phone;
-                                ViewBag.Assurance = Assurance;
-                                ViewBag.sms = reponseNew.message;
-                                return View();
-                            }
-
+                            return Json(new { code = reponseNew.statusCode, message = reponseNew.message });                           
 
 
                         }
                         else
                         {
-                            ViewBag.Adresse = Adresse;
-                            ViewBag.Contact = Contact;
-                            ViewBag.Phone = Phone;
-                            ViewBag.Assurance = Assurance;
-                            ViewBag.sms = reponse.message;
-                            return View();
+                        return Json(new { code = reponse.statusCode, message = reponse.message });
+
                         }
 
                     }
                     else
                     {
-                        ViewBag.sms = "*cette assurance n'exitse pas*";
-                        return View();
+                        return Json(new { code = 500, message = "*cette assurance n'exitse pas*" });
                     }
                 }
                 else
@@ -2032,12 +1837,9 @@ namespace digi_sante.Controllers
             {
                 if (Session["utilisateurID"] != null && Session["structureID"] != null)
                 {
-                    ViewBag.Adresse = Adresse;
-                    ViewBag.Contact = Contact;
-                    ViewBag.Phone = Phone;
-                    ViewBag.Assurance = Assurance;
-                    ViewBag.sms = "*impossible de modifier cette assurance*";
-                    return View();
+                    
+                    return Json(new { code = 500, message = "*impossible de modifier cette assurance*" });
+
                 }
                 else
                 {

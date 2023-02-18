@@ -100,7 +100,7 @@ namespace digi_sante.Models
     {
         public long? No_dossier { get; set; }
         public long? No { get; set; }
-        public DateTime? DatePatient { get; set; }
+        public long? DatePatient { get; set; }
         public string NomComplet { get; set; }
         public string NomCompletDocteur { get; set; }
         public string TitreDocteur { get; set; }
@@ -173,17 +173,24 @@ namespace digi_sante.Models
     public class DetailPatient
     {
         public string Name { get; set; }
+        public string date_naissance { get; set; }
+
         public string Surname { get; set; }
         public string Adresse { get; set; }
         public string Nationalite { get; set; }
         public long? Age { get; set; }
+        public long? patientID { get; set; }
+
         public string Gender { get; set; }
         public string Telephone { get; set; }
         public string Profession { get; set; }
         public string Acc { get; set; }
-        public string Birth { get; set; }
+        public long? Birth { get; set; }
         public List<Utilisateur> utilisateurs { get; set; }
         public List<Analyse> analyses { get; set; }
+        public List<Utilisateur> liste_docteurs { get; set; }
+        public List<Departement> liste_departements { get; set; }
+        public List<Assurance> liste_assurances { get; set; }
 
     }
 
@@ -277,4 +284,14 @@ namespace digi_sante.Models
         public K Key;
         public IEnumerable<T> Values;
     }
+
+    public class ParametreData
+    {      
+       
+        public List<Departement> liste_departements { get; set; }
+        public List<Assurance> liste_assurances { get; set; }
+
+    }
+
+
 }

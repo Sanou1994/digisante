@@ -49,16 +49,14 @@
             cursor: pointer;
         }
 </style>
-<div class="col-12">
-    <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("ListConsultation","Admin")">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i>&nbsp;Retour</a>
-    <a type="button" style="float: right;display:none; font-size: 20px; font-weight: bold; " href="@Url.Action("Cim","Admin",new {alse= Convert.ToInt64(@ViewBag.ConsulID)*78})">C.I.M &nbsp;<i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </a>
+<div class="row">
+    <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("ListeConsultation","Admin" , new { No=Model.Item4.patientID})">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-angle-double-left" aria-hidden="true"></i>&nbsp;Arrière</a>
 </div>
-
 <div class="container-fluid py-4">
 
     <div class="row" style="background-color:white;margin-top:10px ;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
         <div class="col-lg-8" style="background-color:white">
-            <div class="panel-heading" style="border: solid; background: #6d7fcc; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <div class="panel-heading" style="border: solid; background: #03DAFC; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
                 <center>
                     <a style="color:white;font-weight:bold"> @ViewBag.message</a>  
                 </center>
@@ -68,15 +66,15 @@
             <br />
             <div class="row">
                 <div class="col-lg-4">
-                    <a id="myBtn" class="col-lg-10   btn btn-primary" style="float: right;color:white; background-color: #6d7fcc; width: 100%; margin-left: 10px"> Ordonnance</a>
+                    <a id="myBtn" class="col-lg-10   btn btn-primary" style="float: right; color: white; background-color: #03DAFC; width: 100%; margin-left: 10px"> Ordonnance</a>
                 </div>
 
                 <div class="col-lg-4">
-                    <a id="myBtn1" class="col-lg-10 btn btn-primary" style="float: right; color: white; background-color: #6d7fcc; width: 100%; margin-left: 10px "> Demande Analyse</a>
+                    <a id="myBtn1" class="col-lg-10 btn btn-primary" style="float: right; color: white; background-color: #03DAFC; width: 100%; margin-left: 10px "> Demande Analyse</a>
                 </div>
 
                 <div class="col-lg-4">
-                    <a class="col-lg-10 btn btn-primary" onclick="showHospi()" style="float: right; background-color: #6d7fcc; color: white; width: 100%; margin-left: 10px "> Hospitaliser</a>
+                    <a class="col-lg-10 btn btn-primary" onclick="showHospi()" style="float: right; background-color: #03DAFC; color: white; width: 100%; margin-left: 10px "> Hospitaliser</a>
                 </div>
 
 
@@ -114,7 +112,7 @@
                         <div class="container">
                             <div class="row" style="background-color:white;">
                                 <div class="panel panel-primary">
-                                    <div class="panel-heading" style="border: solid; background: #6d7fcc; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                                    <div class="panel-heading" style="border: solid; background: #03DAFC; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
                                         <center>
                                             <a style="color: white; font-weight: bold">Ordonnances</a>
                                         </center>
@@ -141,7 +139,7 @@
                             <div class="container">
                                 <div class="row" style="background-color:white;">
                                     <div class="panel panel-primary">
-                                        <div class="panel-heading" style="border: solid; background: #6d7fcc; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                                        <div class="panel-heading" style="border: solid; background: #03DAFC; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
                                             <center>
                                                 <a style="color: white; font-weight: bold">Analyses</a>
                                             </center>
@@ -170,7 +168,7 @@
                             <div class="container">
                                 <div class="row" style="background-color:white;">
                                     <div class="panel panel-primary">
-                                        <div class="panel-heading" style="border: solid; background: #6d7fcc; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                                        <div class="panel-heading" style="border: solid; background: #03DAFC; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
                                             <center>
                                                 <a style="color: white; font-weight: bold">Hospitalisations</a>
                                             </center>
@@ -221,7 +219,7 @@
             <div class="col-12">
                 <div class="card my-4">
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                        <div class=" shadow-primary border-radius-lg pt-4 pb-3" style="border: solid; background: #6d7fcc; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); ">
+                        <div class=" shadow-primary border-radius-lg pt-4 pb-3" style="border: solid; background: #03DAFC; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); ">
                             <h6 class="text-white text-capitalize ps-3">Nouvelle Ordonnance</h6>
                         </div>
                     </div>
@@ -242,7 +240,7 @@
                     </div>
 
                     <table id="tblCustomers" style="width:100%">
-                        <thead style="background-color: #6d7fcc; color: white" class="table align-items-center mb-0" role="rowgroup">
+                        <thead style="background-color: #03DAFC; color: white" class="table align-items-center mb-0" role="rowgroup">
                             <tr>
                                 <th style="color:white;border-left-color:rgb(60,179,113)"> #Description Ordonnance</th>
                                 <th style="color:white;display:none">№ Consulation</th>
@@ -326,8 +324,8 @@
                 <br />
                 <div class="col-12">
                     <div class="card my-4">
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                            <div class=" shadow-primary border-radius-lg pt-4 pb-3" style="border: solid; background: #a5c422;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); ">
+                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2" 
+                            <div class=" shadow-primary border-radius-lg pt-4 pb-3" style="border: solid; background: #03DAFC;font-size:30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); ">
                                 <h6 class="text-white text-capitalize ps-3">Liste des analyses</h6>
                             </div>
                         </div>
@@ -338,7 +336,7 @@
                                         <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder " style="border-left-color:rgb(60,179,113);display:none"></th>
 
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder " style="border-left-color:rgb(60,179,113)"> #Nom  Analyse</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder " style="border-left-color:rgb(60,179,113)"> #Nom Analyse</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder ">Laboratoire</th>
                                         </tr>
                                     </thead>
@@ -353,7 +351,7 @@
                                     </tbody>
                                 </table>
                                 <table id="tblCustomers" style="width:100%">
-                                    <thead style="background-color:rgb(60,179,113);color:white" class="table align-items-center mb-0" role="rowgroup">
+                                    <thead style="background-color: #03DAFC. ; color: white" class="table align-items-center mb-0" role="rowgroup">
                                         <tr>
                                             <th style="color:white;border-left-color:rgb(60,179,113)"> #Nom  Analyse</th>
                                             <th style="color:white;">Laboratoire</th>
@@ -440,7 +438,7 @@
 <div class="modal container-fluid" id="hospitalisation">
     <div class="row" style="background-color:white;">
         <div class="panel panel-primary">
-            <div class="panel-heading" style="border: solid; background: #6d7fcc; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <div class="panel-heading" style="border: solid; background: #03DAFC; font-size: 30px; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
                 <center>
                     <p style="color:black;float:left;font-weight:bold"><h4>Hospitalisation | @ViewBag.message</h4></p>
                     <a class="btn btn-primary" onclick="document.getElementById('hospitalisation').style.display='none' " style=" float:right;background-color:white;color:black;margin-top:5px;">X</a>
@@ -649,7 +647,7 @@
             $('#bodyContent').append(`<tr id="R${++rowIdx}">
                    <td class="row-index text-center">${textBox1}</td>
                    <td class="text-center">
-                   <button class="remove" id="${indxCurrent}" style="background-color:#6d7fcc;color:white;font-size:12px;border:none;width:100%;height:28px;text-align:center"
+                   <button class="remove" id="${indxCurrent}" style="background-color:#03DAFC;color:white;font-size:12px;border:none;width:100%;height:28px;text-align:center"
                     type="button">Retirer</button>
                     </td>
                     </tr>`);
@@ -840,7 +838,7 @@
                    <td class="row-index text-center">${$('#saisirNomLabo').val()}</td>
                    <td class="row-index text-center">${textBox2}</td>
                    <td class="text-center">
-                   <button class="remove" id="${indxCurrent}" style="background-color:#6d7fcc;color:white;font-size:12px;border:none;width:100%;height:28px;text-align:center"
+                   <button class="remove" id="${indxCurrent}" style="background-color:#03DAFC;color:white;font-size:12px;border:none;width:100%;height:28px;text-align:center"
                     type="button">Retirer</button>
                     </td>
                     </tr>`);
@@ -852,7 +850,7 @@
                    <td class="row-index text-center">${structures.filter(z => z.structureID == textBox4)[0].nom}</td>
                    <td class="row-index text-center">${textBox2}</td>
                    <td class="text-center">
-                   <button class="remove" id="${indxCurrent}" style="background-color:#6d7fcc;color:white;font-size:12px;border:none;width:100%;height:28px;text-align:center"
+                   <button class="remove" id="${indxCurrent}" style="background-color:#03DAFC;color:white;font-size:12px;border:none;width:100%;height:28px;text-align:center"
                     type="button">Retirer</button>
                     </td>
                     </tr>`);

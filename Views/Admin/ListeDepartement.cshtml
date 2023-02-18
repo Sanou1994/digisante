@@ -139,7 +139,9 @@
             cursor: pointer;
         }
 </style>
-
+<div class="row">
+    <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("Parametres", "Admin")">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-angle-double-left" aria-hidden="true"></i>&nbsp;Arrière</a>
+</div>
 <div class="container-fluid p-4" style="margin-top:-30px">
     <div class="row">
         <div class="col-12">
@@ -165,7 +167,7 @@
                     </div>
                 </div>
                 <center> <p style="background-color:white;color:green">@TempData["lock"]</p></center>
-               
+
                 <div class="card-body px-0">
                     <div class="table-responsive p-0">
 
@@ -188,7 +190,7 @@
                                     <a href="@Url.Action("ListeDepartement","Admin")" class="btn btn-primary" style="float: right; background-color: #03DAFC; width: 100%">  Initialiser</a>
                                 </div>
                                 <div class="col-lg-2 col-sm-2 col-md-2 col-xl-2">
-                                    <a href="@Url.Action("AjouterDepartement","Admin")" class="btn btn-primary" style="float: right; background-color: #03DAFC; width: 100%">Ajouter </a>
+                                    <a onclick="document.getElementById('ajouterDepartement').style.display = 'block'" class="btn btn-primary" style="float: right;color:white; background-color: #03DAFC; width: 100%">Ajouter </a>
                                 </div>
                             </div>
                         </center>
@@ -207,6 +209,7 @@
                                 <thead>
                                     <tr>
                                         <th>Département</th>
+                                        <th>état</th>
                                         <th>Modifier</th>
                                         <th>Bloquer</th>
                                     </tr>
@@ -218,8 +221,26 @@
                                             <td style="color:black">
                                                 @departement.nom
                                             </td>
+                                            @if (departement.status == true)
+                                            {
+                                                <td style="color:green">
+                                                    Active
+                                                </td>
+
+
+
+                                            }
+                                            else
+                                            {
+                                                <td style="color:red">
+                                                    Desactive
+                                                </td>
+
+
+
+                                            }
                                             <td style="color:black">
-                                                <a href="@Url.Action("ModifierDepartement","Admin",new {No=departement.departementID})"><span class="fa fa-edit"></span></a>
+                                                <a onclick="modalModifierDepartement(@departement.departementID)"><span class="fa fa-edit"></span></a>
                                             </td>
                                             <td style="color:black">
                                                 <a onclick="bloquageModal(@departement.departementID)"><span class="fa fa-lock"></span></a>
@@ -258,15 +279,18 @@
 
                     <center> <p style="background-color: white; color: red">Voulez-vous bloquer ce département ?</p></center>
                     <div class="card-body">
-                        <div class="col-lg-6">
-                            <a class="btn btn-primary" onclick="bloquage()" style="color: white; background-color: #6d7fcc; width: 100%"> Oui</a>
-                        </div>
-                        <input type="text" class="form-control" id="idDepart" name="idDepart" hidden />
+                        <div class="row">
+                            <div class="col-lg-6 col-xl-6 col-sm-6 col-md-6">
+                                <a class="btn btn-primary" onclick="bloquage()" style="color: white; background-color: #03DAFC; width: 100%"> Oui</a>
+                            </div>
+                            <input type="text" class="form-control" id="idDepart" name="idDepart" hidden />
 
-                        <div class="col-lg-6">
-                            <a class="btn btn-primary" onclick=" document.getElementById('bloquageModal').style.display = 'none'" style="color: white; background-color: #6d7fcc; width: 100% ">Non</a>
+                            <div class="col-lg-6 col-xl-6 col-sm-6 col-md-6">
+                                <a class="btn btn-primary" onclick=" document.getElementById('bloquageModal').style.display = 'none'" style="color: white; background-color: #03DAFC; width: 100% ">Non</a>
 
+                            </div>
                         </div>
+                       
 
                     </div>
                 </div>
@@ -276,6 +300,96 @@
 
 
 </div>
+<!--AJOUTER  DEPARTEMENT -->
+<div id="ajouterDepartement" class="modal container-fluid ">
+    <div class="container" style="width:70%">
+        <div class="container-fluid py-4 pb-2">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card p-4" style="margin:10px">
+                        <div class="card-header" style="border: solid; font-size: 30px; background-color: #03DAFC; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                            <div class=" shadow-primary border-radius-lg">
+                                <div class="row">
+                                    <div class="col-md-8 col-lg-8 col-xl-8 col-sm-8 mt-3">
+                                        <h3 class="text-capitalize  text-center" style="color:white">Nouveau Département </h3>
+                                    </div>
+                                    <div class="col-md-4 col-lg-4 col-xl-4 col-sm-4 mt-3">
+                                        <a class="btn btn-primary text-center " onclick="document.getElementById('ajouterDepartement').style.display = 'none'; window.location.reload()" style="width:5%; background-color:white; float:right;color:black">X&ensp;</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <center> <p style="background-color: white; color: red" id="smsDepartement"></p></center>
+                        <center> <p style="background-color:white;color:green" id="messageDepartement"></p></center>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <input type="text" class="form-control" placeholder="nom département" style="background-color:whitesmoke" id="NameDepartement" name="NameDepartement" required>
+                                    <p class="text-danger" id="NameErrorDepartement" style="font-size: 80%;font-weight: bold">Veuillez saisir le nom svp </p>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <button class="btn btn-primary" onclick="showErrorDepartement()" style="float:right; background-color:black"> Enregistrer</button>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--MODIFIER  DEPARTEMENT -->
+<div id="modifierDepartement" class="modal container-fluid ">
+    <div class="container" style="width:70%">
+        <div class="container-fluid py-4 pb-2">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card p-4" style="margin:10px">
+                        <div class="card-header" style="border: solid; font-size: 30px; background-color: #03DAFC; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                            <div class=" shadow-primary border-radius-lg">
+                                <div class="row">
+                                    <div class="col-md-8 col-lg-8 col-xl-8 col-sm-8 mt-3">
+                                        <h3 class="text-capitalize  text-center" style="color:white">Modifier Département </h3>
+                                    </div>
+                                    <div class="col-md-4 col-lg-4 col-xl-4 col-sm-4 mt-3">
+                                        <a class="btn btn-primary text-center " onclick="document.getElementById('modifierDepartement').style.display = 'none'; window.location.reload()" style="width:5%; background-color:white; float:right;color:black">X&ensp;</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <center> <p style="background-color: white; color: red" id="smsDepartementM"></p></center>
+                        <center> <p style="background-color:white;color:green" id="messageDepartementM"></p></center>
+                        <div class="card-body">
+                            <div class="row">
+                                
+                                <div class="col-lg-6">
+                                    <input type="text" class="form-control" id="departementID" hidden>
+
+                                    <input type="text" class="form-control" placeholder="nom département" style="background-color:whitesmoke" id="NameDepartementM" name="NameDepartementM" required>
+                                    <p class="text-danger" id="NameErrorDepartementM" style="font-size: 80%;font-weight: bold">Veuillez saisir le nom svp </p>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <button class="btn btn-primary" onclick="showErrorDepartementM()" style="float:right; background-color:black"> Enregistrer</button>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
 <script src="~/Scripts/jquery-3.4.1.min.js"></script>
 
 <script type="text/javascript">
@@ -291,7 +405,7 @@
         $.post('@Url.Action("desactiverDepartement")', { No: document.getElementById('idDepart').value},
                              function (reponse)
                              {
-                                 
+
                                 window.location.reload()
 
 
@@ -302,5 +416,129 @@
                            });
 
     }
+
+</script>
+<!-- JS DEPARTEMENT-->
+
+<script type="text/javascript">
+    $('#NameErrorDepartementM').hide();
+    $('#NameErrorDepartement').hide();
+    function showErrorDepartement() {
+        if ($('#NameDepartement').val().length == 0) {
+            $('#NameErrorDepartement').show();
+        }
+        else {
+            enregistrerDepartement();
+        }
+
+    }
+    function hideError() {
+
+        if ($('#NameDepartement').val() != null) { $('#NameErrorDepartement').hide(); }
+
+
+    }
+
+
+</script>
+
+<script type="text/javascript">
+
+    function enregistrerDepartement()
+    {
+        document.getElementById("smsDepartement").innerText=null
+        document.getElementById("messageDepartement").innerText = null
+
+        $.post('@Url.Action("AjouterDepartement")',
+            {
+                NameDepartement: $('#NameDepartement').val()
+            },
+            function (reponse)
+            {
+                console.log(JSON.stringify(reponse))
+                switch (reponse.code) {
+                    case 200:
+                        document.getElementById("smsDepartement").innerText = null
+                        document.getElementById("messageDepartement").innerText = reponse.message
+                        setTimeout(() => { window.location.reload() }, 1000);
+
+                        break;
+                    case 201:
+                        document.getElementById("messageDepartement").innerText = null
+                        document.getElementById("smsDepartement").innerText = reponse.message
+                        break;
+                    default:
+                        document.getElementById("messageDepartement").innerText = null
+                        document.getElementById("smsDepartement").innerText = reponse.message
+
+                }
+
+
+
+            }).fail(function (xhr, status, error) {
+                document.getElementById("smsDepartement").innerText = " Une erreur interne est survenue"
+
+            });
+
+    }
+
+</script>
+
+<script type="text/javascript">
+    function modalModifierDepartement(id)
+    {
+         var departements = @Html.Raw(Json.Encode(Model));
+        var departement = departements.filter(a => a.departementID == id)[0]
+        $('#NameDepartementM').val(departement.nom)
+        document.getElementById('modifierDepartement').style.display = 'block'
+        document.getElementById('departementID').value = id;
+
+    }
+    function modifierDepartement()
+    {
+
+
+        $.post('@Url.Action("modifierDepartement")', {
+            No: document.getElementById('departementID').value,
+            NameDepartement: $('#NameDepartementM').val()
+        },
+            function (reponse) {
+                switch (reponse.code) {
+                    case 200:
+                        document.getElementById("smsDepartementM").innerText = null
+                        document.getElementById("messageDepartementM").innerText = reponse.message
+                        setTimeout(() => { window.location.reload() }, 1000);
+
+                        break;
+                    case 201:
+                        document.getElementById("messageDepartementM").innerText = null
+                        document.getElementById("smsDepartementM").innerText = reponse.message
+                        break;
+                    default:
+                        document.getElementById("messageDepartementM").innerText = null
+                        document.getElementById("smsDepartementM").innerText = reponse.message
+
+                }
+
+
+
+            }).fail(function (xhr, status, error) {
+                document.getElementById("smsDepartementM").innerText = " Une erreur interne est survenue"
+
+            });
+
+    }
+
+
+    function showErrorDepartementM()
+    {
+        if ($('#NameDepartementM').val().length == 0) { $('#NameErrorDepartementM').show(); }
+        else {
+            modifierDepartement()
+        }
+
+
+    }
+
 
 </script>

@@ -1146,8 +1146,6 @@
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Shared\AdminLayout.cshtml" />
     <Content Include="Views\Admin\ListePatients.cshtml" />
-    <Content Include="Views\Admin\AjouterPatient.cshtml" />
-    <Content Include="Views\Admin\ModifierPatient.cshtml" />
     <Content Include="Views\Home\Activation.cshtml" />
     <Content Include="Views\Admin\AjouterDepartement.cshtml" />
     <Content Include="Views\Admin\modifierDepartement.cshtml" />
@@ -1157,8 +1155,6 @@
     <Content Include="Views\Admin\Parametres.cshtml" />
     <Content Include="Views\Admin\DetailPatient.cshtml" />
     <Content Include="Views\Admin\ListeUtilisateur.cshtml" />
-    <Content Include="Views\Admin\AjouterAssurance.cshtml" />
-    <Content Include="Views\Admin\modifierAssurance.cshtml" />
     <Content Include="Views\Admin\ListeAssurance.cshtml" />
     <Content Include="Views\Admin\AjouterPaiement.cshtml" />
     <Content Include="Views\Admin\ListePaiement.cshtml" />

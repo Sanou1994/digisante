@@ -137,8 +137,11 @@
             cursor: pointer;
         }
 </style>
-<center style="margin-top: 25px; margin-bottom: 25px" >
-    <h3 style="color:black" > Espace Paramètres</h3>
+<div class="row">
+    <a type="button" style="float: left; font-size: 20px; font-weight: bold; " href="@Url.Action("Index", "Admin")">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-angle-double-left" aria-hidden="true"></i>&nbsp;Arrière</a>
+</div>
+<center style="margin-top: 25px; margin-bottom: 25px">
+    <h3 style="color:black"> Espace Paramètres</h3>
 </center>
 <div class="container-fluid" style="background-color: #eee;">
     <div class="container">
@@ -150,7 +153,7 @@
                     </center>
                     <div class="card-body">
                         <div class=" mb-3">
-                            <a class="btn btn-primary" style="background-color: #03DAFC; float: left" href="@Url.Action("AjouterDepartement","Admin")">Ajouter</a>
+                            <a class="btn btn-primary" style="background-color: #03DAFC; float: left ;color:white" onclick="document.getElementById('ajouterDepartement').style.display = 'block'">Ajouter</a>
                             <a class="btn btn-primary" style="background-color: #03DAFC; float: right" href="@Url.Action("ListeDepartement","Admin")">Voir +</a>
                         </div>
                     </div>
@@ -163,7 +166,7 @@
                     </center>
                     <div class="card-body">
                         <div class=" mb-3">
-                            <a class="btn btn-primary" style="background-color: #03DAFC; float: left" href="@Url.Action("AjouterAssurance","Admin")">Ajouter</a>
+                            <a class="btn btn-primary" style="background-color: #03DAFC;color:white ;float: left" onclick="document.getElementById('ajouterAssurance').style.display = 'block'">Ajouter</a>
                             <a class="btn btn-primary" style="background-color: #03DAFC; float: right" href="@Url.Action("ListeAssurance","Admin")">Voir +</a>
                         </div>
                     </div>
@@ -229,3 +232,306 @@
         </div>
     </div>
 </div>
+<!--AJOUTER  DEPARTEMENT -->
+<div id="ajouterDepartement" class="modal container-fluid ">
+    <div class="container" style="width:70%">
+        <div class="container-fluid py-4 pb-2">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card p-4" style="margin:10px">
+                        <div class="card-header" style="border: solid; font-size: 30px; background-color: #03DAFC; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                            <div class=" shadow-primary border-radius-lg">
+                                <div class="row">
+                                    <div class="col-md-8 col-lg-8 col-xl-8 col-sm-8 mt-3">
+                                        <h3 class="text-capitalize  text-center" style="color:white">Nouveau Département </h3>
+                                    </div>
+                                    <div class="col-md-4 col-lg-4 col-xl-4 col-sm-4 mt-3">
+                                        <a class="btn btn-primary text-center " onclick="document.getElementById('ajouterDepartement').style.display = 'none'; window.location.reload()" style="width:5%; background-color:white; float:right;color:black">X&ensp;</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <center> <p style="background-color: white; color: red" id="smsDepartement"></p></center>
+                        <center> <p style="background-color:white;color:green" id="messageDepartement"></p></center>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <input type="text" class="form-control" placeholder="nom département" style="background-color:whitesmoke" id="NameDepartement" name="NameDepartement" required>
+                                    <p class="text-danger" id="NameErrorDepartement" style="font-size: 80%;font-weight: bold">Veuillez saisir le nom svp </p>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <button class="btn btn-primary" onclick="showErrorDepartement()" style="float:right; background-color:black"> Enregistrer</button>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--AJOUTER  ASSURANCE -->
+<div id="ajouterAssurance" class="modal container-fluid ">
+    <div class="container" style="width:70%">
+        <div class="container-fluid py-4 pb-2">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card p-4" style="margin:10px">
+                        <div class="card-header" style="border: solid; font-size: 30px; background-color: #03DAFC; color: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                            <div class=" shadow-primary border-radius-lg">
+                                <div class="row">
+                                    <div class="col-md-8 col-lg-8 col-xl-8 col-sm-8 mt-3">
+                                        <h3 class="text-capitalize  text-center" style="color:white">Nouvelle Assurance </h3>
+                                    </div>
+                                    <div class="col-md-4 col-lg-4 col-xl-4 col-sm-4 mt-3">
+                                        <a class="btn btn-primary text-center " onclick="document.getElementById('ajouterAssurance').style.display = 'none'; window.location.reload()" style="width:5%; background-color:white; float:right;color:black">X&ensp;</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <center> <p style="background-color: white; color: red" id="smsAssurance"></p></center>
+                        <center> <p style="background-color:white;color:green" id="messageAssurance"></p></center>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="input-group input-group-outline mb-3 col-md-6 col-lg-6 col-xl-6 col-sm-6">
+                                    <label class="text" style="width:100%;">Nom de l'assurance</label>
+                                    <input type="text" class="form-control" onchange="hideErrorAssurance()" id="Assurance"  name="Assurance" required>
+                                </div>
+                                <p class="text-danger" id="AssuranceError" style="font-size: 80%;font-weight: bold">Veuillez saisir le nom de l'assurance svp </p>
+
+                                <div class="input-group input-group-outline mb-3 col-md-6 col-lg-6 col-xl-6 col-sm-6">
+                                    <label class="text" style="width:100%;">Adresse</label>
+                                    <input type="text" class="form-control" name="AdresseAssurance" id="AdresseAssurance">
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div>
+                                    <label class="text" style="width:100%">T&eacute;l&eacute;phone  <span id="NumeroFormatAssurance" style="color:red">Numero Format invalid</span></label>
+                                    <p id="PhoneParaAssurance" style="border-style: solid; border-width: 1px; border-radius: 5px; border-color: #DFE3E7 "><input name="PhoneTAssurance" id="PhoneTAssurance" onchange="showPhoneAssurance()" onkeypress="return isNumberKey2(this.id);" type="tel" class="form-control " required></p>
+                                </div>
+                                <p class="text-danger" id="PhoneParaErrorAssurance" style="font-size: 80%;font-weight: bold">Veuillez saisir le numéro svp </p>
+
+                                <input name="PhoneAssurance" id="PhoneAssurance" type="text" class="form-control" hidden>
+                                <div class="input-group input-group-outline mb-3">
+                                    <label class="=text" style="width:100%">Personne à contacter</label>
+                                    <input type="text" class="form-control" name="Contact" id="Contact" >
+                                </div>
+                            </div>
+
+
+                            <button class="btn btn-primary" type="submit" onclick="showErrorAssurance()" style="float:right; background-color:black"> Enregistrer</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- JS DEPARTEMENT-->
+<script type="text/javascript">
+    // $('#spinner').hide();
+    $('#NameErrorDepartement').hide();
+    function showErrorDepartement() {
+        if ($('#NameDepartement').val().length == 0) {
+            $('#NameErrorDepartement').show();
+        }
+        else {
+            enregistrerDepartement();
+        }
+
+    }
+    function hideError() {
+
+        if ($('#NameDepartement').val() != null) { $('#NameErrorDepartement').hide(); }
+
+
+    }
+
+
+</script>
+
+<script type="text/javascript">
+
+    function enregistrerDepartement()
+    {
+        document.getElementById("smsDepartement").innerText=null
+        document.getElementById("messageDepartement").innerText = null
+
+        $.post('@Url.Action("AjouterDepartement")',
+            {
+                NameDepartement: $('#NameDepartement').val()
+            },
+            function (reponse)
+            {
+                console.log(JSON.stringify(reponse))
+                switch (reponse.code) {
+                    case 200:
+                        document.getElementById("smsDepartement").innerText = null
+                        document.getElementById("messageDepartement").innerText = reponse.message
+                        setTimeout(() => { window.location.reload() }, 1000);
+
+                        break;
+                    case 201:
+                        document.getElementById("messageDepartement").innerText = null
+                        document.getElementById("smsDepartement").innerText = reponse.message
+                        break;
+                    default:
+                        document.getElementById("messageDepartement").innerText = null
+                        document.getElementById("smsDepartement").innerText = reponse.message
+
+                }
+
+
+
+            }).fail(function (xhr, status, error) {
+                document.getElementById("smsDepartement").innerText = " Une erreur interne est survenue"
+
+            });
+
+    }
+
+</script>
+<!--JS ASSURANCE-->
+
+<script>
+    $('#AssuranceError').hide();
+    $('#PhoneParaErrorAssurance').hide();
+
+    document.getElementById("NumeroFormatAssurance").style.display = 'none';
+    const phoneInputField = document.querySelector("#PhoneTAssurance");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+        autoPlaceholder: "off",
+        formatOnDisplay: false,
+        initialCountry: "sn",
+        nationalMode: true,
+        onlyCountries: ['dz', 'ao', 'bj', 'bw', 'bf', 'bi', 'cm', 'cv', 'cf', 'td', 'km', 'cg', 'cd', 'ci', 'dj', 'eg',
+            'gk', 'er', 'et', 'ga', 'gm', 'gh', 'gn', 'gw', 'ke', 'ls', 'lr', 'ly', 'mj', 'ml', 'mw', 'mr', 'mu', 'yt',
+            'ma', 'mz', 'na', 'ne', 'ng', 're', 'rw', 'st', 'sn', 'sc', 'sl', 'so', 'za', 'ss', 'sd', 'sz', 'tz',
+            'tg', 'tn', 'ug', 'eh', 'zm', ' zw'],
+       separateDialCode: true,
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+
+
+
+    $('#PhoneTAssurance').on("countrychange", function (event) {
+
+        // Get the selected country data to know which country is selected.
+        var selectedCountryData = phoneInput.getSelectedCountryData();
+
+        // Get an example number for the selected country to use as placeholder.
+        newPlaceholder = intlTelInputUtils.getExampleNumber(selectedCountryData.iso2, true, intlTelInputUtils.numberFormat.INTERNATIONAL),
+
+            // Reset the phone number input.
+            phoneInput.setNumber("");
+
+        // Convert placeholder as exploitable mask by replacing all 1-9 numbers with 0s
+        mask = newPlaceholder.replace(/[1-9]/g, "0");
+
+        // Apply the new mask for the input
+        $(this).mask(mask);
+    });
+
+    function isNumberKey2(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+
+
+
+    function showPhoneAssurance()
+    {
+        if ($('#Assurance').val() != null) { $('#AssuranceError').hide(); }
+        if ($('#PhoneTAssurance').val() != null) { $('#PhoneParaErrorAssurance').hide(); }
+
+        if (phoneInput.isValidNumber())
+        {
+            document.getElementById("NumeroFormatAssurance").style.display = 'none';
+            document.getElementById("PhoneParaAssurance").style.borderColor = "#DFE3E7";
+            document.getElementById("PhoneAssurance").value = phoneInput.getSelectedCountryData().dialCode + "" + document.getElementById("PhoneTAssurance").value;
+
+        }
+        else
+        {
+
+            document.getElementById("NumeroFormatAssurance").style.display = 'none';
+            document.getElementById("PhoneParaAssurance").style.borderColor = "#DFE3E7";
+            document.getElementById("PhoneAssurance").value = phoneInput.getSelectedCountryData().dialCode + "" + document.getElementById("PhoneTAssurance").value;
+        }
+
+    }
+    function showErrorAssurance() {
+        if ($('#Assurance').val().length == 0) {
+            $('#AssuranceError').show();
+        }
+        else if ($('#PhoneTAssurance').val().length == 0) { $('#PhoneParaErrorAssurance').show(); }
+        else {
+            enregistrerAssurance()
+        }
+
+
+    }
+    function hideErrorAssurance() {
+
+        if ($('#Assurance').val() != null) { $('#AssuranceError').hide(); }
+        if ($('#PhoneTAssurance').val() != null) { $('#PhoneParaErrorAssurance').hide(); }
+
+
+    }
+
+    function enregistrerAssurance()
+    {
+        document.getElementById("smsAssurance").innerText=null
+        document.getElementById("messageAssurance").innerText = null
+
+        $.post('@Url.Action("AjouterAssurance")',
+            {
+                Assurance: $('#Assurance').val(),
+                Adresse: $('#AdresseAssurance').val(),
+                Phone: $('#PhoneAssurance').val(),
+                Contact: $('#Contact').val()
+
+
+            },
+            function (reponse)
+            {
+                switch (reponse.code) {
+                    case 200:
+                        document.getElementById("smsAssurance").innerText = null
+                        document.getElementById("messageAssurance").innerText = reponse.message
+                        setTimeout(() => { window.location.reload() }, 1000);
+
+                        break;
+                    case 201:
+                        document.getElementById("messageAssurance").innerText = null
+                        document.getElementById("smsAssurance").innerText = reponse.message
+                        break;
+                    default:
+                        document.getElementById("messageAssurance").innerText = null
+                        document.getElementById("smsAssurance").innerText = reponse.message
+
+                }
+
+
+
+            }).fail(function (xhr, status, error) {
+                document.getElementById("smsAssurance").innerText = " Une erreur interne est survenue"
+
+            });
+
+    }
+
+
+</script>

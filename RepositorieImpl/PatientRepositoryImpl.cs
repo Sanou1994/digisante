@@ -369,6 +369,11 @@ namespace digi_sante.Repositories
                     if (id != null)
                     {
                         var patient = db.Patients.Where(a => a.patientID == id && a.status == true).FirstOrDefault();
+                        var listeDocteur = db.Utilisateurs.Where(a => a.structureID == patient.structureID && a.titre == "Docteur" && a.status == true).ToList();
+                        var listOfPatients = db.Patients.Where(a => a.structureID == patient.structureID && a.status == true).ToList();
+                        var listOfDepartements = db.Departements.Where(a => a.structureID == patient.structureID && a.status == true).ToList();
+                        var listOfAssurance = db.Assurances.Where(a => a.structureID == patient.structureID && a.status == true).ToList();
+
                         var listUsers = db.Utilisateurs.Where(a => a.structureID == patient.structureID).ToList();
                         var cons = db.Consultations.Where(a => a.patientID == patient.patientID).OrderByDescending(a => a.consultationID).ToList();
                         var list = db.Analyses.ToList();
@@ -386,16 +391,21 @@ namespace digi_sante.Repositories
                             {
                                 Acc = patient.prenom_accompagnant,
                                 analyses = lstAnalyse,
-                                Birth = patient.date_naissance.ToString().Substring(0, 10),
+                                Birth = patient.date_naissance,
+                                date_naissance = (patient.date_naissance != null) ? new DateTime(patient.date_naissance.Value).ToString().Substring(0, 10): null,
                                 Gender = patient.sexe,
                                 Name = patient.nom,
                                 Profession = patient.profession,
                                 Surname = patient.prenom,
                                 Telephone = patient.telephone_patient,
                                 Adresse = patient.adresse,
-                                Age = (DateTime.Now.Subtract(patient.date_naissance.Value)).Days / 365,
+                                Age = (DateTime.Now.Subtract( new DateTime(patient.date_naissance.Value))).Days / 365,
                                 Nationalite = patient.nationnalite,
-                                utilisateurs = listUsers
+                                utilisateurs = listUsers,
+                                liste_assurances = listOfAssurance,
+                                liste_departements = listOfDepartements,
+                                liste_docteurs = listeDocteur,
+                                patientID= patient.patientID
 
                             };
                             reponse.statusCode = 200;
